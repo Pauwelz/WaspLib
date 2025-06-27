@@ -1,16 +1,4 @@
-(*
-# MapLoader
-This file is responsible for loading chunk maps for TRSMap.
-It was made from scratch but heavily inspired in the original
-TRSWalker by [slacky](https://slacky.one/) and it's future iterations made by Olly.
 
-```{note}
-Most things in this file are for internal use only and you shouldn't use them directly
-nor modify them if you don't quite understand them.
-```
-
-Credits: Torwent
-*)
 
 {$DEFINE WL_MAPLOADER_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
@@ -18,13 +6,7 @@ Credits: Torwent
 {.$DEFINE WL_GENERATE_GRAPH_ALWAYS}
 
 type
-(*
-## TRSMapRegion
-Map region record, responsible for storing the map region/chunk data.
-```{note}
-This is an internal type. Don't use it if you don't know what you are doing.
-```
-*)
+
   TRSMapRegion = record
     Chunks: TPointArray;
     Original: TBox;
@@ -33,13 +15,7 @@ This is an internal type. Don't use it if you don't know what you are doing.
     Offset: TPoint;
   end;
 
-(*
-## TRSMapRegion.Name
-```pascal
-property TRSMapRegion.Name: String;
-```
-Returns a unique string representing this map region.
-*)
+
 property TRSMapRegion.Name: String;
 begin
   with Self.Chunks.Bounds do
@@ -47,22 +23,10 @@ begin
 end;
 
 type
-(*
-## ERSMap
-```pascal
-ERSMap = enum(NORMAL, HEIGHT, COLLISION);
-Enum representing the types of map files available in TRSMap and TRSMapLoader.
-```
-*)
+
   ERSMap = enum(NORMAL, HEIGHT, COLLISION);
 
-(*
-## TRSMapLoader
-TRSMapLoader is what's responsible for loading a map for TRSMap based on chunks.
-```{note}
-This is an internal type. Don't use it if you don't know what you are doing.
-```
-*)
+
   TRSMapLoader = record
     Version: String;
     Map, Heightmap, Collision, DownscaledMap: TImage;
@@ -76,49 +40,9 @@ This is an internal type. Don't use it if you don't know what you are doing.
     _UnzipQueue: Integer;
   end;
 
-(*
-## Points Translation
-This might be the only thing you need to use from time to time from the
-{ref}`MapLoader`.
 
-It's important to understand the difference between local and global points to
-use these effectively.
-Understanding them and making conversions of this coordinates is needed for
-proper coordinate debugging.
 
-### Global Points
-Global points and points on the real runescape map. This is the "Global map".
 
-E.G., if you visit [Wasp Map](https://map.waspscripts.com/),
-all coordinates on that map are **Global** coordinates.
-
-These are usually the ones you use when telling your scripts
-to walk or click a certain tile and/or object.
-
-### Local Points
-When you build a map, the region or regions you load are taken from the map and
-joined into a small, efficient map that only contains what you choose.
-
-This is your "Local map".
-
-This is important because the bigger the map is the slower it is to use.
-
-Because the regions are joined into a small map, it means that their "coordinates"
-don't line up with their original ones anymore.
-
-If you pick for example, pixel [100, 100] on your local map, that pixel won't be
-matching the pixel [100, 100] on the global map. Instead it matches the pixel
-[100,100] from the top left corner of one of your regions to put it simply.
-*)
-
-(*
-### TRSMapLoader.LocalIndex
-```pascal
-function TRSMapLoader.LocalIndex(pt: TPoint): Integer;
-```
-Returns the index of the TRSMapRegion a {ref}`Local point` is at.
-Returns `-1` if none is found.
-*)
 function TRSMapLoader.LocalIndex(pt: TPoint): Integer;
 begin
   for Result := 0 to High(Self.Regions) do
@@ -127,14 +51,7 @@ begin
   Result := -1;
 end;
 
-(*
-### TRSMapLoader.GlobalIndex
-```pascal
-function TRSMapLoader.GlobalIndex(pt: TPoint): Integer;
-```
-Returns the index of the TRSMapRegion a {ref}`Global point` is at.
-Returns `-1` if none is found.
-*)
+
 function TRSMapLoader.GlobalIndex(pt: TPoint): Integer;
 begin
   for Result := 0 to High(Self.Regions) do
@@ -144,19 +61,7 @@ begin
 end;
 
 
-(*
-### TRSMapLoader.GetGlobal
-```pascal
-function TRSMapLoader.GetGlobal(regionIndex: Integer; pt: TPoint; offset: TPoint = [0,0]): TPoint;
-function TRSMapLoader.GetGlobal(pt: TPoint; offset: TPoint = [0,0]): TPoint; overload;
-```
-Converts a {ref}`Local point` to a {ref}`Global point`.
 
-You can optionally specify the `regionIndex` you want your `pt` to be converted to or let Simba figure it out.
-For points in bulk from the same region specifying it is better as you save Simba from doing more math.
-
-The specified `pt` is returned unmodified if not region index matching the point is found.
-*)
 function TRSMapLoader.GetGlobal(regionIndex: Integer; pt: TPoint; offset: TPoint = [0,0]): TPoint;
 begin
   Result := pt + Self.Regions[regionIndex].Offset - [Self.Regions[regionIndex].Region.X1, Self.Regions[regionIndex].Region.Y1] + offset;
@@ -172,20 +77,7 @@ begin
 end;
 
 
-(*
-### TRSMapLoader.GetLocal
-```pascal
-function TRSMapLoader.GetLocal(regionIndex: Integer; pt: TPoint; offset: TPoint = [0,0]): TPoint;
-function TRSMapLoader.GetLocal(pt: TPoint; offset: TPoint = [0,0]): TPoint; overload;
-function TRSMapLoader.GetLocal(tpa: TPointArray; offset: TPoint = [0,0]): TPointArray; overload;
-```
-Converts a {ref}`Global point` to a {ref}`Local point`.
 
-You can optionally specify the `regionIndex` you want your `pt` to be converted to or let Simba figure it out.
-You can also optionally specify points in bulk as a `tpa`.
-
-The specified `pt` is returned unmodified if not region index matching the point is found.
-*)
 function TRSMapLoader.GetLocal(regionIndex: Integer; pt: TPoint; offset: TPoint = [0,0]): TPoint;
 begin
   Result := pt - Self.Regions[regionIndex].Offset + Self.Regions[regionIndex].Region.TopLeft + offset;
@@ -267,15 +159,7 @@ end;
 
 
 
-(*
-## MapLoader.GetFile
-```pascal
-function TRSMapLoader.GetFile(chunk: TPoint; plane: Integer; map: ERSMap): TImage;
-```
-Internal method that returns a chunk image.
-If possible, it will be loaded from a cached .bmp file.
-If no .bmp file exists, the .png file is loaded instead, it's saved as .bmp for future uses and the .png file is deleted.
-*)
+
 function TRSMapLoader.GetFile(chunk: TPoint; plane: Integer; map: ERSMap): TImage;
 var
   filename, cachename: String;
@@ -312,13 +196,7 @@ begin
   Result.Load(cachename + '.bmp');
 end;
 
-(*
-## MapLoader.GetMap
-```pascal
-function TRSMapLoader.GetMap(chunks: TPointArray; plane: Integer; map: ERSMap): TImage;
-```
-Internal method that returns a `TImage` of all the `chunks` you pass into it.
-*)
+
 function TRSMapLoader.GetMap(chunks: TPointArray; plane: Integer; map: ERSMap): TImage;
 var
   i, x, y, n: Integer;
@@ -358,20 +236,7 @@ begin
 end;
 
 
-(*
-## MapLoader.GetGraph
-```pascal
-function TRSMapLoader.GetGraph(name: String; plane: Integer; map: TImage): TWebGraph;
-```
-Returns a TWebGraph for the given `map`.
 
-If the graph is already cached we load it from cache, otherwise we build it
-with {ref}`WebGraph Generator` and save it into cache.
-
-```{note}
-This is an internal method. Don't use it if you don't know what you are doing.
-```
-*)
 function TRSMapLoader.GetGraph(name: String; plane: Integer; map: TImage): TWebGraph;
 var
   path: String;
@@ -501,40 +366,7 @@ begin
 end;
 
 
-(*
-## MapLoader.Load
-```pascal
-procedure TRSMapLoader.Load(chunks: TRSMapChunkArray; downscale: Integer = 8; padding: Integer = 40);
-```
-Loads a map and sets the {ref}`TRSMapLoader` internal values, the most important
-ones being:
-- `TRSMapLoader.Map`, which will hold the image of your map.
-- `TRSMapLoader.Heightmap` which will hold your heightmap.
-- `TRSMapLoader.Collision` which will hold your collision map
-- `TRSMapLoader.DownscaledMap` which is an exact copy of `TRSMapLoader.Map` downscaled by the specified `downscale`.
-- `TRSMapLoader.Graph` which holds your {ref}`TWebGraph` which is used for walking.
-- `TRSMapLoader.Regions` an array of the available {ref}`TRSMapRegion` that were loaded.
 
-The best way to visualize most of these is to use the {ref}`Map Debugger`:
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-
-begin
-  Map.Setup([ERSChunk.VARROCK]);
-  MapDebugger.Setup(@Map.Loader);
-  MapDebugger.Show();
-end.
-```
-
-```{figure} ../../images/map_debugger.gif
-```
-
-```{note}
-This is an internal method. Usually, {ref}`TRSMap` `Load` methods will call this for you.
-```
-*)
 procedure TRSMapLoader.Load(chunks: TRSMapChunkArray; downscale: Integer = 8; padding: Integer = 40);
 var
   chunk: TRSMapChunk;
@@ -604,22 +436,7 @@ begin
 end;
 
 
-(*
-## MapLoader.Add
-```pascal
-procedure TRSMapLoader.Add(chunks: array of TRSMapChunk; downscale: UInt32 = 8; padding: UInt32 = 40);
-```
-Adds one or more `TRSMapChunk` to your already, previously loaded `TRSMapLoader`.
 
-This is very similar to what {ref}`MapLoader.Load` does and should be used after it as it sets up some internal
-values that this doesn't.
-
-This basically updates some of the values it previously setup.
-
-```{note}
-This is an internal method. Usually, {ref}`TRSMap` `Add` methods will call this for you.
-```
-*)
 procedure TRSMapLoader.Add(chunks: array of TRSMapChunk; downscale: UInt32 = 8; padding: UInt32 = 40);
 var
   i, j: Int32;

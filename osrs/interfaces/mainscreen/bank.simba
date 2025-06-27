@@ -1,74 +1,32 @@
-(*
-# Bank
-Methods to interact with the bank interface:
-```{figure} ../../images/bank_interface.png
-```
-*)
+
 
 {$DEFINE WL_BANK_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSBankButtons
-```pascal
-ERSBankButtons = enum(WORN, MENU);
-```
-Enum representing the 2 top buttons of the {ref}`Bank` interface.
-*)
+
   ERSBankButtons = enum(WORN, MENU);
 
-(*
-## ERSBankArrangement
-```pascal
-ERSBankArrangement = enum(SWAP, INSERT);
-```
-Enum representing the 2 arrangement buttons of the {ref}`Bank` interface.
-*)
+
   ERSBankArrangement = enum(SWAP, INSERT);
 
-(*
-## ERSWithdrawMode
-```pascal
-ERSWithdrawMode = enum(ITEM, NOTE);
-```
-Enum representing the 2 withdraw mode buttons of the {ref}`Bank` interface.
-*)
+
   ERSWithdrawMode = enum(ITEM, NOTE);
 
-(*
-## ERSBankDynamicButtons
-```pascal
-ERSBankDynamicButtons = enum(PLACEHOLDERS, SEARCH, DEPOSIT_INVENTORY, DEPOSIT_WORN);
-```
-Enum representing the 4 dynamic buttons on the right corner of the {ref}`Bank` interface.
-These buttons are dynamic because they can be enabled/disabled and shift places.
-*)
+
   ERSBankDynamicButtons = enum(PLACEHOLDERS, SEARCH, DEPOSIT_INVENTORY, DEPOSIT_WORN);
 
-(*
-## ERSBankInteraction
-```pascal
-ERSBankInteraction = enum(WITHDRAW, DEPOSIT);
-```
-Enum representing 2 core actions you can perform on the {ref}`Bank` interface.
-*)
+
   ERSBankInteraction = enum(WITHDRAW, DEPOSIT);
 
-(*
-## TBankPosition
-Helper record to cache items positions on the {ref}`Bank` interface.
-*)
+
   TBankPosition = record
     Tab: Integer;
     Scroll: Integer;
     Slot: TBox;
   end;
 
-(*
-## TRSBank
-Record responsible to handle the {ref}`Bank` interface.
-*)
+
   TRSBank = record
     Bounds: TBox;
     Slots: TRSSlotInterface;
@@ -106,31 +64,7 @@ Record responsible to handle the {ref}`Bank` interface.
     Bankers: TRSNPCArray;
   end;
 
-(*
-## Bank.FindItemBoundaries
-```pascal
-function TRSBank.FindItemBoundaries(): TBoxArray;
-```
-Finds item boundaries and returns them as a TBoxArray.
 
-You have 2 ways of getting the bank slots, a static one:
-```pascal
-ShowOnTarget(Bank.SlotBoxes);
-```
-```{figure} ../../images/bank_static_slots.png
-The bank static slots.
-```
-
-And a dynamic one:
-```pascal
-ShowOnTarget(Self.FindItemBoundaries());
-```
-```{figure} ../../images/bank_item_boundaries.png
-The bank "dynamic" slots.
-```
-
-There are use cases for both, internally, `Bank.FindItemBoundaries` is usually used.
-*)
 function TRSBank.FindItemBoundaries(): TBoxArray;
 var
   tpa, final: TPointArray;
@@ -160,14 +94,7 @@ end;
 
 function TRSBank.IsOpen(): Boolean; forward;
 
-(*
-## Bank.SetupInterface
-```pascal
-procedure TRSBank.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSBank` coordinates.
-This is automatically called for you on the {ref}`Bank variable`.
-*)
+
 procedure TRSBank.SetupInterface();
 var
   i: Integer;
@@ -251,19 +178,7 @@ begin
   end;
 end;
 
-(*
-## Bank.UpdateButtons
-```pascal
-procedure TRSBank.UpdateButtons(offset: Integer);
-```
-Internal helper method used to update the buttons coordinates.
 
-All the bank's bottom buttons shift slightly on the X axis depending on how many dynamic buttons are visible.
-
-```{note}
-This is automatically called for you with {ref}`Bank.IsOpen`.
-```
-*)
 procedure TRSBank.UpdateButtons(offset: Integer);
 var
   i: Integer;
@@ -286,37 +201,14 @@ begin
 end;
 
 
-(*
-## Bank.HasJagexAccountAd
-```pascal
-function TRSBank.HasJagexAccountAd(): Boolean;
-```
-Returns true if the bank has the jagex account ad pop-up.
-This only ever shows up on non jagex accounts and tries to buy you in with bank space.
 
-Example:
-```pascal
-WriteLn Bank.HasJagexAccountAd();
-```
-*)
 function TRSBank.HasJagexAccountAd(): Boolean;
 begin
   Result := (Target.CountColor($0000FF, 0, Self.JagexAccountAd.NotNow) = 98) and
             (Target.CountColor($0DC10D, 0, Self.JagexAccountAd.MoreInfo) = 112);
 end;
 
-(*
-## Bank.CloseJagexAccountAd
-```pascal
-function TRSBank.CloseJagexAccountAd(): Boolean;
-```
-Attempts to close the jagex account advert. Returns true on success.
 
-Example:
-```pascal
-WriteLn Bank.CloseJagexAccountAd();
-```
-*)
 function TRSBank.CloseJagexAccountAd(): Boolean;
 begin
   Mouse.Click(Self.JagexAccountAd.NotNow, EMouseButton.LEFT);
@@ -324,18 +216,7 @@ begin
 end;
 
 
-(*
-## Bank.IsOpen
-```pascal
-function TRSBank.IsOpen(): Boolean;
-```
-Returns true if the bank is open.
 
-Example:
-```pascal
-WriteLn Bank.IsOpen();
-```
-*)
 function TRSBank.IsOpen(): Boolean;
 var
   count: Integer;
@@ -370,38 +251,14 @@ begin
   end;
 end;
 
-(*
-## Bank.WaitOpen
-```pascal
-function TRSBank.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
-```
-Returns true if the bank is open within `time` milliseconds.
 
-## Example:
-```pascal
-WriteLn Bank.WaitOpen();
-```
-*)
 function TRSBank.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
   Result := SleepUntil(Self.IsOpen(), interval, time);
 end;
 
-(*
-## Bank.Close
-```pascal
-function TRSBank.Close(escape: Boolean): Boolean;
-function TRSBank.Close(escapeProbability: Single = 0): Boolean; overload;
-```
-Closes the bank, Depending on `escape` or `escapeProbability the function will
-either click the button or press escape key.
 
-Example:
-```pascal
- WriteLn Bank.Close();
-```
-*)
 function TRSBank.Close(escape: Boolean): Boolean;
 begin
   Result := Self.Title.Close(escape);
@@ -412,31 +269,9 @@ begin
   Result := Self.Title.Close(escapeProbability);
 end;
 
-(*
-## Bank.Tabs
-You can access the bank tabs coordinates via the `TRSBank.Tabs` variable.
 
-Example:
-```pascal
-ShowOnTarget(Bank.Tabs);
-```
-```{figure} ../../images/bank_tabs.png
-The bank interface.
-```
-*)
 
-(*
-### Bank.CountTabs
-```pascal
-function TRSBank.CountTabs: Integer;
-```
-Counts the existing bank tabs.
 
-Example:
-```pascal
-WriteLn Bank.CountTabs();
-```
-*)
 function TRSBank.CountTabs(): Integer;
 var
   i: Integer;
@@ -446,20 +281,7 @@ begin
       Exit(i);
 end;
 
-(*
-### Bank.GetCurrentTab
-```pascal
-function TRSBank.GetCurrentTab(): Integer;
-```
-Get the current active bank tab.
 
-Example:
-```pascal
-tab := Bank.GetCurrentTab();
-WritLn tab;
-ShowOnTarget(Bank.Tabs[tab]);
-```
-*)
 function TRSBank.GetCurrentTab(): Integer;
 var
   i: Integer;
@@ -470,18 +292,7 @@ begin
         Exit(i);
 end;
 
-(*
-### Bank.OpenTab
-```pascal
-function TRSBank.OpenTab(tab: Integer): Boolean;
-```
-Opens the specified bank tab.
 
-Example:
-```pascal
-WriteLn Bank.OpenTab(0);
-```
-*)
 function TRSBank.OpenTab(tab: Integer): Boolean;
   function _TabChanged(tab: Integer): Boolean;
   begin
@@ -508,18 +319,7 @@ end;
 
 
 
-(*
-## Bank.SetArrangement
-```pascal
-function TRSBank.SetArrangement(arrangement: ERSBankArrangement): Boolean;
-```
-Attempts to set the bank arrangement to `arrangement`, returns true if we succeed.
 
-Example:
-```pascal
-WriteLn Bank.SetArrangement(ERSBankArrangement.INSERT);
-```
-*)
 function TRSBank.SetArrangement(arrangement: ERSBankArrangement): Boolean;
 begin
   if Self.ArrangementButtons[arrangement].Enabled() then Exit(True);
@@ -527,19 +327,7 @@ begin
   if Result then Sleep(600, 800);
 end;
 
-(*
-## Bank.SetWithdrawMode
-```pascal
-function TRSBank.SetWithdrawMode(noted: Boolean): Boolean;
-```
-Attempts to set the bank withdraw mode to noted if `noted` is true or
-to item if it's false, returns true if we succeed.
 
-Example:
-```pascal
-WriteLn Bank.SetWithdrawMode(True);
-```
-*)
 function TRSBank.SetWithdrawMode(noted: Boolean): Boolean;
 var
   btn: ERSWithdrawMode;
@@ -552,18 +340,7 @@ begin
   if Result then Sleep(600, 800);
 end;
 
-(*
-## Bank.SetQuantity
-```pascal
-function TRSBank.SetQuantity(quantity: ERSItemQuantity): Boolean;
-```
-Attempts to set the bank quantity to `quantity`, returns true if we succeed.
 
-Example:
-```pascal
-WriteLn Bank.SetQuantity(ERSItemQuantity.FIVE);
-```
-*)
 function TRSBank.SetQuantity(quantity: ERSItemQuantity): Boolean;
 begin
   if Self.QuantityButtons[quantity].Enabled() then Exit(True);
@@ -573,52 +350,19 @@ end;
 
 
 
-(*
-## Bank.IsSearchOpen
-```pascal
-function TRSBank.IsSearchOpen(): Boolean;
-```
-Checks if the bank search is currently open.
 
-Example:
-```pascal
-WriteLn Bank.IsSearchOpen();
-```
-*)
 function TRSBank.IsSearchOpen(): Boolean;
 begin
   Result := Chat.FindQuery('Show items', True);
 end;
 
-(*
-## Bank.WaitSearchOpen
-```pascal
-function TRSBank.WaitSearchOpen(time: Integer = 600): Boolean;
-```
-Waits `time` milliseconds for the bank search to be open.
 
-Example:
-```pascal
-WriteLn Bank.WaitSearchOpen();
-```
-*)
 function TRSBank.WaitSearchOpen(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   Result := Chat.WaitQuery('Show items', True, time, interval);
 end;
 
-(*
-## Bank.OpenSearch
-```pascal
-function TRSBank.OpenSearch(waitTime: Integer = 0): Boolean;
-```
-Attempts to open the bank search and Waits `waitTime` milliseconds for it to be open.
 
-Example:
-```pascal
-WriteLn Bank.OpenSearch();
-```
-*)
 function TRSBank.OpenSearch(waitTime: Integer = 0): Boolean;
 begin
   Self.DynamicButtons[ERSBankDynamicButtons.SEARCH].Click();
@@ -628,18 +372,7 @@ begin
   Sleep(200, 300);
 end;
 
-(*
-## Bank.ClearSearch
-```pascal
-function TRSBank.ClearSearch(): Boolean;
-```
-Attempts to clear the bank search.
 
-Example:
-```pascal
-WriteLn Bank.ClearSearch();
-```
-*)
 function TRSBank.ClearSearch(): Boolean;
 begin
   if not Self.Title.IsTitle('Showing items:') then Exit(True);
@@ -651,18 +384,7 @@ begin
   Result := SleepUntil(not Self.Title.IsTitle('Showing items:'), RandomMode(100, 50, 1500), 600);
 end;
 
-(*
-## Bank.Search
-```pascal
-function TRSBank.Search(item: String): Boolean;
-```
-Searches for an item.
 
-Example:
-```pascal
-Bank.Search('logs'); // Search for logs
-```
-*)
 function TRSBank.Search(item: TRSItem): Boolean;
 var
   txt: String;
@@ -688,21 +410,7 @@ begin
   Result := SleepUntil(Self.Items.Contains(item), 300, 2000);
 end;
 
-(*
-## Bank.CloseSearch
-```pascal
-function TRSBank.CloseSearch(): Boolean;
-```
 
-Closes the bank search if it's open.
-
-Example:
-```pascal
-Bank.Search('logs'); // Search for logs
-Wait(1000);
-Bank.CloseSearch();
-```
-*)
 function TRSBank.CloseSearch(): Boolean;
 begin
   Result := Self.ClearSearch() and
@@ -710,60 +418,21 @@ begin
 end;
 
 
-(*
-## Bank.HasIncinerator
-```pascal
-function TRSBank.HasIncinerator(): Boolean;
-```
-Returns true if the bank screen has the incenerator visible.
 
-Example:
-```pascal
-if Bank.HasIncenerator() then
-  ShowOnTarget(Self.Incenerator);
-```
-*)
 function TRSBank.HasIncinerator(): Boolean;
 begin
   with Self.Incenerator do
     Result := Target.HasColor(ColorTolerance($517F9E, 2.132, EColorSpace.HSV, [2.437, 0.309, 0.256]), 1, [X1, Y1+55, X2, Y2]);
 end;
 
-(*
-## Bank.InceneratorTooltipVisible
-```pascal
-function TRSBank.InceneratorTooltipVisible(): Boolean;
-```
-Returns true if the incenerator tooltip is visible.
-This is important to check when you want to interact with the bottom buttons of
-the bank as the tooltip will cover them.
 
-Example:
-```pascal
-WriteLn Bank.InceneratorTooltipVisible();
-```
-*)
 function TRSBank.InceneratorTooltipVisible(): Boolean;
 begin
   with Self.Incenerator do
     Result := Target.HasColor($A0FFFF, 0, 1, [X1+6, Y1+76, X2, Y2+35]);
 end;
 
-(*
-## Bank.CloseInceneratorTooltip
-```pascal
-function TRSBank.CloseInceneratorTooltip(): Boolean;
-```
-Attempts to close the incenerator tooltip.
-This is important to do when you want to interact with the bottom buttons of
-the bank as the tooltip will cover them.
 
-Example:
-```pascal
-if Bank.InceneratorTooltipVisible() then
-  WriteLn Bank.CloseInceneratorTooltip();
-```
-*)
 function TRSBank.CloseInceneratorTooltip(): Boolean;
 var
   boxes: TBoxArray;
@@ -778,35 +447,13 @@ begin
 end;
 
 
-(*
-## Bank.HasPotionStorage
-```pascal
-function TRSBank.HasPotionStorage(): Boolean;
-```
-Returns True/False if the bank has the potion storage menu available.
 
-Example:
-```pascal
-WriteLn Bank.HasPotionStorage();
-```
-*)
 function TRSBank.HasPotionStorage(): Boolean;
 begin
   Result := Target.HasColor(ColorTolerance($517F9E, 2.132, EColorSpace.HSV, [2.437, 0.309, 0.256]), 1, Self.PotionStorage);
 end;
 
-(*
-## Bank.PotionStorageIsOpen
-```pascal
-function TRSBank.PotionStorageIsOpen(): Boolean;
-```
-Returns True if the potion storage is currently open.
 
-Example:
-```pascal
-WriteLn Bank.PotionStorageIsOpen();
-```
-*)
 function TRSBank.PotionStorageIsOpen(): Boolean;
 begin
   Result := Target.HasColor($1F98FF, 0,  3000, Self.SlotsArea);
@@ -814,20 +461,7 @@ end;
 
 
 {%codetools off}
-(*
-## Bank._FindTabText
-```pascal
-function TRSBank._FindTabText(tpa: TPointArray; out bounds: TBox): Boolean;
-```
-Internal helper function help process the tabs text when you search.
 
-Example:
-```pascal
-if Bank.Search('logs') then
-  if Bank._FindTabText(Target.FindColor(RSColors.TEXT_LIGHT_YELLOW, 0, bounds), bounds) then
-    ShowOnTarget(bounds);
-```
-*)
 function TRSBank._FindTabText(tpa: TPointArray; out bounds: TBox): Boolean;
 var
   atpa: T2DPointArray;
@@ -847,22 +481,7 @@ begin
 end;
 {%codetools on}
 
-(*
-## Bank.FindTab
-```pascal
-function TRSBank.FindTab(item: TRSItem; openTab: Boolean = True): Integer;
-```
-Find the bank tab of `item`.
 
-```{note}
-A known limitation of this is that if several items match the sprite of the item (for example multiple charged jewlry) the tab retrieved will be the first one found. If you have 'Games necklace(1)' in tab 1 and 'Games necklace(8)' in tab 5 and search for the latter, you will get tab 1.
-```
-
-Example:
-```pascal
-WriteLn Bank.FindTab('Molten glass');
-```
-*)
 function TRSBank.FindTab(item: TRSItem): Integer;
 var
   bounds: TBox;
@@ -879,22 +498,7 @@ begin
     Result := OCR.RecognizeNumber(bounds, RSFonts.PLAIN_11, [RSColors.TEXT_WHITE], 0);
 end;
 
-(*
-## Bank.FindScroll
-```pascal
-function TRSBank.FindScroll(item: TRSItem): Integer;
-```
-Find the scroll position of the bank where `item` is visible..
 
-```{note}
-A known limitation of this is that if several items match the sprite of the item (for example multiple charged jewlry) the tab retrieved will be the first one found. If you have 'Games necklace(1)' in tab 1 and 'Games necklace(8)' in tab 5 and search for the latter, you will get tab 1.
-```
-
-Example:
-```pascal
-WriteLn Bank.FindScroll('Molten glass');
-```
-*)
 function TRSBank.FindScroll(item: TRSItem): Integer;
 var
   next: Integer;
@@ -931,19 +535,7 @@ begin
   Result := -1;
 end;
 
-(*
-## Bank._InteractionHelper
-```pascal
-function TRSBank._InteractionHelper(mode: ERSBankInteraction; slot: TBox; amount: Integer; useQuantityButton: Boolean): Boolean;
-```
-Internal helper method to handle both withdrawing and depositing of items.
 
-Example:
-```pascal
-if Bank.Items.Find('Abyssal whip', slot) the
-  Bank._InteractionHelper(ERSBankInteraction.WITHDRAW, slot, 1, True);
-```
-*)
 function TRSBank._InteractionHelper(mode: ERSBankInteraction; slot: TBox; amount: Integer; useQuantityButton: Boolean): Boolean;
 var
   quantity: ERSItemQuantity;
@@ -1002,17 +594,7 @@ begin
             (ChooseOption.Select(modeStr + 'X') and Chat.AnswerQuery('Enter amount', amountStr, RandomLeft(1400, 2400)));
 end;
 
-(*
-## Bank.Find
-```pascal
-function TRSBank.Find(item: TRSItem; out data: TBankPosition; attempts: Int32 = 3): Boolean;
-```
-Attempts to find `item` in the back by whatever means necessary.
-This will search and scroll the bank until the item is found.
-By default attempts up to 3 times.
 
-Item position data is returned via `data`.
-*)
 function TRSBank.Find(item: TRSItem; out data: TBankPosition; attempts: Int32 = 3): Boolean;
 begin
   if attempts = 0 then Exit(False);
@@ -1055,19 +637,7 @@ begin
 end;
 
 
-(*
-## Bank.Withdraw
-```pascal
-function TRSBank.Withdraw(item: TRSBankItem; useQuantityButton: Boolean = True; useCache: Boolean = True): Boolean;
-function TRSBank.Withdraw(item: TRSItem; useQuantityButton: Boolean = True; useCache: Boolean = True): Boolean; overload;
-```
-Attempts to withdraw `item` from the bank.
 
-Example:
-```pascal
-WriteLn Bank.Withdraw(item);
-```
-*)
 function TRSBank.Withdraw(item: TRSBankItem; useQuantityButton, useCache: Boolean = True; waitConfirmation: Boolean = False): Boolean;
 var
   data: TBankPosition;
@@ -1110,19 +680,7 @@ begin
   Result := Self.Withdraw(item.ToBankItem(), useQuantityButton, useCache);
 end;
 
-(*
-## Bank.Deposit
-```pascal
-function TRSBank.Deposit(item: TRSBankItem; useQuantityButton: Boolean = True): Boolean;
-function TRSBank.Deposit(item: TRSItem; useQuantityButton: Boolean = True): Boolean; overload;
-```
-Attempts to deposit `item` into the bank.
 
-Example:
-```pascal
-WriteLn Bank.Deposit(item);
-```
-*)
 function TRSBank.Deposit(item: TRSBankItem; useQuantityButton: Boolean = True): Boolean;
 var
   slot: TBox;
@@ -1140,18 +698,7 @@ begin
 end;
 
 
-(*
-## Bank.DepositDifferent
-```pascal
-function TRSBank.DepositDifferent(items: TRSItemArray; useQuantityButton: Boolean = True): Boolean;
-```
-Attempts to deposit all items found that are not the `items` passed as a paremeter.
 
-Example:
-```pascal
-WriteLn Bank.DepositDifferent(['Abyssal whip', 'Bandos chestplate', 'Bandos tassets']);
-```
-*)
 function TRSBank.DepositDifferent(items: TRSItemArray; useQuantityButton: Boolean = True): Boolean;
 var
   slots: TIntegerArray;
@@ -1167,21 +714,7 @@ begin
 end;
 
 
-(*
-## Bank.IsDepleted
-```pascal
-function TRSBank.IsDepleted(item: TRSBankItem; attempts: Integer = 3): Boolean;
-```
-Checks if a item is depleted in the bank.
-This returns true if the `item.Item` quantity in the bank is less than `item.Quantity`.
 
-It also sets the `Bank.Depleted` variable to true which you can use in your script for whatever you see fit.
-
-Example:
-```pascal
-WriteLn Bank.IsDepleted(item);
-```
-*)
 function TRSBank.IsDepleted(item: TRSBankItem; attempts: Integer = 3): Boolean;
 var
   data: TBankPosition;
@@ -1211,22 +744,7 @@ begin
 end;
 
 
-(*
-## Bank.Hover
-```pascal
-function TRSBank.Hover(walk: Boolean = True): Boolean;
-```
-Hovers the closest bank that WaspLib is aware of.
 
-This assumes that {ref}`Map` is being used and setup.
-It's possible to use this with other systems but you need to configure it all
-manually.
-
-It will always hover the closest bank {ref}`TRSObject` or {ref}`TRSNPC` on your
-loaded map.
-
-If you are too far, it will attempt to walk closer to it.
-*)
 function TRSBank.Hover(walk: Boolean = True): Boolean;
 var
   obj: TRSObject;
@@ -1250,32 +768,7 @@ begin
   Result := npc.Hover();
 end;
 
-(*
-## Bank.Open
-```pascal
-function TRSBank.Open(walk: Boolean = True): Boolean;
-```
-Opens the bank for you.
-This assumes that {ref}`Map` is being used and setup.
-It's possible to use this with other systems but you need to configure it all
-manually.
 
-It will always use the closest bank {ref}`TRSObject` or {ref}`TRSNPC` WaspLib
-is aware of on your loaded map.
-
-If you are too far, it will attempt to walk closer to it.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Map.Setup([ERSChunk.VARROCK]);
-  Bank.Open();
-end.
-```
-```{figure} ../../images/bankopen.gif
-```
-*)
 function TRSBank.Open(walk: Boolean = True): Boolean;
 var
   obj: TRSObject;
@@ -1364,8 +857,5 @@ end;
 
 
 var
-(*
-## Bank variable
-Global {ref}`TRSBank` variable.
-*)
+
   Bank: TRSBank;

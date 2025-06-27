@@ -1,7 +1,4 @@
-(*
-# RSObjects
-This file is responsible for interacting with map objects.
-*)
+
 
 {$DEFINE WL_RSOBJECTS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
@@ -121,15 +118,7 @@ begin
     end;
 end;
 
-(*
-## TRSNPC.Find
-```pascal
-function TRSNPC.Find(cuboidArray: TCuboidArray): T2DPointArray;
-```
-Internal TRSNPC method responsible for filtering a TCuboidArray by what's visible in the mainscren.
-This is meant to filter TRSNPC.GetCuboidArray() so targets that are outside of the mainscreen are filtered out.
-You will probably never need to use this directly.
-*)
+
 function TRSNPC.FindOnMainScreen(cuboidArray: TCuboidArray): T2DPointArray;
 var
   i: Integer;
@@ -149,22 +138,7 @@ begin
   end;
 end;
 
-(*
-## TRSNPCV2.Find
-```pascal
-function TRSNPCV2.FindEx(out cuboids: TCuboidArray; out atpa: T2DPointArray): Boolean;
-function TRSNPCV2.Find(out atpa: T2DPointArray): Boolean;
-function TRSNPCV2.FindFromPosition(me: TPoint; out atpa: T2DPointArray): Boolean;
-```
-TRSNPCV2 method used to find a {ref}`TRSNPCV2`. If found returns true, if not returns false.
-The "extended" method in particular is mostly meant for debugging and is the one used when you call `Debug(TRSNPC)`.
 
-Example:
-```pascal
-WriteLn RSObjects.GEBank.Find(atpa); //Be in ge and with a walker setup there.
-Debug(atpa);
-```
-*)
 function TRSNPC.FindEx(me: TPoint; out cuboids: TCuboidArray; out atpa: T2DPointArray): Boolean;
 begin
   cuboids := Self.GetCuboidArray(me);
@@ -189,14 +163,7 @@ begin
   Result := Self.FindEx(position, cuboids, atpa);
 end;
 
-(*
-## TRSNPC._UpTextCheck
-```pascal
-function TRSNPC._UpTextCheck(out shouldExit: Boolean): Boolean;
-```
-Internal TRSNPC helper method that is used by all hovering methods.
-You probably don't need to use this directly.
-*)
+
 function TRSNPC._UpTextCheck(out shouldExit: Boolean): Boolean;
 var
   text: String;
@@ -223,14 +190,7 @@ begin
   shouldExit := False;
 end;
 
-(*
-## TRSNPC._HoverHelper
-```pascal
-function TRSNPC._HoverHelper(attempts: Integer; trackTarget: Boolean): Boolean;
-```
-Internal helper method used to hover a TRSNPC target.
-You should not use this directly.
-*)
+
 function TRSNPC._HoverHelper(attempts: Integer): Boolean;
 var
   shouldExit: Boolean;
@@ -267,16 +227,7 @@ begin
   end;
 end;
 
-(*
-## TRSNPC._WalkHoverHelper
-```pascal
-function TRSNPC._WalkHoverHelper(attempts: Integer; trackTarget: Boolean): Boolean;
-```
-Internal helper method used to walk and hover a TRSNPC target.
-You should not use this directly.
 
-This is responsible for deciding wether we should walk to a TRSNPC target or not before attempting to hover it.
-*)
 function TRSNPC._WalkHoverHelper(attempts: Integer): Boolean;
 var
   shouldExit: Boolean;
@@ -334,14 +285,7 @@ begin
   end;
 end;
 
-(*
-## TRSNPC._PreHoverHelper
-```pascal
-function TRSNPC.PreHoverHelper(attempts: Integer): Boolean;
-```
-Internal helper method used to pre-hover a TRSNPC target.
-You should not use this directly.
-*)
+
 function TRSNPC._PreHoverHelper(me: TPoint; attempts: Integer = 2): Boolean;
 var
   attempt: Integer;
@@ -356,16 +300,7 @@ begin
 end;
 
 
-(*
-## TRSNPC._ClickHelper
-```pascal
-function TRSNPC._ClickHelper(leftClick: Boolean): Boolean;
-```
-Internal TRSNPC helper method that is used by other clicking methods.
-You probably don't need to use this directly.
 
-This is what's responsible for deciding if we click a target we are hovering or not.
-*)
 function TRSNPC._ClickHelper(leftClick: Boolean): Boolean;
 begin
   Self.Walker^.TargetUpText := [];
@@ -391,16 +326,7 @@ begin
   Result := not leftClick and (Self.UpText <> []) and ChooseOption.Select(Self.UpText);
 end;
 
-(*
-## TRSNPC._SelectHelper
-```pascal
-function TRSNPC._SelectHelper(action: TStringArray): Boolean;
-```
-Internal TRSNPC helper method that is used by other select methods.
-You probably don't need to use this directly.
 
-This is what is responsible for deciding if we just left click a target we are hovering or right click it and choose an option.
-*)
 function TRSNPC._SelectHelper(action: TStringArray): Boolean;
 begin
   Self.Walker^.TargetUpText := [];
@@ -422,20 +348,7 @@ begin
 end;
 
 
-(*
-## TRSNPC.Hover
-```pascal
-function TRSNPC.Hover(attempts: Integer = 2; trackTarget: Boolean = TRSNPC.TrackTarget): Boolean;
-```
-Method used to hover a TRSNPC target if it's found on the mainscreen.
-It can update the target position while the mouse moves with **trackTarget**.
 
-Example:
-```pascal
-RSW.WebWalk(WaspWeb.LOCATION_VARROCK);
-RSObjects.GEBank.Hover(); //Be in GE with a walker setup there.
-```
-*)
 function TRSNPC.Hover(attempts: Integer = 2): Boolean;
 begin
   if ChooseOption.IsOpen() then
@@ -456,21 +369,7 @@ begin
   Result := Self._HoverHelper(attempts);
 end;
 
-(*
-## TRSNPC.WalkHover
-```pascal
-function TRSNPC.WalkHover(attempts: Integer = 2; trackTarget: Boolean = TRSNPC.TrackTarget): Boolean;
-```
-Method used to walk and hover a TRSNPC target if it's found on the mainscreen after walking.
-It can update the target position while the mouse moves with **trackTarget**.
 
-Example:
-```pascal
-//Be in varrock with a varrock map loaded.
-RSW.WebWalk(WaspWeb.LOCATION_VARROCK);
-RSObjects.GEBank.WalkHover();
-```
-*)
 function TRSNPC.WalkHover(attempts: Integer = 2): Boolean;
 var
   me, closest: TPoint;
@@ -513,37 +412,13 @@ begin
 end;
 
 
-(*
-## TRSNPC.Click
-```pascal
-function TRSNPC.Click(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
-```
-Method used to click a TRSNPC target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded.
-WriteLn RSObjects.GEBank.Click();
-```
-*)
 function TRSNPC.Click(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
 begin
   Result := Self.Hover(attempts) and Self._ClickHelper(leftClick);
 end;
 
-(*
-## TRSNPC.SelectOption
-```pascal
-function TRSNPC.SelectOption(action: TStringArray; attempts: Integer = 2): Boolean;
-```
-Method used to select an option on a TRSNPC target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded.
-WriteLn RSObjects.GEBank.SelectOption(['Collect']);
-```
-*)
 function TRSNPC.Select(action: TStringArray; attempts: Integer = 2): Boolean;
 begin
   Self.Walker^.ActionUpText := action;
@@ -551,19 +426,7 @@ begin
   Self.Walker^.ActionUpText := [];
 end;
 
-(*
-## TRSNPC.WalkClick
-```pascal
-function TRSNPC.WalkClick(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
-```
-Method used to walk and click a TRSNPC target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded, preferably far away so it has to walk.
-WriteLn RSObjects.GEBank.WalkClick();
-```
-*)
 function TRSNPC.WalkClick(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
 begin
   if Self.Walker = nil then
@@ -575,19 +438,7 @@ begin
   Self.Walker^.TargetUpText := [];
 end;
 
-(*
-## TRSNPC.WalkSelectOption
-```pascal
-function TRSNPC.WalkSelectOption(action: TStringArray; attempts: Integer = 2): Boolean;
-```
-Method used to walk and select an option on a TRSNPC target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded, preferably far away so it has to walk.
-WriteLn RSObjects.GEBank.WalkSelectOption(['Collect']);
-```
-*)
 function TRSNPC.WalkSelect(action: TStringArray; attempts: Integer = 2): Boolean;
 begin
   if Self.Walker = nil then
@@ -635,13 +486,7 @@ begin
     end;
 end;
 
-(*
-## TImage.DrawNPC
-```pascal
-procedure TImage.DrawNPC(npc: TRSNPC);
-```
-Helper method to debug TRSNPCs.
-*)
+
 procedure TImage.DrawNPC(npc: TRSNPC);
 var
   atpa: T2DPointArray;

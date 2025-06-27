@@ -1,23 +1,4 @@
-(*
-# RemoteInput
-Remote Input is an external plugin which provides, well, "remote" input.
 
-In other words, it's the tool WaspLib uses so Simba doesn't use your real mouse and
-keyboard while botting.
-
-Remote input also gives you a full reflection environment to bot with if you
-desire but in the case of WaspLib, it's used exclusively for input and you need to
-either include a reflection library, implement one yourself or use the plugin
-functions directly.
-
-If you wish to completely disable remote input you can do so by adding the
-following compiler directive before you include WaspLib in your script:
-```pascal
-{$DEFINE WL_DISABLE_FAKE_INPUT}
-```
-
-You can find remote input source code here: https://github.com/Brandon-T/RemoteInput
-*)
 {$DEFINE WL_FAKE_INPUT_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
@@ -29,22 +10,12 @@ You can find remote input source code here: https://github.com/Brandon-T/RemoteI
 {$loadlib ../plugins/waspinput/waspinput}
 
 type
-(*
-## TRemoteInput
-Main record used to interact with the remote input plugin.
-*)
+
   TRemoteInput = record
     Target: Pointer;
   end;
 
-(*
-## TRemoteInput.Setup
-```pascal
-procedure TRemoteInput.Setup();
-```
-Internal method used to setup {ref}`TRemoteInput`.
-This is automatically called for you on the {ref}`RemoteInput variable`.
-*)
+
 procedure TRemoteInput.Setup();
 const
   TIMEOUT: UInt64 := GetTimeRunning() + 2000;
@@ -69,29 +40,16 @@ begin
 end;
 
 var
-(*
-## RemoteInput variable
-Global {ref}`TRemoteInput` variable.
-*)
+
   RemoteInput: TRemoteInput;
 
 type
-(*
-## TWaspInput
-Main record used to interact with the wasp input plugin.
-*)
+
   TWaspInput = record
     Target: Pointer;
   end;
 
-(*
-## TWaspInput.Setup
-```pascal
-procedure TWaspInput.Setup();
-```
-Internal method used to setup {ref}`TWaspInput`.
-This is automatically called for you on the {ref}`WaspInput variable`.
-*)
+
 procedure TWaspInput.Setup();
 var
   pid: TProcessID;
@@ -109,15 +67,7 @@ var
 {$ENDIF}
 
 
-(*
-## RSClient.LoseFocus()
-```pascal
-procedure TRSClient.LoseFocus();
-procedure TRSClient.LoseFocus(delay: Int32);
-```
-Loses focus if available. Maybe useful for antiban.
-You can optionally delay losing focus by passing in a `delay`.
-*)
+
 procedure TRSClient.LoseFocus();
 {$IFNDEF WL_DISABLE_FAKE_INPUT}
 var
@@ -157,19 +107,7 @@ begin
 end;
 
 
-(*
-## TRSClient.IsInputEnabled
-```pascal
-function TRSClient.IsInputEnabled(): Boolean;
-```
-Returns True/False if the user **REAL** input is enabled/disabled,
-fully or partially, on the client.
 
-Example:
-```pascal
-WriteLm RSClient.IsInputEnabled();
-```
-*)
 function TRSClient.IsInputEnabled(): Boolean;
 begin
   {$IFNDEF WL_DISABLE_FAKE_INPUT}
@@ -187,18 +125,7 @@ begin
 end;
 
 
-(*
-## TRSClient.DisableRealInput
-```pascal
-procedure TRSClient.DisableRealInput();
-```
-Disables the user real input on the client for both the mouse and keyboard.
 
-Example:
-```pascal
-RSClient.DisableRealInput();
-```
-*)
 procedure TRSClient.DisableRealInput();
 begin
   {$IFNDEF WL_DISABLE_FAKE_INPUT}
@@ -221,18 +148,7 @@ begin
   WriteLn(GetDebugLn('RSClient', 'DisableRealInput method is not implemented without a fake input tool.', ELogLevel.WARN));
 end;
 
-(*
-## TRSClient.EnableRealInput
-```pascal
-procedure TRSClient.EnableRealInput();
-```
-Enables the user real input on the client for both the mouse and keyboard.
 
-Example:
-```pascal
-RSClient.EnableRealInput();
-```
-*)
 procedure TRSClient.EnableRealInput();
 begin
   {$IFNDEF WL_DISABLE_FAKE_INPUT}

@@ -1,16 +1,10 @@
-(*
-# WebGraph Generator
-File responsible for webgraph generation out of collision map images.
-*)
+
 
 {$DEFINE WL_WEBGRAPHGEN_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 type
-(*
-## TWebGraphGenerator
-Record responsible for generating webgraphs from collision map images.
-*)
+
   TWebGraphGenerator = record
     Spacing, MinimumTiles, NodeRadius, MaxConnections: Integer;
     WallCrossings, Disabled: Boolean;
@@ -149,24 +143,7 @@ end;
 
 
 
-(*
-## TRSChunkLoader.BuildGraph
-```pascal
-function TRSChunkLoader._BuildGraph(map: TMufasaBitmap; white, red: TPointArray): TWebGraphV2;
-function TRSChunkLoader.BuildGraph(name: String; map: TMufasaBitmap): TWebGraphV2;
-```
-Magically builds a webgraph for you for a given collision map passed into `map`.
 
-The collision map can only have 4 colors:
-- white ($FFFFFF) for walkable space
-- black ($000000) for non walkable space
-- red ($0000FF) for doors (optional)
-- gray ($333333) for objects (optional)
-
-```{note}
-This is an internal method. Don't use it if you don't know what you are doing.
-```
-*)
 function TWebGraphGenerator._BuildGraph(map: TImage; white, red: TPointArray): TWebGraph;
 var
   i, j, d, len, hi, minLen: Integer;
@@ -344,10 +321,7 @@ begin
 end;
 
 var
-(*
-## WebGraphGenerator variable
-Global {ref}`TWebGraphGenerator` variable.
-*)
+
   WebGraphGenerator: TWebGraphGenerator;
 
 begin

@@ -1,16 +1,9 @@
-(*
-# Players
-Page dedicated to handling player accounts.
-*)
+
 {$DEFINE WL_PLAYER_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 var
-(*
-## PlayerIndex variable
-This variable is what tells WaspLib which account you will be using of the ones you have in a {ref}`TRSPlayerArray` you want to
-use for this botting session.
-*)
+
   PlayerIndex: Integer;
 
 type
@@ -20,24 +13,10 @@ type
     Active: Boolean;
   end;
 
-(*
-## TRSPlayerArray
-Type that holds player account information for {ref}`login`, world hopping and {ref}`bankpin` handling.
-*)
+
   TRSPlayerArray = array of TRSPlayer;
 
-(*
-## TRSPlayerArray.Add
-```pascal
-procedure TRSPlayerArray.Add(user, pass: String; pin: String = ''; worlds: TIntegerArray = []);
-```
-Adds a TRSPlayer to the TRSPlayerArray.
 
-Example:
-```pascal
-Players.Add('username', 'password', '0000');
-```
-*)
 procedure TRSPlayerArray.Add(user, pass: String; pin: String = ''; worlds: TIntegerArray = []);
 begin
   Self += [user, pass, pin, worlds, true];
@@ -68,20 +47,7 @@ begin
     raise GetDebugLn('Players', 'No active players to switch to.');
 end;
 
-(*
-## Players.GetPlayer
-```pascal
-function TRSPlayerArray.GetPlayer(): TRSPlayer;
-```
-Returns the currently selected TRSPlayer.
-The currently selected TRSPlayer is decided by `PlayerIndex` which
-is an index of the TRSPlayerArra.
 
-Example:
-```pascal
-WriteLn Players.GetPlayer().Username;
-```
-*)
 function TRSPlayerArray.GetPlayer(): TRSPlayer;
 begin
   if Self = [] then
@@ -92,19 +58,7 @@ begin
   Result := Self[PlayerIndex];
 end;
 
-(*
-## Players.GetPin
-```pascal
-function TRSPlayerArray.GetPin(): String;
-```
-Get the current Player bank pin.
 
-Example:
-```pascal
-if BankPin.IsOpen() then
-  BankPin.Enter(Players.GetPin());
-```
-*)
 function TRSPlayerArray.GetPin(): String;
 begin
   Result := Self.GetPlayer().Pin;
@@ -113,8 +67,5 @@ begin
 end;
 
 var
-(*
-## Players variable
-Global {ref}`TRSPlayerArray` variable.
-*)
+
   Players: TRSPlayerArray;

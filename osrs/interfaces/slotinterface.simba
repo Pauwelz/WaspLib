@@ -1,7 +1,4 @@
-(*
-# SlotInterface
-Methods to interact slotted interfaces.
-*)
+
 
 {$DEFINE WL_SLOT_INTERFACE_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}

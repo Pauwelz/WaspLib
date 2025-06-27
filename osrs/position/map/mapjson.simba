@@ -1,7 +1,4 @@
-(*
-# Map JSONs
-Utilities to help load and parse json files related to {ref}`Map`.
-*)
+
 {$DEFINE WL_MAPJSON_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
@@ -10,13 +7,7 @@ type
     Data: TJSONItem;
   end;
 
-(*
-## ObjectsJSON.GetFile
-```pascal
-function TMapObjectJSON.GetFile(chunk: TPoint; plane: Integer): TJSONItem;
-```
-Internal method to return a objects JSON file associated with the specified `chunk` and `plane`.
-*)
+
 function TMapObjectJSON.GetFile(chunk: TPoint; plane: Integer): TJSONParser;
 var
   filename, cachename: String;
@@ -35,14 +26,7 @@ begin
   end;
 end;
 
-(*
-## ObjectsJSON.GetJSON
-```pascal
-function TMapObjectJSON.GetJSON(chunks: TPointArray; plane: Integer): TJSONItem;
-```
-Internal method to return all objects JSON data associated with the specified
-`chunks` and `plane` merged into a single `TJSONItem`.
-*)
+
 function TMapObjectJSON.GetJSON(chunks: TPointArray; plane: Integer): TJSONItem;
 var
   i, j, n, l: Integer;
@@ -72,14 +56,7 @@ begin
   end;
 end;
 
-(*
-## ObjectsJSON.Load
-```pascal
-function TMapObjectJSON.Load(regions: array of TRSMapRegion): TJSONItem;
-```
-Internal method to load all objects JSON data associated into the `TMapObjectJSON`
-with the specified `regions` merged into a single `TJSONItem`.
-*)
+
 procedure TMapObjectJSON.Load(regions: array of TRSMapRegion = []);
 var
   region: TRSMapRegion;
@@ -108,15 +85,7 @@ begin
 end;
 
 
-(*
-## ObjectsJSON.Get
-```pascal
-function TMapObjectJSON.Get(name: String; amount: Integer = 0): TJSONItem;
-```
-Returns a `TJSONItem` JSON array of a map object that matches the specified `name`.
-By default you get all objects that match the `name`, however,
-if you want you can specify how many you want through `amount`.
-*)
+
 function TMapObjectJSON.GetByName(name: String; amount: Integer = 0): TJSONItem;
 var
   i, found: Integer;
@@ -135,13 +104,7 @@ begin
     raise GetDebugLn('Object with name ' + name + ' doesn''t exist on the loaded maps.');
 end;
 
-(*
-## ObjectsJSON.GetByID
-```pascal
-function TMapObjectJSON.GetByID(id: Integer): TJSONItem;
-```
-Returns a `TJSONItem` JSON object of a map object that matches the specified `id`.
-*)
+
 function TMapObjectJSON.GetByID(id: Integer): TJSONItem;
 var
   i: Integer;
@@ -154,16 +117,7 @@ begin
   raise GetDebugLn('Object with ID ' + ToStr(id) + ' doesn''t exist on the loaded maps.');
 end;
 
-(*
-## ObjectsJSON.GetByAction
-```pascal
-function TMapObjectJSON.GetByAction(action: String; amount: Integer = 0): TJSONItem;
-```
-Returns a `TJSONItem` JSON array of a map object that has an action that matches
-the specified `action`.
-By default you get all objects that match the `action`, however, if you want
-you can specify how many you want through `amount`.
-*)
+
 function TMapObjectJSON.GetByAction(action: String; amount: Integer = 0): TJSONItem;
 var
   i, j, found: Integer;
@@ -200,14 +154,7 @@ type
     Data: TJSONItem;
   end;
 
-(*
-## NPCsJSON.GetFile
-```pascal
-function TMapNPCJSON.GetFile(chunk: TPoint; plane: Integer): TJSONItem;
-```
-Internal method to return a npcs JSON file associated with the specified
-`chunk` and `plane`.
-*)
+
 function TMapNPCJSON.GetFile(chunk: TPoint; plane: Integer): TJSONParser;
 var
   filename, cachename: String;
@@ -226,14 +173,7 @@ begin
   Result.Load(cachename);
 end;
 
-(*
-## NPCsJSON.GetJSON
-```pascal
-function TMapNPCJSON.GetJSON(chunks: TPointArray; plane: Integer): TJSONItem;
-```
-Internal method to return all npcs JSON data associated with the specified
-`chunks` and `plane` merged into a single `TJSONItem`.
-*)
+
 function TMapNPCJSON.GetJSON(chunks: TPointArray; plane: Integer): TJSONItem;
 var
   i, j, n, l: Integer;
@@ -262,14 +202,7 @@ begin
   end;
 end;
 
-(*
-## NPCsJSON.Load
-```pascal
-function TMapNPCJSON.Load(regions: array of TRSMapRegion): TJSONItem;
-```
-Internal method to load all npcs JSON data associated into the `TMapNPCJSON`
-with the specified `regions` merged into a single `TJSONItem`.
-*)
+
 procedure TMapNPCJSON.Load(regions: array of TRSMapRegion = []);
 var
   region: TRSMapRegion;
@@ -298,15 +231,7 @@ begin
 end;
 
 
-(*
-## NPCsJSON.Get
-```pascal
-function TMapNPCJSON.Get(name: String; amount: Integer = 0): TJSONItem;
-```
-Returns a `TJSONItem` JSON array of a map npcs that matches the specified `name`.
-By default you get all npcs that match the `name`, however,
-if you want you can specify how many you want through `amount`.
-*)
+
 function TMapNPCJSON.Get(name: String; amount: Integer = 0): TJSONItem;
 var
   i, found: Integer;
@@ -325,13 +250,7 @@ begin
     raise GetDebugLn('Object with name ' + name + ' doesn''t exist on the loaded maps.');
 end;
 
-(*
-## NPCsJSON.GetByID
-```pascal
-function TMapNPCJSON.GetByID(id: Integer): TJSONItem;
-```
-Returns a `TJSONItem` JSON object of a map npcs that matches the specified `id`.
-*)
+
 function TMapNPCJSON.GetByID(id: Integer): TJSONItem;
 var
   i: Integer;
@@ -344,16 +263,7 @@ begin
   raise GetDebugLn('Object with ID ' + ToStr(id) + ' doesn''t exist on the loaded maps.');
 end;
 
-(*
-## NPCsJSON.GetByAction
-```pascal
-function TMapNPCJSON.GetByAction(action: String; amount: Integer = 0): TJSONItem;
-```
-Returns a `TJSONItem` JSON array of a map npcs that has an action that matches
-the specified `action`.
-By default you get all npcs that match the `action`, however, if you want
-you can specify how many you want through `amount`.
-*)
+
 function TMapNPCJSON.GetByAction(action: String; amount: Integer = 0): TJSONItem;
 var
   i, j, found: Integer;

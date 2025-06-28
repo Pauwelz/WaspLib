@@ -1,18 +1,9 @@
-(*
-# ChooseOption
-Methods to interact with the runescape context menu.
 
-```{figure} ../../images/chooseoption.png
-```
-*)
 {$DEFINE WL_CHOOSEOPTION_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSOption
-Helper record to interact with {ref}`ChooseOption`.
-*)
+
   TRSOption = record
     Text: String;
     Bounds: TBox;
@@ -21,27 +12,13 @@ Helper record to interact with {ref}`ChooseOption`.
 
   TRSOptionArray = array of TRSOption;
 
-(*
-## TRSChooseOption
-Core record responsible with interacting with the {ref}`ChooseOption` context menu.
-*)
+
   TRSChooseOption = record
     Bounds: TBox;
     const TitleImg: TImage = ImageFromString('IMG:AQAAAGYAAAASAAAAAAAAAP21aQABAAAAIKprAAEAAADI5D8BAAAAAM0CAQABAAAAOIe7BgAAAAAApLsGAAAAADQBAACYAQAAOIe7BgAAAAABAAAAZgAAABIAAAAYAAAAAAAAAAAAAAAAAAAAAwAAABgIEAgICAAAAAEAAAIAAAAAAAAAAAAAAAAAAAAAiVBORw0KGgoAAAANSUhEUgAAAGYAAAASCAIAAAAmDjziAAAAzUlEQVR4nO2U0Q2AMAhE3c4F/HX/NYzxo9oWvAO0mkBqoqTA9Qmd1mXORa1pf9IoS2S0JTLaWmRlaK+ed3X1rdU2RkT1eXjOysarvMoA9TwlG+mmLyAzNH4iC0AWcxAcWfce8fjb0sqRdGSenEpUP5BCVu3xvEs4wE63lcOjtEuTHUwnJuXH4hpspf3iSxZJVkglPCcyRGZJkeKlpFGYPMMohRjwRYpvXdTgSN2hDODtfgUfG1s5EfEWZL8zsEkj671X7BlLZLQNQJaLWhvxdfuwwsTSHQAAAABJRU5ErkJggg==');
   end;
 
-(*
-## ChooseOption.IsOpen
-```pascal
-function TRSChooseOption.IsOpen(): Boolean;
-```
-Returns True/False if the {ref}`ChooseOption` menu is currently visible/open.
 
-Example:
-```pascal
-WriteLn ChooseOption.IsOpen();
-```
-*)
 function TRSChooseOption.IsOpen(): Boolean;
 var
   tpa: TPointArray;
@@ -61,36 +38,14 @@ begin
     Self.Bounds := tpa.Cluster(1, 1).SortFromFirstPoint(p)[0].Bounds().Expand(-1);
 end;
 
-(*
-## ChooseOption.WaitOpen
-```pascal
-function TRSChooseOption.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
-```
-Returns True/False if the {ref}`ChooseOption` menu is becomes visible/open within the specified `time`.
 
-Example:
-```pascal
-WriteLn ChooseOption.WaitOpen();
-```
-*)
 function TRSChooseOption.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
   Result := SleepUntil(Self.IsOpen(), interval, time);
 end;
 
-(*
-## ChooseOption.Open
-```pascal
-function TRSChooseOption.Open(): Boolean;
-```
-Opens the {ref}`ChooseOption` context menu if it's not currently open.
 
-Example:
-```pascal
-WriteLn ChooseOption.Open();
-```
-*)
 function TRSChooseOption.Open(): Boolean;
 begin
   if Self.IsOpen() then Exit(True);
@@ -100,14 +55,7 @@ begin
 end;
 
 
-(*
-## ChooseOption.GetOptions
-```pascal
-function TRSChooseOption.GetOptions(): TRSChooseOption_OptionArray;
-```
-Returns a `TRSOptionArray` of all available options in the {ref}`ChooseOption` context menu.
-This is a internal method, you probably don't need to call it.
-*)
+
 function TRSChooseOption.GetOptions(): TRSOptionArray;
 var
   i: Int32;
@@ -135,13 +83,7 @@ begin
   end;
 end;
 
-(*
-## ChooseOption.FindSubmenu
-```pascal
-function TRSChooseOption.FindSubmenu(): TBox;
-```
-Returns the bounds of the submenu if it exists, otherwise returns an empty TBox.
-*)
+
 function TRSChooseOption.FindSubmenu(): TBox;
 var
   atpa: T2DPointArray;
@@ -156,19 +98,7 @@ begin
       Exit(tpa.Bounds.Expand(-2));
 end;
 
-(*
-## ChooseOption.Close
-```pascal
-function TRSChooseOption.Close(): Boolean;
-```
-Closes the {ref}`ChooseOption` context menu if it's open.
-Returns True on success.
 
-Example:
-```pascal
-WriteLn ChooseOption.Close();
-```
-*)
 function TRSChooseOption.Close(): Boolean;
 var
   boxes: TBoxArray;
@@ -191,20 +121,7 @@ begin
 end;
 
 
-(*
-## ChooseOption.HasOption
-```pascal
-function TRSChooseOption.Find(text: TStringArray; out option: TRSOption; caseSensitive: Boolean = True; closeIfNotFound: Boolean = True): Boolean;
-function TRSChooseOption.Find(text: TStringArray; caseSensitive: Boolean = True; closeIfNotFound: Boolean = True): Boolean; overload;
-```
-Methods to check if an option is available in the {ref}`ChooseOption` context menu.
-Returns true if the option specified is available.
 
-Example:
-```pascal
-WriteLn ChooseOption.Find('Take');
-```
-*)
 function TRSChooseOption.Find(text: TStringArray; out option: TRSOption; caseSensitive: Boolean = True; closeOnFalse: Boolean = True): Boolean;
 var
   i: Int32;
@@ -251,20 +168,7 @@ begin
   Result := Self.Find(text, option, caseSensitive, closeOnFalse);
 end;
 
-(*
-## ChooseOption.Hover
-```pascal
-procedure TRSChooseOption.Hover(option: TRSOption);
-function TRSChooseOption.Hover(text: TStringArray; caseSensitive, closeOnFalse: Boolean = True): Boolean; overload;
-function TRSChooseOption.Hover(text: String; caseSensitive, closeOnFalse: Boolean = True): Boolean; overload;
-```
-Hovers the specified option if it exists on the {ref}`ChooseOption` context menu.
 
-Example:
-```pascal
-WriteLn ChooseOption.Select('Take Bones');
-```
-*)
 procedure TRSChooseOption.Hover(option: TRSOption);
 begin
   option.Bounds.Expand(-1);
@@ -285,20 +189,7 @@ begin
 end;
 
 
-(*
-## ChooseOption.Select
-```pascal
-procedure TRSChooseOption.Select(option: TRSOption; mouseAction: Int32 = MOUSE_LEFT);
-function TRSChooseOption.Select(text: TStringArray; mouseAction: Int32 = MOUSE_LEFT; caseSensitive: Boolean = True; closeIfNotFound: Boolean = True): Boolean; overload;
-function TRSChooseOption.Select(text: String; mouseAction: Int32 = MOUSE_LEFT; caseSensitive: Boolean = True; closeIfNotFound: Boolean = True): Boolean; overload;
-```
-Selects the specified option if it exists on the {ref}`ChooseOption` context menu.
 
-Example:
-```pascal
-WriteLn ChooseOption.Select('Take Bones');
-```
-*)
 procedure TRSChooseOption.Select(option: TRSOption);
 begin
   Self.Hover(option);
@@ -316,38 +207,19 @@ begin
   Result := Self.Select([text], caseSensitive, closeOnFalse);
 end;
 
-(*
-## ChooseOption.HasSubmenu
-```pascal
-function TRSChooseOption.HasSubmenu(): Boolean;
-```
-Returns True if the {ref}`ChooseOption` context menu has a submenu (indicated by ' >' in the option text).
-*)
+
 function TRSChooseOption.HasSubmenu(): Boolean;
 begin
   Result := Self.IsOpen() and Self.Find([' >']);
 end;
 
-(*
-## ChooseOption.IsSubmenuOpen
-```pascal
-function TRSChooseOption.IsSubmenuOpen(): Boolean;
-```
-Returns True if a submenu is currently open and visible.
-*)
+
 function TRSChooseOption.IsSubmenuOpen(): Boolean;
 begin
   Result := Self.FindSubmenu() <> [];
 end;
 
-(*
-## ChooseOption.OpenSubmenu
-```pascal
-function TRSChooseOption.OpenSubmenu(closeIfNotFound: Boolean = True): Boolean;
-```
-Opens a submenu if it exists. Returns True if successful.
-If closeIfNotFound is True, closes the context menu if no submenu is found.
-*)
+
 function TRSChooseOption.OpenSubmenu(closeIfNotFound: Boolean = True): Boolean;
 begin
   Result := Self.IsSubmenuOpen() or (Self.Open() and Self.Hover([' >'], False, closeIfNotFound) and SleepUntil(Self.IsSubmenuOpen(), 5, 250));
@@ -355,14 +227,7 @@ begin
     Self.Close();
 end;
 
-(*
-## ChooseOption.GetSubmenuOptions
-```pascal
-function TRSChooseOption.GetSubmenuOptions(): TRSOptionArray;
-```
-Returns a `TRSOptionArray` of all available options in the submenu.
-This is a internal method, you probably don't need to call it.
-*)
+
 function TRSChooseOption.GetSubmenuOptions(): TRSOptionArray;
 var
   bounds, b: TBox;
@@ -388,14 +253,7 @@ begin
   end;
 end;
 
-(*
-## ChooseOption.FindSubmenuOption
-```pascal
-function TRSChooseOption.FindSubmenuOption(text: TStringArray; out option: TRSOption; caseSensitive, closeIfNotFound: Boolean = True): Boolean;
-```
-Searches for a specific option in the submenu. Returns True if found.
-The found option is returned through the 'option' parameter.
-*)
+
 function TRSChooseOption.FindSubmenuOption(text: TStringArray; out option: TRSOption; caseSensitive, closeIfNotFound: Boolean = True): Boolean;
 var
   o: TRSOption;
@@ -412,14 +270,7 @@ begin
     Self.Close;
 end;
 
-(*
-## ChooseOption.HoverSubmenuOption
-```pascal
-function TRSChooseOption.HoverSubmenuOption(option: TRSOption): Boolean;
-function TRSChooseOption.HoverSubmenuOption(text: TStringArray; caseSensitive, closeIfNotFound: Boolean = True): Boolean; overload;
-```
-Hovers over a specific option in the submenu. Returns True if successful.
-*)
+
 function TRSChooseOption.HoverSubmenuOption(option: TRSOption): Boolean;
 var
   targ: TTarget;
@@ -443,14 +294,7 @@ begin
     and Self.HoverSubmenuOption(option);
 end;
 
-(*
-## ChooseOption.SelectSubmenuOption
-```pascal
-function TRSChooseOption.SelectSubmenuOption(option: TRSOption): Boolean;
-function TRSChooseOption.SelectSubmenuOption(text: TStringArray; caseSensitive, closeIfNotFound: Boolean = True): Boolean;
-```
-Selects a specific option in the submenu by clicking on it. Returns True if successful.
-*)
+
 function TRSChooseOption.SelectSubmenuOption(option: TRSOption): Boolean;
 var
   targ: TTarget;
@@ -479,8 +323,5 @@ begin
 end;
 
 var
-(*
-## ChooseOption variable
-Global {ref}`TRSChooseOption` variable.
-*)
+
   ChooseOption: TRSChooseOption;

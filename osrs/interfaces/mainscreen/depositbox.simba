@@ -1,25 +1,13 @@
-(*
-# DepositBox
-DepositBox interface.
-*)
+
 
 {$DEFINE WL_DEPOSITBOX_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSDPButtons
-```pascal
-ERSDPButtons = enum(WORN, LOOT, INVENTORY);
-```
-Enum representing the 3 main deposit buttons of the {ref}`DepositBox` interface.
-*)
+
   ERSDPButtons = enum(WORN, LOOT, INVENTORY);
 
-(*
-## TRSDepositBox
-Main record to interact with the {ref}`DepositBox` interface.
-*)
+
   TRSDepositBox = record
     Title: TRSInterfaceTitle;
     ISlots,ESlots: TRSSlotInterface;
@@ -56,17 +44,7 @@ begin
   end;
 end;
 
-(*
-## DepositBox.SetupInterface
-```pascal
-procedure TRSDepositBox.SetupInterface;
-```
-Initializes depositbox variables.
 
-```{note}
-This is automatically called on the **DepositBox** variable.
-```
-*)
 procedure TRSDepositBox.SetupInterface;
 var
   i: Integer;
@@ -111,55 +89,20 @@ begin
 end;
 
 
-(*
-## DepositBox.IsOpen
-```pascal
-function TRSDepositBox.IsOpen(): Boolean;
-```
-Returns true if the {ref}`DepositBox` interface is open.
 
-Example:
-```pascal
-WriteLn DepositBox.IsOpen();
-```
-*)
 function TRSDepositBox.IsOpen: Boolean;
 begin
   Result := (MSInterface.IsOpen(ERSInterfaceType.CLASSIC) and Self.Title.IsTitle('Deposit Box'));
 end;
 
-(*
-## DepositBox.WaitOpen
-```pascal
-function TRSDepositBox.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
-```
-Returns true if the {ref}`DepositBox` is open within `time` milliseconds.
 
-## Example:
-```pascal
-WriteLn DepositBox.WaitOpen();
-```
-*)
 function TRSDepositBox.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
   Result := SleepUntil(Self.IsOpen(), interval, time);
 end;
 
-(*
-## DepositBox.Close
-```pascal
-function TRSDepositBox.Close(escape: Boolean): Boolean;
-function TRSDepositBox.Close(escapeProbability: Single = 0): Boolean; overload;
-```
-Closes the depositbox interface.  Depending on `escape` or `escapeProbability the function will
-either click the button or press escape key.
 
-Example:
-```pascal
- WriteLn DepositBox.Close();
-```
-*)
 function TRSDepositBox.Close(escape: Boolean): Boolean;
 begin
   Result := Self.Title.Close(escape);
@@ -279,8 +222,5 @@ begin
 end;
 
 var
-(*
-## DepositBox variable
-Global {ref}`TRSDepositBox` variable.
-*)
+
   DepositBox: TRSDepositBox;

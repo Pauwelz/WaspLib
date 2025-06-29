@@ -1,14 +1,8 @@
-(*
-# MapChunks
-Helper enum and functions for a more "human" accessible way of using map chunks.
-*)
+
 {$DEFINE WL_RSCHUNKS_INCLUDED}
 
 type
-(*
-## TRSMapChunk
-Helper record to store chunk data with a name associated with.
-*)
+
   TRSMapChunk = record
     Chunk: TBox;
     Planes: TIntegerArray;
@@ -97,10 +91,7 @@ end;
 
 
 type
-(*
-## EBankChunk
-EBankChunk is a enumerator that contains all bank chunks supported by WaspLib.
-*)
+
   EBankChunk = enum(
     AL_KHARID,
     ARDOUGNE,

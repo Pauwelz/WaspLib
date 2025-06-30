@@ -1,29 +1,10 @@
-(*
-# Map
-This file is responsible for the TRSMap positioning system.
-It was made from scratch by Torwent but heavily inspired in the original
-TRSWalker by [slacky](https://slacky.one/) and it's future iterations made by
-Olly.
-Without them, this wouldn't be possible.
 
-For a online interactive map you can visit
-[WaspScripts map](https://map.waspscripts.com/)
-
-For something simpler and much closer to the original
-[slacky](https://slacky.one/) walker check out {ref}`Image Map`.
-*)
 
 {$DEFINE WL_MAP_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSPosition
-Record holding a player's full position:
-- X, Y coordinate
-- Z which is the player height on the current heightmap
-- Plane which is the player's current plane if several planes are being used.
-*)
+
   TRSPosition = record
     X, Y, Plane: Integer;
     Z: Single;
@@ -35,10 +16,7 @@ begin
 end;
 
 type
-(*
-## TRSMap
-Record responsible for positioning.
-*)
+
   TRSMap = record
     RegionIndex: Integer;
     Region: TRSMapRegion;
@@ -68,14 +46,7 @@ function TRSMap.Position(): TPoint; forward;
 function TRSMap.Height(pt: TPoint = [0,0]; global: Boolean = True): Single; forward;
 
 
-(*
-## Map.InternalSetup
-```pascal
-procedure TRSMap.InternalSetup();
-```
-Internal TRSMap setup method.
-This is caleld automatically for you and you shouldn't need to call it.
-*)
+
 procedure TRSMap.InternalSetup();
 var
   img, sample: TImage;
@@ -110,15 +81,7 @@ begin
 end;
 
 
-(*
-## Map.Setup
-```pascal
-procedure TRSMap.SetupEx(boxes: TBoxArray; planes: TIntegerArray = [0]; downscale: UInt32 = 8);
-procedure TRSMap.Setup(chunks: TRSMapChunkArray; downscale: UInt32 = 8);
-procedure TRSMap.Setup(echunks: set of ERSChunk; downscale: UInt32 = 8); overload;
-```
-Sets up a {ref}`TRSMap`.
-*)
+
 procedure TRSMap.SetupEx(boxes: TBoxArray; planes: TIntegerArray = [0]; downscale: UInt32 = 8);
 var
   i: Int32;
@@ -153,15 +116,7 @@ begin
   Self.Setup(chunks, downscale);
 end;
 
-(*
-## Map.Add
-```pascal
-procedure TRSMap.AddEx(boxes: TBoxArray; planes: TIntegerArray = [0]; downscale: UInt32 = 8);
-procedure TRSMap.Add(chunks: TRSMapChunkArray; downscale: UInt32 = 8);
-procedure TRSMap.Add(echunks: set of ERSChunk; downscale: UInt32 = 8); overload;
-```
-TRSMap to add maps to an already setup TRSMap.
-*)
+
 procedure TRSMap.AddEx(boxes: TBoxArray; planes: TIntegerArray = [0]; downscale: UInt32 = 8);
 var
   i: Int32;
@@ -199,17 +154,7 @@ begin
 end;
 
 
-(*
-## Map.ScaledSearch
-```pascal
-function TRSMap.ScaledSearch(img: TImage): TPointArray;
-```
-Internal TRSMap method used to get an initial TPointArray of possible positions.
-This is performed in a downscaled map with a downscaled minimap.
-This is very innacurate by itself but by ruling down most of the map
-in a downscaled search before doing a full sized search speed has a dramatic boost.
-You probably won't ever need to call this directly.
-*)
+
 function TRSMap.ScaledSearch(img: TImage): TPointArray;
 var
   sample: TImage;
@@ -253,21 +198,7 @@ begin
 end;
 
 
-(*
-## Map.Position
-```pascal
-function TRSMap.Position(): TPoint;
-property TRSMap.FullPosition(): TRSPosition;
-```
-Returns the players current position on the loaded map.
-`TRSMap.FullPosition()` also returns the current Z level.
 
-Example:
-```pascal
-WriteLn(Map.Position());
-WriteLn(Map.Similarity); // Check to see the match percentage if needed
-```
-*)
 function TRSMap.Position(): TPoint;
 var
   clean: TImage;
@@ -325,21 +256,7 @@ begin
 end;
 
 
-(*
-## Map.Height
-```pascal
-function TRSMap.Height(pt: TPoint; global: Boolean = True): Single;
-```
-Returns the height of the player at the specified coordinate if there's a heightmap loaded.
-If `pt` is `[0,0]`, which is the default then we will use our current position.
-`global` decides wether the coordinate is converted to {ref}`global points` or if it's meant to be used
-as internal {ref}`local points`.
 
-Example:
-```pascal
-WriteLn Map.Height();
-```
-*)
 function TRSMap.Height(pt: TPoint = [0,0]; global: Boolean = True): Single;
 begin
   if Self.DisableHeightmap or not Assigned(Self.Loader.Heightmap) then
@@ -363,20 +280,7 @@ begin
 end;
 
 
-(*
-## Map.DebugPosition
-```pascal
-function TRSMap.DebugPosition(): TPoint;
-```
-Debugs the player position in the currently loaded map.
 
-Example:
-```pascal
-Map.Setup(...);
-while True do
-  Map.DebugPosition();
-```
-*)
 function TRSMap.DebugPosition(print: Boolean = True): TPoint;
   function _BoxStr(b: TBox): String;
   begin
@@ -467,29 +371,7 @@ begin
   Target.UnFreezeImage();
 end;
 
-(*
-## Map.DebugHeight
-```pascal
-procedure TRSMap.DebugHeight();
-```
-Debugs the heightmap with {ref}`MM2MS`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Map.Setup([ERSChunk.VARROCK]);
-  while True do
-  begin
-    Options.GetZoomLevel(False);
-    Map.DebugHeight();
-  end;
-end.
-```
-
-```{figure} ../../images/mm2ms_height.gif
-```
-*)
 procedure TRSMap.DebugHeight();
 var
   quad: TQuad;
@@ -580,8 +462,5 @@ begin
 end;
 
 var
-(*
-## Map variable
-Global {ref}`TRSMap` variable.
-*)
+
   Map: TRSMap;

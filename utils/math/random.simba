@@ -128,27 +128,7 @@ begin
 end;
 
 
-(*
-## RandomWeightedPoint
-```pascal
-function TTriangle.RandomWeightedPoint(from: TPoint; weight: Single = 10.0; bias: Single=1): TPoint;
-function TPolygon.RandomWeightedPoint(from: TPoint; weight: Single = 10.0; bias: Single=1): TPoint;
-function TQuad.RandomWeightedPoint(from: TPoint; weight: Single = 10.0; bias: Single=1): TPoint;
-function TBox.RandomWeightedPoint(from: TPoint; weight: Single = 10.0; bias: Single=1): TPoint;
-```
-Generates a random point within the TTriangle, drawn towards a `from` point.
 
-Parameters:
-- from: The point towards which the distribution is drawn.
-- weight: Controls the strength of attraction towards the `from` (higher values = stronger attraction).
-  - weight = 0 gives a uniform distribution.
-- bias: Introduces a Gaussian spread around the `from` (higher values = wider spread).
-  - bias = 0 gives a purely weighted distribution towards the `from`.
-
-Should expose weight and bias to the user if used as mouse distribution method. weight of 10 might be a little high.
-
-Credits: [slacky](https://slacky.one/)
-*)
 function TTriangle.RandomWeightedPoint(from: TPoint; weight: Single = 10.0; bias: Single = 1): TPoint;
 var
   r1, r2, r3, u, v, w, t, sum: Single;
@@ -276,18 +256,7 @@ begin
 end;
 
 
-(*
-## TQuad.RandomSkewedPoint
-```pascal
-function TQuad.RandomSkewedPoint(from: TPoint; force: Double = 0.35): TPoint;
-```
-Generates a random point within the bounds of the TQuad, the point generated is skewed towards towards the `from`-point.
-The last parameter `force` defines how much the generated point is to be skewed towards or away from `from` - Expects value in the range 0..2
 
-- force = 0: Result weighs heavily towrads the edge closest to `From`
-- force = 1: Result in the middle of box is most common
-- force = 2: Result weighs heavily towrads the edge furthest away from `From`
-*)
 function TQuad.RandomSkewedPoint(from: TPoint; force: Double = 0.35): TPoint;
 var
   c, skewed: TPoint;
@@ -318,18 +287,7 @@ begin
 end;
 
 
-(*
-## TBox.RandomSkewedPoint
-```pascal
-function TBox.RandomSkewedPoint(from: TPoint; force: Double = 0.35): TPoint;
-```
-Generates a random point within the bounds of the TBox, the point generated is skewed towards towards the `from`-point.
-The last parameter `force` defines how much the generated point is to be skewed towards or away from `from` - Expects value in the range 0..2
 
-- force = 0: Result weighs heavily towrads the edge closest to `From`
-- force = 1: Result in the middle of box is most common
-- force = 2: Result weighs heavily towrads the edge furthest away from `From`
-*)
 function TBox.RandomSkewedPoint(from: TPoint; force: Double = 0.35): TPoint;
 var
   c: TPoint;

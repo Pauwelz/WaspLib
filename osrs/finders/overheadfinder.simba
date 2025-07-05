@@ -1,25 +1,8 @@
-(*
-## OverheadFinder - Prayer/Protection Overhead Detection System
 
-A comprehensive system for detecting and locating prayer and protection overhead icons
-in Old School RuneScape. This module uses template matching to identify various
-overhead prayer effects on players and NPCs.
-*)
 {$DEFINE WL_OVERHEADFINDER_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
-(*
-## ERSOverhead
-```pascal
-ERSOverhead = (
-  MAGIC, RANGED, MELEE, RETRIBUTION, REDEMPTION, SMITE,
-  MAGIC_AND_RANGED, MAGIC_AND_MELEE, RANGED_AND_MELEE, ALL,
-  DAMPEN_MELEE
-);
-```
-Enumeration of all detectable overhead prayer and protection types in OSRS.
-Includes individual protections, combinations, and special prayer effects.
-*)
+
 type
   ERSOverhead = (
     MAGIC, RANGED, MELEE, RETRIBUTION, REDEMPTION, SMITE,
@@ -27,43 +10,16 @@ type
     DAMPEN_MELEE
   );
 
-(*
-## TRSOverhead
-```pascal
-TRSOverhead = record
-  Position: TPoint;
-  Overhead: ERSOverhead;
-end;
-```
-Record containing information about a detected overhead prayer icon.
-Stores both the screen position and the type of overhead detected.
-*)
+
   TRSOverhead = record
     Position: TPoint;
     Overhead: ERSOverhead;
   end;
 
-(*
-## TRSOverheadArray
-```pascal
-TRSOverheadArray = array of TRSOverhead;
-```
-Dynamic array of TRSOverhead records for storing multiple detected overhead icons.
-*)
+
   TRSOverheadArray = array of TRSOverhead;
 
-(*
-## TRSOverheadFinder
-```pascal
-TRSOverheadFinder = record
-  Images: array[ERSOverhead] of TImage;
-  Version, CacheDir: String;
-  Similarity: Single;
-end;
-```
-Main overhead detection system that manages template images and performs
-overhead icon recognition using template matching algorithms.
-*)
+
   TRSOverheadFinder = record
     Images: array[ERSOverhead] of TImage;
     Version, CacheDir: String;
@@ -71,23 +27,7 @@ overhead icon recognition using template matching algorithms.
     const BACKGROUND_COLOR: TColorTolerance = [$74B0C7, 2.844, EColorSpace.RGB, [0.681, 1.299, 1.021]];
   end;
 
-(*
-## TRSOverheadFinder.Setup
-```pascal
-procedure TRSOverheadFinder.Setup();
-```
 
-Internal procedure called when library is loaded.
-Initializes the overhead finder system. Creates cache directories,
-manages version control, and sets default similarity threshold.
-Must be called before using detection methods.
-
-Example:
-```pascal
-OverheadFinder.Setup();
-WriteLn('OverheadFinder initialized successfully');
-```
-*)
 procedure TRSOverheadFinder.Setup();
 var
   path, tmp: String;
@@ -113,20 +53,7 @@ begin
     Self.Similarity := 0.90;
 end;
 
-(*
-## TRSOverheadFinder.GetImage
-```pascal
-function TRSOverheadFinder.GetImage(overhead: ERSOverhead): TImage;
-```
-Internal function.
-Retrieves or loads the template image for a specific overhead type.
-Images are cached after first load.
 
-Parameters:
-- overhead: The overhead type to get the template image for
-
-Returns TImage object containing the template, or raises exception if image cannot be loaded.
-*)
 function TRSOverheadFinder.GetImage(overhead: ERSOverhead): TImage;
 var
   name, path: String;
@@ -143,42 +70,7 @@ begin
   Result := Self.Images[overhead] := new TImage(path);
 end;
 
-(*
-## TRSOverheadFinder.Find
-```pascal
-function TRSOverheadFinder.Find(overheads: set of ERSOverhead; maxToFind: Integer = 5): TRSOverheadArray;
-```
-Searches the main screen for specified overhead prayer/protection icons using template matching.
-Detects overhead icons by first finding the characteristic background color, then performing
-template matching within those regions.
 
-Parameters:
-- overheads: Set of overhead types to search for
-- maxToFind: Maximum number of overhead icons to detect (default: 5)
-
-Returns TRSOverheadArray containing detected overhead positions and types.
-
-Example:
-```pascal
-var
-  foundOverheads: TRSOverheadArray;
-  i: Integer;
-begin
-  OverheadFinder.Setup();
-  foundOverheads := OverheadFinder.Find([MAGIC, RANGED, MELEE], 10);
-
-  if Length(foundOverheads) > 0 then
-  begin
-    WriteLn('Found ' + ToStr(Length(foundOverheads)) + ' overhead icons:');
-    for i := 0 to High(foundOverheads) do
-      WriteLn('- ' + ToStr(foundOverheads[i].Overhead) + ' at ' + ToStr(foundOverheads[i].Position));
-  end else
-    WriteLn('No overhead icons detected');
-end;
-```
-
-{figure} ../../images/overhead_detection_example.png
-*)
 function TRSOverheadFinder.Find(overheads: set of ERSOverhead; maxToFind: Integer = 5): TRSOverheadArray;
 var
   background: TPointArray;
@@ -217,10 +109,6 @@ begin
   end;
 end;
 
-(*
-## OverheadFinder variable
-Global {ref}`TRSOverheadFinder` variable. Use this instance for all overhead
-detection operations in your scripts.
-*)
+
 var
   OverheadFinder: TRSOverheadFinder;

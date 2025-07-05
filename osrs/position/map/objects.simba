@@ -1,7 +1,4 @@
-(*
-# RSObjects
-This file is responsible for interacting with map objects.
-*)
+
 
 {$DEFINE WL_RSOBJECTS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
@@ -104,15 +101,7 @@ begin
     Result.Sort(weights, True);
 end;
 
-(*
-## TRSObject.Find
-```pascal
-function TRSObject.Find(cuboidArray: TCuboidArray): T2DPointArray;
-```
-Internal TRSObject method responsible for filtering a TCuboidArray by what's visible in the mainscren.
-This is meant to filter TRSObject.GetCuboidArray() so targets that are outside of the mainscreen are filtered out.
-You will probably never need to use this directly.
-*)
+
 function TRSObject.FindOnMainScreen(cuboidArray: TCuboidArray): T2DPointArray;
 var
   i: Integer;
@@ -132,22 +121,7 @@ begin
   end;
 end;
 
-(*
-## TRSObjectV2.Find
-```pascal
-function TRSObjectV2.FindEx(out cuboids: TCuboidArray; out atpa: T2DPointArray): Boolean;
-function TRSObjectV2.Find(out atpa: T2DPointArray): Boolean;
-function TRSObjectV2.FindFromPosition(me: TPoint; out atpa: T2DPointArray): Boolean;
-```
-TRSObjectV2 method used to find a {ref}`TRSObjectV2`. If found returns true, if not returns false.
-The "extended" method in particular is mostly meant for debugging and is the one used when you call `Debug(TRSObject)`.
 
-Example:
-```pascal
-WriteLn RSObjects.GEBank.Find(atpa); //Be in ge and with a walker setup there.
-Debug(atpa);
-```
-*)
 function TRSObject.FindEx(me: TPoint; out cuboids: TCuboidArray; out atpa: T2DPointArray): Boolean;
 begin
   cuboids := Self.GetCuboidArray(me);
@@ -172,14 +146,7 @@ begin
   Result := Self.FindEx(position, cuboids, atpa);
 end;
 
-(*
-## TRSObject._UpTextCheck
-```pascal
-function TRSObject._UpTextCheck(out shouldExit: Boolean): Boolean;
-```
-Internal TRSObject helper method that is used by all hovering methods.
-You probably don't need to use this directly.
-*)
+
 function TRSObject._UpTextCheck(out shouldExit: Boolean): Boolean;
 var
   text: String;
@@ -206,14 +173,7 @@ begin
   shouldExit := False;
 end;
 
-(*
-## TRSObject._HoverHelper
-```pascal
-function TRSObject._HoverHelper(attempts: Integer; trackTarget: Boolean): Boolean;
-```
-Internal helper method used to hover a TRSObject target.
-You should not use this directly.
-*)
+
 function TRSObject._HoverHelper(attempts: Integer): Boolean;
 var
   shouldExit: Boolean;
@@ -250,16 +210,7 @@ begin
   end;
 end;
 
-(*
-## TRSObject._WalkHoverHelper
-```pascal
-function TRSObject._WalkHoverHelper(attempts: Integer; trackTarget: Boolean): Boolean;
-```
-Internal helper method used to walk and hover a TRSObject target.
-You should not use this directly.
 
-This is responsible for deciding wether we should walk to a TRSObject target or not before attempting to hover it.
-*)
 function TRSObject._WalkHoverHelper(attempts: Integer): Boolean;
 var
   shouldExit: Boolean;
@@ -317,14 +268,7 @@ begin
   end;
 end;
 
-(*
-## TRSObject._PreHoverHelper
-```pascal
-function TRSObject.PreHoverHelper(attempts: Integer): Boolean;
-```
-Internal helper method used to pre-hover a TRSObject target.
-You should not use this directly.
-*)
+
 function TRSObject._PreHoverHelper(me: TPoint; attempts: Integer = 2): Boolean;
 var
   attempt: Integer;
@@ -339,16 +283,7 @@ begin
 end;
 
 
-(*
-## TRSObject._ClickHelper
-```pascal
-function TRSObject._ClickHelper(leftClick: Boolean): Boolean;
-```
-Internal TRSObject helper method that is used by other clicking methods.
-You probably don't need to use this directly.
 
-This is what's responsible for deciding if we click a target we are hovering or not.
-*)
 function TRSObject._ClickHelper(leftClick: Boolean): Boolean;
 begin
   Self.Walker^.TargetUpText := [];
@@ -374,16 +309,7 @@ begin
   Result := not leftClick and (Self.UpText <> []) and ChooseOption.Select(Self.UpText);
 end;
 
-(*
-## TRSObject._SelectHelper
-```pascal
-function TRSObject._SelectHelper(action: TStringArray): Boolean;
-```
-Internal TRSObject helper method that is used by other select methods.
-You probably don't need to use this directly.
 
-This is what is responsible for deciding if we just left click a target we are hovering or right click it and choose an option.
-*)
 function TRSObject._SelectHelper(action: TStringArray): Boolean;
 begin
   Self.Walker^.TargetUpText := [];
@@ -405,20 +331,7 @@ begin
 end;
 
 
-(*
-## TRSObject.Hover
-```pascal
-function TRSObject.Hover(attempts: Integer = 2; trackTarget: Boolean = TRSObject.TrackTarget): Boolean;
-```
-Method used to hover a TRSObject target if it's found on the mainscreen.
-It can update the target position while the mouse moves with **trackTarget**.
 
-Example:
-```pascal
-RSW.WebWalk(WaspWeb.LOCATION_VARROCK);
-RSObjects.GEBank.Hover(); //Be in GE with a walker setup there.
-```
-*)
 function TRSObject.Hover(attempts: Integer = 2): Boolean;
 begin
   if ChooseOption.IsOpen() then
@@ -441,21 +354,7 @@ begin
   Result := Self._HoverHelper(attempts);
 end;
 
-(*
-## TRSObject.WalkHover
-```pascal
-function TRSObject.WalkHover(attempts: Integer = 2; trackTarget: Boolean = TRSObject.TrackTarget): Boolean;
-```
-Method used to walk and hover a TRSObject target if it's found on the mainscreen after walking.
-It can update the target position while the mouse moves with **trackTarget**.
 
-Example:
-```pascal
-//Be in varrock with a varrock map loaded.
-RSW.WebWalk(WaspWeb.LOCATION_VARROCK);
-RSObjects.GEBank.WalkHover();
-```
-*)
 function TRSObject.WalkHover(attempts: Integer = 2): Boolean;
 var
   me, closest: TPoint;
@@ -498,37 +397,13 @@ begin
 end;
 
 
-(*
-## TRSObject.Click
-```pascal
-function TRSObject.Click(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
-```
-Method used to click a TRSObject target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded.
-WriteLn RSObjects.GEBank.Click();
-```
-*)
 function TRSObject.Click(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
 begin
   Result := Self.Hover(attempts) and Self._ClickHelper(leftClick);
 end;
 
-(*
-## TRSObject.SelectOption
-```pascal
-function TRSObject.SelectOption(action: TStringArray; attempts: Integer = 2): Boolean;
-```
-Method used to select an option on a TRSObject target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded.
-WriteLn RSObjects.GEBank.SelectOption(['Collect']);
-```
-*)
 function TRSObject.Select(action: TStringArray; attempts: Integer = 2): Boolean;
 begin
   Self.Walker^.ActionUpText := action;
@@ -536,19 +411,7 @@ begin
   Self.Walker^.ActionUpText := [];
 end;
 
-(*
-## TRSObject.WalkClick
-```pascal
-function TRSObject.WalkClick(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
-```
-Method used to walk and click a TRSObject target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded, preferably far away so it has to walk.
-WriteLn RSObjects.GEBank.WalkClick();
-```
-*)
 function TRSObject.WalkClick(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
 begin
   if Self.Walker = nil then
@@ -562,19 +425,7 @@ begin
   Self.Walker^.TargetUpText := [];
 end;
 
-(*
-## TRSObject.WalkSelectOption
-```pascal
-function TRSObject.WalkSelectOption(action: TStringArray; attempts: Integer = 2): Boolean;
-```
-Method used to walk and select an option on a TRSObject target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded, preferably far away so it has to walk.
-WriteLn RSObjects.GEBank.WalkSelectOption(['Collect']);
-```
-*)
 function TRSObject.WalkSelect(action: TStringArray; attempts: Integer = 2): Boolean;
 begin
   if Self.Walker = nil then
@@ -624,13 +475,7 @@ begin
     end;
 end;
 
-(*
-## TImage.DrawObject
-```pascal
-procedure TImage.DrawObject(obj: TRSObject);
-```
-Helper method to debug TRSObjects.
-*)
+
 procedure TImage.DrawObject(obj: TRSObject);
 var
   atpa: T2DPointArray;

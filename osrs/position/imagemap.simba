@@ -1,31 +1,15 @@
-(*
-# Image Map
-This file is responsible for the TImageMap positioning system.
-It's heavily based on [slacky](https://slacky.one/)'s original TRSWalker and
-while it might look different the logic related to positioning should be the
-exact same.
 
-The way it works is that you load it with an image (.png or .bmp) and you can
-retrive your position on that image by finding the most similar place to your
-{ref}`Minimap` on the image.
-*)
 
 {$DEFINE WL_IMAGEMAP_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSMapSample
-Record used to customize the sample retrieved from the minimap for TRSMap.
-*)
+
   TRSMapSample = record
     Amount, Radius: Int32;
   end;
 
-(*
-## TRSImageMap
-Record responsible for positioning.
-*)
+
   TRSImageMap = record
     Map, DownscaledMap: TImage;
 
@@ -40,13 +24,7 @@ Record responsible for positioning.
 
 function TRSImageMap.Position(): TPoint; forward;
 
-(*
-## ImageMap.Setup
-```pascal
-procedure TRSImageMap.Setup(path: String; downscale: UInt32 = 8);
-```
-Sets up a {ref}`TRSImageMap`.
-*)
+
 procedure TRSImageMap.Setup(path: String; downscale: UInt32 = 8);
 var
   img, sample: TImage;
@@ -72,20 +50,7 @@ begin
   end;
 end;
 
-(*
-## ImageMap.ScaledSearch
-```pascal
-function TRSImageMap.ScaledSearch(img: TImage): TPointArray;
-```
-Internal TRSImageMap method used to get an initial TPointArray of possible positions.
 
-This is performed in a downscaled map with a downscaled minimap.
-
-This is very innacurate by itself but by ruling down most of the map
-in a downscaled search before doing a full sized search speed has a dramatic boost.
-
-You probably won't ever need to call this directly.
-*)
 function TRSImageMap.ScaledSearch(img: TImage): TPointArray;
 var
   sample: TImage;
@@ -104,20 +69,7 @@ begin
   Result := Result.Offset([Self.Downscale div 2, Self.Downscale div 2]);
 end;
 
-(*
-## Map.FullSearch
-```pascal
-function TRSImageMap.FullSearch(template, map: TImage; position: TPoint; out match: Single): TPoint;
-```
-Internal TRSImageMap method used to get the player position.
 
-This is used by {ref}`ImageMap.Position` to determine how likely is the
-`position` passed in, our actual position.
-
-This likelyhood is returned with `match` which ranges from `0.0` to `1.0`.
-
-You probably won't ever need to call this directly.
-*)
 function TRSImageMap.FullSearch(template, map: TImage; position: TPoint; out match: Single): TPoint; static;
 const
   TEMPL_SIZE = 25;
@@ -149,19 +101,7 @@ begin
   end;
 end;
 
-(*
-## ImageMap.Position
-```pascal
-function TRSImageMap.Position(): TPoint;
-```
-Returns the players current position on the loaded map image.
 
-Example:
-```pascal
-WriteLn(ImageMap.Position());
-WriteLn(ImageMap.Similarity); // Check to see the match percentage if needed
-```
-*)
 function TRSImageMap.Position(): TPoint;
 var
   clean: TImage;
@@ -187,20 +127,7 @@ begin
   end;
 end;
 
-(*
-## ImageMap.DebugPosition
-```pascal
-function TRSImageMap.DebugPosition(): TPoint;
-```
-Debugs the player position in the currently loaded map image.
 
-Example:
-```pascal
-Map.Setup(...);
-while True do
-  Map.DebugPosition();
-```
-*)
 function TRSImageMap.DebugPosition(print: Boolean = True): TPoint;
   function _BoxStr(b: TBox): String;
   begin

@@ -1,9 +1,4 @@
-(*
-# WebGraph
-Responsible for handling webwalking or any other graph logic you may need.
-It's partially based on the original webgraph logic by [slacky](https://slacky.one/) but behaves quite
-differently to handle different scenarios, e.g. doors.
-*)
+
 
 {$DEFINE WL_WEBGRAPH_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}

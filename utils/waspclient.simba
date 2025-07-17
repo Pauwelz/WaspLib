@@ -1,15 +1,9 @@
-(*
-# WaspClient
-Client to interact with https://waspscripts.com
-*)
+
 
 {$DEFINE WL_WASPCLIENT_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
-(*
-## TWaspClient
-Responsible for connecting to waspscripts.com database.
-*)
+
 type
   TWaspClient = record
     Server, APIKey, Schema: String;

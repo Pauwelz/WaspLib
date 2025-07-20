@@ -1,7 +1,4 @@
-(*
-# ItemInterface
-Methods to interact item interfaces.
-*)
+
 
 {$DEFINE WL_ITEM_INTERFACE_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}

@@ -1,30 +1,6 @@
-(*
-# WaspLib
-WaspLib is a library used to bot OldSchool RuneScape with Simba 2.0.
-WaspLib is heavily inspired in previous work done by the SRL Community.
 
-This library is meant to do the job of both [SRL-T](https://github.com/Torwent/SRL-T)
-and the original [WaspLib](https://github.com/Torwent/WaspLib) in Simba 1.4 in a lighter,
-less confusing way.
-*)
 
-(*
-## Compile Directives
-```pascal
-{$DEFINE WL_DEBUG_MOUSE}
-{$DEFINE WL_DISABLE_FAKE_INPUT}
-{$DEFINE WL_DISABLE_WASPINPUT}
-{$DEFINE WL_KEYBINDS_DEBUG}
-{$DEFINE WL_DEBUG_UPTEXT}
-{$DEFINE WL_DEBUG_INTERFACES}
-{$DEFINE WL_GENERATE_GRAPH_ALWAYS}
-```
-This are the compiler directives available in the library.
 
-Add them **before** including the library to use them.
-
-They should be self-explanatory.
-*)
 
 {$INCLUDE_ONCE utils.simba}
 

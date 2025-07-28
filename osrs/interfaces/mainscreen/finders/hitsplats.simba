@@ -1,30 +1,12 @@
-(*
-# HitSplats
-Find and read hitsplats on the screen.
 
-```{figure} ../../images/hitsplats.png
-```
-
-At the moment only your hitsplats are supported, tinted ones by other players or
-NPCs are not.
-*)
 {$DEFINE WL_HITSPLATS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSHitSplat
-```pascal
-ERSHitSplat = enum(BLUE, RED, MAX);
-```
-Enum representing the main hitsplat colors.
-*)
+
   ERSHitSplat = enum(BLUE, RED, MAX);
 
-(*
-## TRSHitSplat
-Hitsplat record that holds the methods used to find hitsplats.
-*)
+
   TRSHitsplat = record
     Position: TPoint;
     Value: Integer;
@@ -68,19 +50,7 @@ begin
   end;
 end;
 
-(*
-## TRSHitSplat.Find
-```pascal
-function TRSHitSplat.Find(out splats: TRSHitSplatArray; areas: TBoxArray): Boolean; static;
-function TRSHitSplat.Find(out splats: TRSHitSplatArray; areas: TPolygonArray): Boolean; static; overload;
-function TRSHitSplat.Find(out splats: TRSHitSplatArray; areas: TCuboidArray): Boolean; static; overload;
-function TRSHitSplat.Find(out splats: TRSHitSplatArray): Boolean; static; overload;
-```
-Attempts to find hitsplats on the given `area` a {ref}`TColorFinder`.
-If `area` is not specified, {ref}`MainScreen` Bounds are used.
-The function returns true if we find at least one hitsplat and found splats are
-returned via `splats`.
-*)
+
 function TRSHitSplat.Find(out splats: TRSHitSplatArray; areas: TBoxArray): Boolean; static;
 var
   area, b: TBox;

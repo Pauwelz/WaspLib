@@ -1,28 +1,15 @@
-(*
-# Config
-Configuration related types and methods. These can be used to save script and
-library configurations in either JSON or INI formats.
-*)
+
 {$DEFINE WL_CONFIG_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 type
-(*
-## TConfigJSON
-Type responsible for dealing with JSON configuration files.
-*)
+
   TConfigJSON = record
     Path: String;
     Data: TJSONItem;
   end;
 
-(*
-## TConfigJSON.Setup
-```pascal
-procedure TConfigJSON.Setup(jsonFile: String);
-```
-Main method to setup your `TConfigJSON`
-*)
+
 procedure TConfigJSON.Setup(filename: String = SCRIPT_FILE);
 var
   tmp: String;
@@ -50,13 +37,7 @@ begin
     TJSONParser(Self.Data).Load(Self.Path);
 end;
 
-(*
-## TConfigJSON.SaveConfig
-```pascal
-procedure TConfigJSON.SaveConfig();
-```
-Used to save your `TConfigJSON`.
-*)
+
 procedure TConfigJSON.SaveConfig();
 begin
   TJSONParser(Self.Data).Save(Self.Path, [EJSONFormatOption.USE_TABS, EJSONFormatOption.SINGLE_LINE_ARR], 1);

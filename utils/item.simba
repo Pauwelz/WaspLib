@@ -1,7 +1,4 @@
-(*
-# Item
-Page dedicated to runescape items and misc functions related to them.
-*)
+
 {$DEFINE WL_ITEM_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
@@ -12,19 +9,7 @@ const
 type
   ERSItemQuantity = enum(ONE, FIVE, TEN, CUSTOM, ALL);
 
-(*
-## Bank.Integer2Quantity
-```pascal
-function TRSBank.Integer2Quantity(quantity: Integer): ERSItemQuantity;
-```
-Internal helper function to convert a integer quantity into a ERSItemQuantity.
 
-Example:
-```pascal
-WriteLn Bank.Integer2Quantity(5);
-WriteLn Bank.Integer2Quantity(7);
-```
-*)
 function ERSItemQuantity.Integer2Quantity(quantity: Integer): ERSItemQuantity; static;
 begin
   case quantity of
@@ -53,19 +38,7 @@ begin
   Result := Self.EndsWith(')', True);
 end;
 
-(*
-## TRSItem.SimplifyName
-```pascal
-function TRSItem.SimplifyName(): String;
-```
-Internal helper function to get a human like short item name, usually to search.
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.SimplifyName();
-```
-*)
 function TRSItem.SimplifyName(): String;
 var
   short, long: Integer;
@@ -91,26 +64,13 @@ begin
 end;
 
 
-(*
-## Item.GetStackBox
-```pascal
-function TRSItem.GetStackBox(slot: TBox): TBox; static;
-```
-Returns the correct text box of an item's amount text based on the item box.
-*)
+
 function TRSItem.GetStackBox(slot: TBox): TBox; static;
 begin
   Result := [slot.X1, slot.Y1-1, slot.X1 + 35, slot.Y1 + 11];
 end;
 
-(*
-## Item.ReadStack
-```pascal
-function TRSItem.ReadStack(slot: TBox): Integer; static;
-```
-For use with items in like bankscreen, inventory, shops and so on to
-get the number of stacked items there are.
-*)
+
 function TRSItem.ReadStack(slot: TBox): Integer; static;
 var
   i: Integer;

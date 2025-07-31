@@ -1,21 +1,10 @@
-(*
-# Account Form
-Account management system for scriptform. This module handles all account profile
-functionality including storage, validation, and UI dialogs.
 
-Credits: Developed by TazE
-Acknowledgements: Thanks to XJ for design concepts and initial prototyping 
-
-*)
 {$DEFINE WL_ACCOUNT_FORM_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 {$INCLUDE_ONCE WaspLib/utils/worldfetcher.simba}
 
 type
-(*
-## TAccountProfile
-A single account profile with credentials and settings.
-*)
+
   TAccountProfile = record
     ProfileName: String;
     Username: String;
@@ -24,10 +13,7 @@ A single account profile with credentials and settings.
     Worlds: String;
   end;
 
-(*
-## TAccountForm
-The account management system that handles profile storage, validation, and UI.
-*)
+
   TAccountForm = record
     Profiles: array of TAccountProfile;
     
@@ -113,25 +99,13 @@ function  TAccountForm.GetTypeString(wType: EWorldType): String; forward;
 function TAccountForm.ValidateInput(profile: TAccountProfile): String; forward;
 {$H+}
 
-(*
-## TAccountForm.GetProfilePath
-```pascal
-function TAccountForm.GetProfilePath(index: Integer): String;
-```
-Constructs the file path for a profile based on its index.
-*)
+
 function TAccountForm.GetProfilePath(index: Integer): String;
 begin
   Result := WLEnv.ConfigsDir + 'accounts' + PATH_SEP + ToStr(index) + '.json';
 end;
 
-(*
-## TAccountForm.SaveProfileToFile
-```pascal
-procedure TAccountForm.SaveProfileToFile(index: Integer; profile: TAccountProfile);
-```
-Saves profile as a JSON file at the specified index.
-*)
+
 procedure TAccountForm.SaveProfileToFile(index: Integer; profile: TAccountProfile);
 var
   root, profileObj: TJSONObject;
@@ -164,13 +138,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.LoadProfileFromFile
-```pascal
-function TAccountForm.LoadProfileFromFile(index: Integer): TAccountProfile;
-```
-Loads a profile from disk at the specified index. Returns a default profile if the file doesn't exist or is invalid.
-*)
+
 function TAccountForm.LoadProfileFromFile(index: Integer): TAccountProfile;
 var
   data: TJSONItem;
@@ -213,13 +181,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.GetExistingProfileIndices
-```pascal
-function TAccountForm.GetExistingProfileIndices(): TIntegerArray;
-```
-Scans the accounts directory and returns a sorted array of all existing profile indices.
-*)
+
 function TAccountForm.GetExistingProfileIndices(): TIntegerArray;
 var
   files: TStringArray;
@@ -242,13 +204,7 @@ begin
   Result.Sort();
 end;
 
-(*
-## TAccountForm.ReindexProfiles
-```pascal
-procedure TAccountForm.ReindexProfiles(fromIndex: Integer);
-```
-Renumbers profile files after a deletion to maintain sequential indexing. All profiles with indices greater than fromIndex are decremented by 1.
-*)
+
 procedure TAccountForm.ReindexProfiles(fromIndex: Integer);
 var
   indices: TIntegerArray;
@@ -278,13 +234,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.Setup
-```pascal
-procedure TAccountForm.Setup();
-```
-Sets up the account system and loads existing profiles from config.
-*)
+
 procedure TAccountForm.Setup();
 var
   indices: TIntegerArray;
@@ -322,25 +272,13 @@ begin
     SetLength(Self.Profiles, 0);
 end;
 
-(*
-## TAccountForm.ValidateProfile
-```pascal
-function TAccountForm.ValidateProfile(profile: TAccountProfile): Boolean;
-```
-Validates a profile has required fields filled.
-*)
+
 function TAccountForm.ValidateProfile(profile: TAccountProfile): Boolean;
 begin
   Result := profile.ProfileName.Trim() <> '';  // Only profile name is required
 end;
 
-(*
-## TAccountForm.ProfileExists
-```pascal
-function TAccountForm.ProfileExists(profileName: String): Boolean;
-```
-Checks if a profile with the given name already exists.
-*)
+
 function TAccountForm.ProfileExists(profileName: String): Boolean;
 var
   i: Integer;
@@ -353,13 +291,7 @@ begin
 end;
 
 
-(*
-## TAccountForm.AddProfile
-```pascal
-function TAccountForm.AddProfile(profile: TAccountProfile): Boolean;
-```
-Adds a new profile to the configuration after validation.
-*)
+
 function TAccountForm.AddProfile(profile: TAccountProfile): Boolean;
 begin
   if not Self.ValidateProfile(profile) then
@@ -386,13 +318,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.UpdateProfile
-```pascal
-function TAccountForm.UpdateProfile(index: Integer; profile: TAccountProfile): Boolean;
-```
-Updates an existing profile at the specified index after validation.
-*)
+
 function TAccountForm.UpdateProfile(index: Integer; profile: TAccountProfile): Boolean;
 begin
   Result := False;
@@ -421,13 +347,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.DeleteProfile
-```pascal
-function TAccountForm.DeleteProfile(index: Integer): Boolean;
-```
-Deletes a profile at the specified index.
-*)
+
 function TAccountForm.DeleteProfile(index: Integer): Boolean;
 var
   i: Integer;
@@ -469,13 +389,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.UpdateProfileCombo
-```pascal
-procedure TAccountForm.UpdateProfileCombo();
-```
-Updates the profile combo box with current profiles.
-*)
+
 procedure TAccountForm.UpdateProfileCombo();
 var
   i: Integer;
@@ -491,13 +405,7 @@ begin
   Self.ProfileCombo.Items.Add('New Profile');
 end;
 
-(*
-## TAccountForm.GetSelectedProfile
-```pascal
-function TAccountForm.GetSelectedProfile(): TAccountProfile;
-```
-Returns the currently selected account profile.
-*)
+
 function TAccountForm.GetSelectedProfile(): TAccountProfile;
 var
   selectedIndex: Integer;
@@ -512,13 +420,7 @@ begin
     Result := Self.Profiles[selectedIndex];
 end;
 
-(*
-## TAccountForm.ValidateInput
-```pascal
-function TAccountForm.ValidateInput(profile: TAccountProfile): String;
-```
-Validates user input and returns error message if validation fails.
-*)
+
 function TAccountForm.ValidateInput(profile: TAccountProfile): String;
 begin
   if profile.ProfileName = '' then
@@ -545,13 +447,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.OnSaveClick
-```pascal
-procedure TAccountForm.OnSaveClick(sender: TLazObject);
-```
-Handles the Save button click event. Validates and saves the profile data from the edit form.
-*)
+
 procedure TAccountForm.OnSaveClick({$H-}sender: TLazObject){$H+};
 var
   profile: TAccountProfile;
@@ -598,13 +494,7 @@ begin
   Self.EditForm.Close();
 end;
 
-(*
-## TAccountForm.OnDeleteClick
-```pascal
-procedure TAccountForm.OnDeleteClick(sender: TLazObject);
-```
-Handles the Delete button click event. Shows confirmation dialog before deleting the profile.
-*)
+
 procedure TAccountForm.OnDeleteClick({$H-}sender: TLazObject){$H+};
 begin
   if ShowQuestionDialog('Delete Profile', 'Are you sure you want to delete this profile?') then
@@ -614,26 +504,14 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.OnCloseClick
-```pascal
-procedure TAccountForm.OnCloseClick(sender: TLazObject);
-```
-Handles the Close button click event. Closes the edit dialog without saving.
-*)
+
 procedure TAccountForm.OnCloseClick({$H-}sender: TLazObject){$H+};
 begin
   Self.EditForm.Close();
 end;
 
 
-(*
-## TAccountForm.OnEditClick
-```pascal
-procedure TAccountForm.OnEditClick(sender: TLazObject);
-```
-Handles the Edit button click event. Opens the profile edit dialog for the selected profile or creates a new one.
-*)
+
 procedure TAccountForm.OnEditClick({$H-}sender: TLazObject){$H+};
 var
   selectedIndex: Integer;
@@ -659,13 +537,7 @@ begin
   Self.EditForm.ShowModal();
 end;
 
-(*
-## TAccountForm.SetupEditDialog
-```pascal
-procedure TAccountForm.SetupEditDialog(parent: TLazForm; profile: TAccountProfile; isNew: Boolean; editIndex: Integer);
-```
-Sets up the modal edit dialog for profile details.
-*)
+
 procedure TAccountForm.SetupEditDialog(parent: TLazForm; profile: TAccountProfile; isNew: Boolean; editIndex: Integer);
 const
   EDIT_FORM_WIDTH = 700;
@@ -801,13 +673,7 @@ begin
     Self.LoadSavedWorlds(profile.Worlds);
 end;
 
-(*
-## TAccountForm.SetupUI
-```pascal
-procedure TAccountForm.SetupUI(combo: TLazComboBox; button: TLazButton);
-```
-Sets up the UI components provided by the parent form.
-*)
+
 procedure TAccountForm.SetupUI(combo: TLazComboBox; button: TLazButton);
 begin
   Self.ProfileCombo := combo;
@@ -822,13 +688,7 @@ begin
     Self.ProfileCombo.ItemIndex := 0;
 end;
 
-(*
-## TAccountForm.SetupWorldTypePanel
-```pascal
-procedure TAccountForm.SetupWorldTypePanel();
-```
-Sets up the world type filter panel with F2P and Members checkboxes.
-*)
+
 procedure TAccountForm.SetupWorldTypePanel();
 var
   typeY: Integer;
@@ -853,13 +713,7 @@ begin
   Self.MembersCheckbox.SetChecked(True);
 end;
 
-(*
-## TAccountForm.SetupLocationPanel
-```pascal
-procedure TAccountForm.SetupLocationPanel();
-```
-Sets up the location filter panel with checkboxes for Germany, UK, USA, and Australia.
-*)
+
 procedure TAccountForm.SetupLocationPanel();
 var
   locY: Integer;
@@ -898,13 +752,7 @@ begin
   Self.AustraliaCheckbox.SetChecked(True);
 end;
 
-(*
-## TAccountForm.SetupActivityPanel
-```pascal
-procedure TAccountForm.SetupActivityPanel();
-```
-Sets up the activity type filter panel with checkboxes for Normal, Dangerous, Restricted, and Skill Total worlds.
-*)
+
 procedure TAccountForm.SetupActivityPanel();
 var
   actY: Integer;
@@ -943,13 +791,7 @@ begin
   Self.SkillTotalCheckbox.SetChecked(True);
 end;
 
-(*
-## TAccountForm.SetupSpecificActivityPanel
-```pascal
-procedure TAccountForm.SetupSpecificActivityPanel();
-```
-Sets up the specific activities panel with a master select/deselect all checkbox. Individual activity checkboxes are added dynamically by RefreshActivities.
-*)
+
 procedure TAccountForm.SetupSpecificActivityPanel();
 var
   scale: Double;
@@ -966,13 +808,7 @@ begin
   Self.SelectAllActivitiesCheckbox.OnClick := @Self.OnSelectAllActivitiesClick;
 end;
 
-(*
-## TAccountForm.LoadWorldData
-```pascal
-procedure TAccountForm.LoadWorldData();
-```
-Fetches all available worlds from the world fetcher and caches them. Automatically generates the initial world list after fetching.
-*)
+
 procedure TAccountForm.LoadWorldData();
 begin
   Self.StatsLabel.Caption := 'Fetching...';
@@ -992,13 +828,7 @@ begin
     Self.StatsLabel.Caption := 'Fetch failed!';
 end;
 
-(*
-## TAccountForm.LoadSavedWorlds
-```pascal
-procedure TAccountForm.LoadSavedWorlds(worldsStr: String);
-```
-Loads a comma-separated list of world numbers and displays them. Disables all filter checkboxes when showing saved worlds.
-*)
+
 procedure TAccountForm.LoadSavedWorlds(worldsStr: String);
 var
   worldNumbers: TIntegerArray;
@@ -1045,13 +875,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.OnGenerateClick
-```pascal
-procedure TAccountForm.OnGenerateClick(sender: TLazObject);
-```
-Handles the Generate Worlds button click. Applies current filter settings and refreshes the world list.
-*)
+
 procedure TAccountForm.OnGenerateClick({$H-}sender: TLazObject){$H+};
 var
   settings: TSettings;
@@ -1090,13 +914,7 @@ begin
   Self.DisplayResults();
 end;
 
-(*
-## TAccountForm.OnSelectAllActivitiesClick
-```pascal
-procedure TAccountForm.OnSelectAllActivitiesClick(sender: TLazObject);
-```
-Handles the Select/Deselect All checkbox click. Toggles all activity checkboxes to match the master checkbox state.
-*)
+
 procedure TAccountForm.OnSelectAllActivitiesClick({$H-}sender: TLazObject){$H+};
 var
   i: Integer;
@@ -1108,13 +926,7 @@ begin
     Self.ActivityCheckboxes[i].SetChecked(newState);
 end;
 
-(*
-## TAccountForm.OnSortChange
-```pascal
-procedure TAccountForm.OnSortChange(sender: TLazObject);
-```
-Handles sort order combo box change. Re-generates the world list with the new sort order.
-*)
+
 procedure TAccountForm.OnSortChange({$H-}sender: TLazObject){$H+};
 begin
   if Length(Self.FilteredWorlds) > 0 then
@@ -1122,13 +934,7 @@ begin
 end;
 
 
-(*
-## TAccountForm.BuildFilterSettings
-```pascal
-function TAccountForm.BuildFilterSettings(): TSettings;
-```
-Builds a TSettings record from the current state of all filter UI controls.
-*)
+
 function TAccountForm.BuildFilterSettings(): TSettings;
 var
   i: Integer;
@@ -1178,13 +984,7 @@ begin
   end;
 end;
 
-(*
-## TAccountForm.ApplyActivityFilters
-```pascal
-procedure TAccountForm.ApplyActivityFilters();
-```
-Filters the current world list based on selected specific activity checkboxes.
-*)
+
 procedure TAccountForm.ApplyActivityFilters();
 var
   i, j, checkboxIndex: Integer;
@@ -1207,13 +1007,7 @@ begin
   SetLength(Self.FilteredWorlds, j);
 end;
 
-(*
-## TAccountForm.DisplayResults
-```pascal
-procedure TAccountForm.DisplayResults();
-```
-Formats and displays the filtered world list in the list box with columns for world number, location, type, activity, and player count.
-*)
+
 procedure TAccountForm.DisplayResults();
 const
   ACTIVITY_TABLE_MAX_LENGTH = 14;
@@ -1253,13 +1047,7 @@ begin
   Self.StatsLabel.Caption := Format('Found: %d worlds', [validWorldCount]);
 end;
 
-(*
-## TAccountForm.GetLocationString
-```pascal
-function TAccountForm.GetLocationString(loc: EWorldLocation): String;
-```
-Converts a world location enum to its display string.
-*)
+
 function TAccountForm.GetLocationString(loc: EWorldLocation): String;
 const
   LOCATION_NAMES: array[EWorldLocation] of String = ['Germany', 'UK', 'USA', 'Australia'];
@@ -1270,13 +1058,7 @@ begin
     Result := 'Unknown';
 end;
 
-(*
-## TAccountForm.GetTypeString
-```pascal
-function TAccountForm.GetTypeString(wType: EWorldType): String;
-```
-Converts a world type enum to its display string.
-*)
+
 function TAccountForm.GetTypeString(wType: EWorldType): String;
 const
   TYPE_NAMES: array[EWorldType] of String = ['F2P', 'Members'];
@@ -1288,13 +1070,7 @@ begin
 end;
 
 
-(*
-## TAccountForm.RefreshActivities
-```pascal
-procedure TAccountForm.RefreshActivities();
-```
-Dynamically creates checkboxes for all unique specific activities found in the currently filtered worlds. Removes previous activity checkboxes before creating new ones.
-*)
+
 procedure TAccountForm.RefreshActivities();
 const
   ACTIVITY_CHECKBOX_MAX_LENGTH = 35;

@@ -1,40 +1,20 @@
-(*
-# Equipment
-Methods to interact with the Equipment gametab.
-```{figure} ../../images/equipment.png
-```
-*)
+
 {$DEFINE WL_EQUIPMENT_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 
 type
-(*
-## ERSEquipment
-```pascal
-ERSEquipment = enum(HEAD, CAPE, NECK, AMMO, WEAPON, BODY, SHIELD, LEGS, HANDS, FEET, RING, SECONDARY_AMMO);
-```
-Enumerator of the equipment slots.
-*)
+
   ERSEquipment = enum(
     HEAD, CAPE, NECK, AMMO, WEAPON, BODY, SHIELD, LEGS, HANDS, FEET, RING,
     SECONDARY_AMMO
   );
 
 type
-(*
-## ERSEquipmentButton
-```pascal
-ERSEquipmentButton = (STATS, PRICES, DEATH, FOLLOWER);
-```
-Enumerator of the equipment buttons.
-*)
+
   ERSEquipmentButton = enum(STATS, PRICES, DEATH, FOLLOWER);
 
-(*
-## TRSEquipment
-Main record reponsible for handling the equipment gametab.
-*)
+
   TRSEquipment = record
     Slots: TRSSlotInterface;
     Items: TRSItemInterface;
@@ -42,15 +22,7 @@ Main record reponsible for handling the equipment gametab.
     Buttons: array [ERSEquipmentButton] of TRSButton;
   end;
 
-(*
-## Equipment.SetupGameTab
-```pascal
-procedure TRSEquipment.SetupGameTab();
-```
-Internal method used to setup the {ref}`TRSEquipment` coordinates.
 
-This is automatically called for you on the {ref}`Equipment variable`.
-*)
 
 function TRSEquipment.Open(): Boolean; forward;
 
@@ -95,44 +67,18 @@ begin
   end;
 end;
 
-(*
-## Equipment.IsOpen
-```pascal
-function TRSEquipment.IsOpen(): Boolean;
-```
-Returns True/False whether the equipment tab is open or not.
 
-Example:
-```pascal
-WriteLn Equipment.IsOpen();
-```
-*)
 function TRSEquipment.IsOpen(): Boolean;
 begin
   Result := GameTabs.IsOpen(ERSGameTab.EQUIPMENT);
 end;
 
-(*
-## Equipment.Open
-```pascal
-function TRSEquipment.Open(): Boolean;
-```
-Attempts to open the equipment tab.
-Returns true if we succeed.
 
-Example:
-```pascal
-WriteLn Equipment.Open();
-```
-*)
 function TRSEquipment.Open(): Boolean;
 begin
   Result := GameTabs.Open(ERSGameTab.EQUIPMENT);
 end;
 
 var
-(*
-## Equipment variable
-Global {ref}`TRSEquipment` variable.
-*)
+
   Equipment: TRSEquipment;

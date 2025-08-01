@@ -1,28 +1,16 @@
-(*
-# Make
-The "Make" menu is the {ref}`Chat` box menu that pops up when you attempt to
-craft certain items in OldSchool RuneScape.
-```{figure} ../../images/make_interface.png
-```
-*)
+
 
 {$DEFINE WL_MAKE_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSMakeItem
-Helper record used to cache make menu items.
-*)
+
   TRSMakeItem = record
     Item: String;
     Index, Quantity: Integer;
   end;
 
-(*
-## TRSMake
-Main record used to interact with the {ref}`Make` menu.
-*)
+
   TRSMake = record
     Items: array of TRSMakeItem;
     QuantityButtons: TBoxArray;
@@ -33,15 +21,7 @@ Main record used to interact with the {ref}`Make` menu.
     const TEXT_COLOR: TColor = $203040;
   end;
 
-(*
-## Make.SetupInterface
-```pascal
-procedure TRSMake.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSMake` coordinates.
 
-This is automatically called for you on the {ref}`Make variable`.
-*)
 procedure TRSMake.SetupInterface();
 begin
   with Chat.Bounds do
@@ -61,35 +41,13 @@ begin
   end;
 end;
 
-(*
-## Make.IsOpen
-```pascal
-function TRSMake.IsOpen(): Boolean;
-```
-Returns True/False if the {ref}`Make` if open.
 
-Example:
-```pascal
-WriteLn Make.IsOpen();
-```
-*)
 function TRSMake.IsOpen(): Boolean;
 begin
   Result := Target.HasColor(Self.TEXT_COLOR, 0, 500, Self._IsOpenHelper);
 end;
 
-(*
-## Make.WaitOpen
-```pascal
-function TRSMake.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns True if the {ref}`Make` opens within `time` milliseconds.
 
-Example:
-```pascal
-WriteLn Make.WaitOpen();
-```
-*)
 function TRSMake.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -97,21 +55,7 @@ begin
 end;
 
 
-(*
-## Make.GetItemBoxes
-```pascal
-function TRSMake.GetItemBoxes(): TBoxArray;
-```
-Returns the available item buttons as a TBoxArray.
 
-Example:
-```pascal
-ShowOnTarget(Make.GetItemBoxes());
-```
-
-```{figure} ../../images/make_items.png
-```
-*)
 function TRSMake.GetItemBoxes(): TBoxArray;
 var
   tpa: TPointArray;
@@ -127,57 +71,20 @@ begin
 end;
 
 
-(*
-## Make.HasHint
-```pascal
-function TRSMake.HasHint(): Boolean;
-```
-Returns true if a hint tooltip is visible.
 
-Example:
-```pascal
-if Make.HasHint() then
-  ShowOnTarget(Make.GetHintBox());
-```
-*)
 function TRSMake.HasHint(): Boolean;
 begin
   Result := Target.HasColor($A0FFFF, 0, 1, Chat.Bounds);
 end;
 
-(*
-## Make.WaitHint
-```pascal
-function TRSMake.WaitHint(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns true if a hint tooltip is visible within `time` milliseconds.
 
-Example:
-```pascal
-if Make.WaitHint() then
-  ShowOnTarget(Make.GetHintBox());
-```
-*)
 function TRSMake.WaitHint(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
   Result := SleepUntil(Self.HasHint(), interval, time);
 end;
 
-(*
-## Make.GetHintBox
-```pascal
-function TRSMake.GetHintBox(): TBox;
-```
-Returns the hint tooltip bounds.
 
-Example:
-```pascal
-ShowOnTarget(Make.GetHintBox());
-```
-```{figure} ../../images/make_hint.png
-```
-*)
 function TRSMake.GetHintBox(): TBox;
 var
   tpa: TPointArray;
@@ -186,35 +93,13 @@ begin
   if tpa <> [] then Result := tpa.Bounds();
 end;
 
-(*
-## Make.ReadHint
-```pascal
-function TRSMake.ReadHint(): String;
-```
-Returns the hint tooltip text.
 
-Example:
-```pascal
-WriteLn Make.ReadHint();
-```
-*)
 function TRSMake.ReadHint(): String;
 begin
   Result := OCR.Recognize(Self.GetHintBox(), RSFonts.PLAIN_12, [$0], 0);
 end;
 
-(*
-## Make.CloseHint
-```pascal
-function TRSMake.CloseHint(): Boolean;
-```
-Attempts to close a hint tooltip.
 
-Example:
-```pascal
-WriteLn Make.CloseHint();
-```
-*)
 function TRSMake.CloseHint(): Boolean;
 var
   tpa: TPointArray;
@@ -229,38 +114,9 @@ begin
   Result := SleepUntil(not Self.HasHint(), RandomMode(100, 50, 1500), 600);
 end;
 
-(*
-## Make.QuantityButtons
-The quantity buttons are dynamic there can be anywhere from 1 to 6 available.
 
-You have their coordinates available at anytime through the
-`TRSMake.QuantityButtons` variable:
-```pascal
-ShowOnTarget(Make.QuantityButtons);
-```
 
-```{figure} ../../images/make_quantities.png
-The make interface quantity buttons.
-```
 
-Despite them being always available you should only interact with the ones that
-are visible which you can do easily through the next methods.
-*)
-
-(*
-### Make.IndexOfQuantity
-```pascal
-function TRSMake.IndexOfQuantity(amount: Integer): Integer;
-```
-Finds the index of a quantity button by the specified `amount`.
-If the `amount` we are looking for, the custom quantity button is returned,
-otherwise the result is `-1`.
-
-Example:
-```pascal
-WriteLn Make.IndexOfQuantity(Make.QUANTITY_ALL);
-```
-*)
 function TRSMake.IndexOfQuantity(amount: Integer): Integer;
 var
   hintPt: TPoint;
@@ -293,36 +149,14 @@ begin
   Result := -1;
 end;
 
-(*
-### Make.IsQuantitySelected
-```pascal
-function TRSMake.IsQuantitySelected(idx: Integer): Boolean;
-```
-Checks if the specified `idx` quantity button is currently selected.
 
-Example:
-```pascal
-WriteLn Make.IsQuantitySelected(Make.QUANTITY_ALL);
-```
-*)
 function TRSMake.IsQuantitySelected(idx: Integer): Boolean;
 begin
   Result := Target.HasColor(RSColors.TEXT_WHITE, 0, 1, Self.QuantityButtons[idx]);
 end;
 
 
-(*
-### Make.SetQuantity
-```pascal
-function TRSMake.SetQuantity(amount: Integer): Boolean;
-```
-Attempts to set a quantity.
 
-Example:
-```pascal
-WriteLn Make.SetQuantity(Make.QUANTITY_ALL);
-```
-*)
 function TRSMake.SetQuantity(amount: Integer): Boolean;
 var
   idx: Integer;
@@ -345,14 +179,7 @@ begin
 end;
 
 
-(*
-## Make._SelectHelper
-```pascal
-function TRSMake._SelectHelper(index: Integer; boxes: TBoxArray; keyboardProbability: Single): Boolean;
-```
-Internal helper method that handles selecting an item with or without the keyboard.
-You probably will never need to use this directly.
-*)
+
 function TRSMake._SelectHelper(index: Integer; boxes: TBoxArray; keyboardProbability: Single): Boolean;
 begin
   if High(boxes) < index then Exit;
@@ -377,20 +204,7 @@ begin
   Result := SleepUntil(not Self.IsOpen(), RandomMode(100, 50, 1500), 2000);
 end;
 
-(*
-## Make.Select
-```pascal
-function TRSMake.Select(index, quantity: Integer; keyboardProbability: Single = -1): Boolean;
-function TRSMake.Select(item: String; quantity: Integer; keyboardProbability: Single = -1): Boolean; overload;
-```
-Select a `index` or an `item` of the available item buttons available.
-If you are selecting an `item` you need to use the tooltip text.
 
-Example:
-```pascal
-WriteLn Make.Select('Maple longbow', QUANTITY_ALL);
-```
-*)
 function TRSMake.Select(index, quantity: Integer; keyboardProbability: Single = -1): Boolean;
 var
   boxes: TBoxArray;
@@ -463,8 +277,5 @@ begin
 end;
 
 var
-(*
-## Make variable
-Global {ref}`TRSMake` variable.
-*)
+
   Make: TRSMake;

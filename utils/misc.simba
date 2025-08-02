@@ -1,33 +1,9 @@
-(*
-# Misc
-Misc functions and methods that don't really fit in a single place at the moment
-*)
+
 {$DEFINE WL_MISC_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 type
-(*
-## RSColors
-```pascal
-RSColors.ITEM_SHADOW
-RSColors.ITEM_SHADOW_GRAY
-RSColors.ITEM_BORDER
-RSColors.INTERFACE_BORDER
-RSColors.ITEM_BORDER_WHITE
-RSColors.STACK_YELLOW
-RSColors.STACK_WHITE
-RSColors.STACK_GREEN
-RSColors.STACK_COLORS
-RSColors.TEXT_WHITE
-RSColors.TEXT_ORANGE
-RSColors.TEXT_GREY
-RSColors.TEXT_GREEN
-RSColors.TEXT_YELLOW
-RSColors.TEXT_RED
-RSColors.TEXT_LIGHT_YELLOW
-```
-Record holding a collection of constant colors used throughout the game.
-*)
+
   RSColors = record
     const ITEM_SHADOW: TColor = $202030;
     const ITEM_SHADOW_GRAY: TColor = $333333;
@@ -58,18 +34,7 @@ begin
             Target.HasColor(RSColors.ITEM_BORDER_WHITE, 0, 1, bounds);
 end;
 
-(*
-## Level2XP
-```pascal
-function Level2XP(level: Integer): Integer;
-```
-Converts a level to the xp required for that level.
 
-Example:
-```pascal
-  WriteLn Level2XP(70);
-```
-*)
 function Level2XP(level: Integer): Integer;
 var
   total:Double;
@@ -80,18 +45,7 @@ begin
   Result := Floor(total / 4);
 end;
 
-(*
-## XP2Level
-```pascal
-function XP2Level(xp: Integer): Integer;
-```
-Converts XP to the respective level.
 
-Example:
-```pascal
-  WriteLn XP2Level(100000);
-```
-*)
 function XP2Level(xp: Integer): Integer;
 var
   total: Double;

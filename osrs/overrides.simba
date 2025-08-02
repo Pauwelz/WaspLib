@@ -269,6 +269,7 @@ begin
   SaveScreenshotEx('levelups', Self.Bounds);
 end;
 
+{$H-}
 procedure TScriptForm.OnStart(sender: TLazObject); override;
 var
   idx: Integer;
@@ -284,3 +285,4 @@ begin
   Self.Form.OnClose := nil;
   Self.Form.Close();
 end;
+{$H+}

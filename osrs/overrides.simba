@@ -1,33 +1,9 @@
-(*
-# Overrides
-Several final overrides to add some final behaviour to certain methods.
-This is the very last file being included in the library.
-*)
+
 
 {$DEFINE WL_OVERRIDES_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
-(*
-## RSClient.IsLoggedIn override
-```pascal
-function TRSClient.IsLoggedIn(): Boolean; override;
-```
-Checks for a bunch of game settings when being logged in returns true.
 
-These settings are checked at least once and WaspLib and cache the results so we
-don't check it again unless for some reason is needed.
-
-These ensures things like:
-- The mainscreen is set to the highest pitch
-- The client has max brightness set
-- The roofs are hidden
-- XPBar is set properly (this check can fail and more checks will be done).
-
-Example:
-```pascal
-WriteLn RSClient.IsLoggedIn();
-```
-*)
 function TRSClient.IsLoggedIn(): Boolean; override;
 var
   mode: ERSMode;
@@ -74,20 +50,7 @@ begin
   inherited;
 end;
 
-(*
-## GameTabs.GetCurrent override
-```pascal
-function TRSGameTabs.GetCurrent(): ERSGameTab; override;
-```
-Override that handles several scenarios where the "current" gametab is not visible.
 
-E.g., when the bank is open, all gametab buttons are hidden but you have the inventory open.
-
-Example:
-```pascal
-WriteLn GameTabs.GetCurrent();
-```
-*)
 function TRSGameTabs.GetCurrent(): ERSGameTab; override;
 begin
   Result := inherited;
@@ -110,13 +73,7 @@ begin
   end;
 end;
 
-(*
-## GameTabs.Open override;
-```pascal
-function TRSGameTabs.Open(tab: ERSGameTab): Boolean; override;
-```
-Overrides {ref}`GameTabs.Open` to close the bank if the bank open.
-*)
+
 function TRSGameTabs.Open(tab: ERSGameTab; fkeyProbability: Single = -1): Boolean; override;
 begin
   if Self.IsOpen(tab) then Exit(True);
@@ -128,20 +85,7 @@ begin
   Result := inherited(tab, fkeyProbability);
 end;
 
-(*
-## HouseOptions.Open override
-```pascal
-function TRSHouseOptions.Open(): Boolean; override;
-```
-Attempts to open the house options on the options gametab.
 
-Since {ref}`HouseOptions` depends on {ref}`Options`, an override is necessary.
-
-Example:
-```pascal
-WriteLn HouseOptions.Open();
-```
-*)
 function TRSHouseOptions.Open(): Boolean; override;
 begin
   if Self.IsOpen() then Exit(True);
@@ -151,20 +95,7 @@ begin
   Result := Self.WaitOpen();
 end;
 
-(*
-## WorldSwitcher.Open override
-```pascal
-function TRSWorldSwitcher.Open(waitLoad: Boolean = True): Boolean; override;
-```
-Attempts to open the world switcher.
 
-Since {ref}`WorldSwitcher` depends on {ref}`Logout`, this override is necessary.
-
-Example:
-```pascal
-WriteLn WorldSwitcher.Open();
-```
-*)
 function TRSWorldSwitcher.Open(waitLoad: Boolean = True): Boolean; override;
 begin
   if not Logout.Open() then Exit;
@@ -229,20 +160,7 @@ begin
   end;
 end;
 
-(*
-## Chat.LeveledUp override
-```pascal
-function TRSChat.LeveledUp(): Boolean; override;
-```
-Returns true if we have the level up message on the chat box and attempts to
-increment {ref}`Stats` `Levels` variables.
 
-Example:
-```pascal
-if Chat.LeveledUp() then
-  Chat.ClickContinue(True);
-```
-*)
 function TRSChat.LeveledUp(): Boolean; override;
 var
   b: TBox;

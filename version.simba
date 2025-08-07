@@ -8,7 +8,7 @@ const
   WL_VERSION_MONTH: Integer = 08;
   WL_VERSION_DAY: Integer = 07;
 
-  WL_VERSION_COMMIT_HASH: String = 'dbe1ed6';
+  WL_VERSION_COMMIT_HASH: String = 'dad65f0';
 
 
 

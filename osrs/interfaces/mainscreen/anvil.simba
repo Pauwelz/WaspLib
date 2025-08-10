@@ -1,18 +1,10 @@
-(*
-# Anvil
-Anvil interface.
-```{figure} ../../images/anvil_interface.png
-```
-*)
+
 
 {$DEFINE WL_ANVIL_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSAnvil
-Main record to interact with the {ref}`Anvil` interface.
-*)
+
   TRSAnvil = record
     Title: TRSInterfaceTitle;
     Slots: TRSSlotInterface;
@@ -30,17 +22,7 @@ begin
       Result += Self.SlotBoxes[i];
 end;
 
-(*
-## Anvil.Setup
-```pascal
-procedure Anvil.Setup;
-```
-Initializes Anvil variables.
 
-```{note}
-This is automatically called on the **Anvil** variable.
-```
-*)
 procedure TRSAnvil.SetupInterface();
 var
   i: Integer;
@@ -67,36 +49,14 @@ begin
 end;
 
 
-(*
-## Anvil.IsOpen
-```pascal
-function TRSAnvil.IsOpen(): Boolean;
-```
-Returns true if the {ref}`Anvil` is open.
 
-Example:
-```pascal
-WriteLn Anvil.IsOpen();
-```
-*)
 function TRSAnvil.IsOpen(): Boolean;
 begin
   Result := MSInterface.IsOpen(ERSInterfaceType.CLASSIC) and
             Target.HasColor($00FF00, 0, 300, Self.SlotsArea);
 end;
 
-(*
-## Anvil.WaitOpen
-```pascal
-function TRSAnvil.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
-```
-Returns true if the {ref}`Anvil` is open within `time` milliseconds.
 
-## Example:
-```pascal
-WriteLn Anvil.WaitOpen();
-```
-*)
 function TRSAnvil.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -104,8 +64,5 @@ begin
 end;
 
 var
-(*
-## Anvil variable
-Global {ref}`TRSAnvil` variable.
-*)
+
   Anvil: TRSAnvil;

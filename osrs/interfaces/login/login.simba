@@ -1,31 +1,10 @@
-(*
-# Login
-The login screen is the first screen you see when you open a client and it
-finishes loading:
-```{figure} ../../images/loginscreen.png
-```
 
-WaspLib's {ref}`TRSLogin` can handle both resizable and fixed mode login screens.
-*)
 
 {$DEFINE WL_LOGIN_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 const
-(*
-(LOGIN_MESSAGES)=
-## Login Messages
-```pascal
-const
-  LOGIN_MESSAGES = [
-    'Welcome to RuneScape',
-    'Connecting to server',
-    ...,
-    'Authenticator'
-  ];
-```
-Constant of all the login messages the login screen can handle.
-*)
+
   LOGIN_MESSAGES = [
     'Welcome to ',
     'Connecting to server',
@@ -49,18 +28,7 @@ Constant of all the login messages the login screen can handle.
   ];
 
 type
-(*
-## Login Enums
-```pascal
-ERSLoginMode    = enum(UNKNOWN, LEGACY, LAUNCHER);
-ERSLoginButton  = enum(LAUNCHER, EXISTING_USER, LOGIN, RETRY, OKAY, CONTINUE);
-ERSLoginInput   = enum(USERNAME, PASSWORD);
-ERSLoginMessage = enum(UNKNOWN, WELCOME, ..., AUTHENTICATOR);
-```
-Enums representing various aspects of the login screen.
 
-`ERSLoginMessage` is a enum representation of {ref}`LOGIN_MESSAGES`.
-*)
   ERSLoginMode    = enum(UNKNOWN, LEGACY, LAUNCHER);
   ERSLoginButton  = enum(LAUNCHER, EXISTING_USER, LOGIN, RETRY, OKAY, CONTINUE);
   ERSLoginInput   = enum(USERNAME, PASSWORD);
@@ -76,14 +44,7 @@ Enums representing various aspects of the login screen.
     AUTHENTICATOR
   );
 
-(*
-## TRSLogin
-Main record responsible for handling the {ref}`Login` screen.
 
-```{figure} ../../images/trslogin.png
-The login screen.
-```
-*)
   TRSLogin = record
     Bounds: TBox;
 
@@ -99,14 +60,7 @@ The login screen.
     ClearInputs: Boolean;
   end;
 
-(*
-## Login.Setup
-```pascal
-procedure TRSLogin.Setup();
-```
-Internal method responsible for setting up the {ref}`TRSLogin` coordinates.
-This is automatically called for you on the {ref}`Login variable`.
-*)
+
 procedure TRSLogin.Setup();
 begin
   Self.Bounds.X1 := Target.Width div 2 - 176;
@@ -180,13 +134,7 @@ begin
 end;
 
 
-(*
-## Login.FindButton
-```pascal
-function TRSLogin.FindButton(button: ERSLoginButton): Boolean;
-```
-Attempts to find the specified `ERSLoginButton`, returns `True` if we find it.
-*)
+
 function TRSLogin.FindButton(button: ERSLoginButton): Boolean;
 begin
   if button = ERSLoginButton.LAUNCHER then
@@ -203,18 +151,7 @@ begin
   Result := Self.Buttons[button].Text = OCR.Recognize(Self.Buttons[button].Bounds, RSFonts.PLAIN_12, [$FFFFFF], 0);
 end;
 
-(*
-## Login.ClickButton
-```pascal
-function TRSLogin.ClickButton(button: ERSLoginButton): Boolean;
-```
-Attempts to click the specified `ERSLoginButton`, returns `True` if we succeed.
 
-Example:
-```pascal
-WriteLn Login.ClickButton(ERSLoginButton.LOGIN);
-```
-*)
 function TRSLogin.ClickButton(button: ERSLoginButton): Boolean;
 begin
   if not Self.FindButton(button) then Exit;
@@ -223,19 +160,7 @@ begin
 end;
 
 
-(*
-## Login.SelectInput
-```pascal
-function TRSLogin.SelectInput(field: ERSLoginInput): Boolean;
-```
-Attempts to select the specified `ERSLoginInput`, returns `True` if we succeed.
-This waits a few milliseconds for the flashing yellow cursor for confirmation.
 
-Example:
-```pascal
-WriteLn Login.SelectInput(ERSLoginInput.USERNAME);
-```
-*)
 function TRSLogin.SelectInput(field: ERSLoginInput): Boolean;
 begin
   if SleepUntil(Target.HasColor($00FFFF, 0, 8, Self.Inputs[field]), 30, 100) then
@@ -250,35 +175,13 @@ begin
   Result := SleepUntil(Target.HasColor($00FFFF, 0, 8, Self.Inputs[field]), 30, 600);
 end;
 
-(*
-## Login.InputIsFilled
-```pascal
-function TRSLogin.InputIsFilled(field: ERSLoginInput): Boolean;
-```
-Returns True/False if the specified `field` is filled.
 
-Example:
-```pascal
-WriteLn Login.InputIsFilled(ERSLoginInput.USERNAME);
-```
-*)
 function TRSLogin.InputIsFilled(field: ERSLoginInput): Boolean;
 begin
   Result := Target.HasColor($FFFFFF, 0, 1, Self.Inputs[field]);
 end;
 
-(*
-## Login.ClearInput
-```pascal
-function TRSLogin.ClearInput(field: ERSLoginInput): Boolean;
-```
-Attempts to clear the  specified `field`.
 
-Example:
-```pascal
-WriteLn Login.ClearInput(ERSLoginInput.USERNAME);
-```
-*)
 function TRSLogin.ClearInput(field: ERSLoginInput): Boolean;
 begin
   if not Self.InputIsFilled(field) then Exit(True);
@@ -289,18 +192,7 @@ begin
   Keyboard.KeyUp(EKeyCode.BACK);
 end;
 
-(*
-## Login.FillInput
-```pascal
-function TRSLogin.FillInput(field: ERSLoginInput; details: String): Boolean;
-```
-Attempts to fill the  specified `field` with `details`.
 
-Example:
-```pascal
-WriteLn Login.FillInput(ERSLoginInput.USERNAME, 'myPlayer@email.com');
-```
-*)
 function TRSLogin.FillInput(field: ERSLoginInput; details: String): Boolean;
 begin
   if Self.InputIsFilled(field) then Exit(True);
@@ -311,19 +203,7 @@ begin
 end;
 
 
-(*
-## Login.GetMessage
-```pascal
-function TRSLogin.GetMessage(): ERSLoginMessage;
-```
-Returns the currently visible login message as a `ERSLoginMessage`.
-Check {ref}`Login Enums` for more information on `ERSLoginMessage`.
 
-Example:
-```pascal
-WriteLn Login.GetMessage();
-```
-*)
 function TRSLogin.GetMessage(): ERSLoginMessage;
 var
   dialog: String;
@@ -346,21 +226,7 @@ begin
 end;
 
 
-(*
-## Login.GetMode
-```pascal
-function TRSLogin.GetMode(): ERSLoginMode;
-```
-Returns the current login mode as a `ERSLoginMode`.
-The login mode can only be known from the "Welcome to RuneScape" screen.
 
-Check {ref}`Login Enums` for more information on `ERSLoginMode`.
-
-Example:
-```pascal
-WriteLn Login.GetMode();
-```
-*)
 function TRSLogin.GetMode(): ERSLoginMode;
 begin
   if Self.GetMessage() = ERSLoginMessage.WELCOME then
@@ -382,21 +248,7 @@ begin
 end;
 
 
-(*
-## Login.HandleWelcome
-```pascal
-function TRSLogin.HandleWelcome(): Boolean;
-```
-Attempts to handle the "Welcome to RuneScape" screen regardless of the
-`ERSLoginMode` the client is on.
 
-Check {ref}`Login Enums` for more information on `ERSLoginMode`.
-
-Example:
-```pascal
-WriteLn Login.HandleWelcome();
-```
-*)
 function TRSLogin.HandleWelcome(): Boolean;
 begin
   if Self.Mode = ERSLoginMode.UNKNOWN then
@@ -410,20 +262,7 @@ begin
   Result := SleepUntil(Self.GetMessage() <> ERSLoginMessage.WELCOME, RandomMode(100, 50, 1500), 600);
 end;
 
-(*
-## Login.Back2Welcome
-```pascal
-function TRSLogin.Back2Welcome(): Boolean;
-```
-Attempts to return to the "Welcome to RuneScape" screen.
-This is used to handle any screen that has an "Ok" button.
-Returns True if we succeed.
 
-Example:
-```pascal
-WriteLn Login.Back2Welcome();
-```
-*)
 function TRSLogin.Back2Welcome(): Boolean;
 begin
   if not Self.ClickButton(ERSLoginButton.OKAY) then Exit;
@@ -431,18 +270,7 @@ begin
 end;
 
 
-(*
-## Login.EnterCredentials
-```pascal
-function TRSLogin.EnterCredentials(username, password: String): Boolean;
-```
-Attempts to enter a user credentials.
 
-Example:
-```pascal
-WriteLn Login.EnterCredentials('username', 'password');
-```
-*)
 function TRSLogin.EnterCredentials(username, password: String): Boolean;
 begin
   if Self.ClearInputs then
@@ -457,17 +285,7 @@ begin
 end;
 
 
-(*
-## Login.Retry
-```pascal
-function TRSLogin.Retry(msg: ERSLoginMessage): Boolean;
-```
-Attempts to handle any screen that has a "Retry" button.
-Returns True if we succeed.
 
-The current `ERSLoginMessage` message has to be passed as `msg` so we know
-when we successfully handled the button.
-*)
 function TRSLogin.Retry(msg: ERSLoginMessage): Boolean;
 begin
   if not Self.ClickButton(ERSLoginButton.RETRY) then Exit;
@@ -475,23 +293,7 @@ begin
   Result := SleepUntil(Self.GetMessage() <> msg, RandomMode(100, 50, 1500), 600);
 end;
 
-(*
-## Login.HandleError
-```pascal
-function TRSLogin.HandleError(msg: ERSLoginMessage): Boolean;
-```
-Attempts to handle any screen that has an error message.
-Returns True if we succeed.
 
-The current `ERSLoginMessage` message has to be passed as `msg` so we know
-when we successfully handled the current error.
-
-Everytime this function is called, the internal `Login.Attempts` variable is
-increased.
-After 10 times of this being called without `Login.Attempts` being reset, this
-will raise an exception **IF** the reason we can't login is not the world being
-full. **IF** the reason is the world being full, this can be called forever.
-*)
 function TRSLogin.HandleError(msg: ERSLoginMessage): Boolean;
 var
   time: Integer;
@@ -518,24 +320,7 @@ begin
   raise GetDebugLn('Login', 'Failed to login 10 times. Last login state: ' + ToStr(msg));
 end;
 
-(*
-## Login.HandleMessage
-```pascal
-function TRSLogin.HandleMessage(msg: ERSLoginMessage; username, password: String): Boolean;
-```
-Attempts to handle whatever screen the login screen is currently at.
-Returns True if we succeed.
 
-The current `ERSLoginMessage` message has to be passed as `msg` so we know
-when we successfully handled the current error.
-
-The Player `username` and `password` we want to use also have to be passed in.
-This can be empty value if we are using the Jagex Launcher, e.g.: `'', ''`.
-
-On certain `ERSLoginMessages` that cannot be handled this will raise an
-exception to shutdown your script. For example, if the Player you are trying to
-use has been banned.
-*)
 function TRSLogin.HandleMessage(msg: ERSLoginMessage; username, password: String): Boolean;
 begin
   case msg of
@@ -567,20 +352,7 @@ begin
   end;
 end;
 
-(*
-## Login.DoLogin
-```pascal
-function TRSLogin.DoLogin(player: TRSPlayer): Boolean;
-```
-Attempts to login into `player`.
-If we login, the {ref}`Lobby` screen is handled for you.
-Returns true if we succeed.
 
-Example:
-```pascal
-WriteLn Login.DoLogin(player);
-```
-*)
 function TRSLogin.DoLogin(player: TRSPlayer = ['', '', '', [], True]): Boolean;
 var
   timeout: UInt64;
@@ -617,8 +389,5 @@ begin
 end;
 
 var
-(*
-## Login variable
-Global {ref}`TRSLogin` variable.
-*)
+
   Login: TRSLogin;

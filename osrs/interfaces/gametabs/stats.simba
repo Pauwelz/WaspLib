@@ -1,29 +1,9 @@
-(*
-# Stats
-Methods responsible for dealing with the stats tab.
-```{figure} ../../images/stats.png
-```
-*)
+
 {$DEFINE WL_STATS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSSkill
-```pascal
-ERSSkill = enum(
-  ATTACK, HITPOINTS, MINING,
-  STRENGTH, AGILITY, SMITHING,
-  DEFENCE, HERBLORE, FISHING,
-  RANGED, THIEVING, COOKING,
-  PRAYER, CRAFTING, FIREMAKING,
-  MAGIC, FLETCHING, WOODCUTTING,
-  RUNECRAFTING, SLAYER, FARMING,
-  CONSTRUCTION, HUNTER, TOTAL
-);
-```
-Enum representing all skills in oldschool runescape.
-*)
+
   ERSSkill = enum(
     ATTACK, HITPOINTS, MINING,
     STRENGTH, AGILITY, SMITHING,
@@ -35,10 +15,7 @@ Enum representing all skills in oldschool runescape.
     CONSTRUCTION, HUNTER, TOTAL
   );
 
-(*
-## TRSSkillInfo
-Helper record to read skill information when you hover them in the {ref}`Stats` gametab.
-*)
+
   TRSSkillInfo = record
     Level:     Integer;
     XP:        Integer;
@@ -46,100 +23,33 @@ Helper record to read skill information when you hover them in the {ref}`Stats` 
     Remainder: Integer;
   end;
 
-(*
-## TRSStats
-Main record used to interact with the {ref}`Stats` gametab.
-*)
+
   TRSStats = record
     Levels: array [ERSSkill] of Integer;
     Skills: TBoxArray;
   end;
 
-(*
-## Stats.SetupGameTab
-```pascal
-procedure TRSStats.SetupGameTab();
-```
-Internal method used to setup the {ref}`TRSStats` coordinates and internal values.
 
-This is automatically called for you on the {ref}`Stats variable`.
-*)
 procedure TRSStats.SetupGameTab();
 begin
   Self.Skills := TBoxArray.Create(GameTab.TopLeft.Offset(2, 6), 3, 8, 53, 23, [10, 9]);
 end;
 
-(*
-## TRSStats.Skills
-```pascal
-Skills: TBoxArray;
-```
-`TBoxes` for each of the {ref}`Stats` skills.
 
-Example:
-```pascal
-ShowOnTarget(Stats.Skills);
-```
-```{figure} ../../images/stats_skills.png
-```
 
-You can also access each skill box with an index or, more conveniently, with a
-{ref}`ERSSkill`.
 
-Example:
-```pascal
-ShowOnTarget(Stats.Skills[ERSSkill.HERBLORE]);
-```
-```{figure} ../../images/stats_skill.png
-```
-*)
-
-(*
-## Stats.IsOpen
-```pascal
-function TRSStats.IsOpen(): Boolean;
-```
-Returns true/false if the stats gametab is open or not.
-
-Example:
-```pascal
-WriteLn Stats.IsOpen();
-```
-*)
 function TRSStats.IsOpen(): Boolean;
 begin
   Result := GameTabs.IsOpen(ERSGameTab.STATS);
 end;
 
-(*
-## Stats.Open
-```pascal
-function TRSStats.Open(): Boolean;
-```
-Attempts to open the stats gametab.
 
-Example:
-```pascal
-WriteLn Stats.Open();
-```
-*)
 function TRSStats.Open(): Boolean;
 begin
   Result := GameTabs.Open(ERSGameTab.STATS);
 end;
 
-(*
-## Stats.Hover
-```pascal
-function TRSStats.Hover(skill: ERSSkill): Boolean;
-```
-Moves the mouse over to a skill box.
 
-Example:
-```pascal
-WriteLn Stats.Hover(ERSSkill.CONSTRUCTION);
-```
-*)
 function TRSStats.Hover(skill: ERSSkill): Boolean;
 begin
   Result := Self.Open();
@@ -148,13 +58,7 @@ begin
 end;
 
 
-(*
-## Stats.FindSkillInfo
-```pascal
-function TRSStats.FindSkillInfo(skill: ERSSkill; out skillInfo: TRSSkillInfo): Boolean;
-```
-Find and return a TRSSkillInfo if it matches the one we are looking for.
-*)
+
 function TRSStats.FindSkillInfo(skill: ERSSkill; out skillInfo: TRSSkillInfo): Boolean;
 var
   tpa: TPointArray;
@@ -186,18 +90,7 @@ begin
   Result := True;
 end;
 
-(*
-## Stats.GetSkillInfo
-```pascal
-function TRSStats.GetSkillInfo(skill: ERSSkill; waitTime: Integer = 1000): TRSSkillInfo;
-```
-Get the skill information about a skill when you hover it.
 
-Example:
-```pascal
-WriteLn Stats.GetSkillInfo(ERSSkill.CONSTRUCTION);
-```
-*)
 function TRSStats.GetSkillInfo(skill: ERSSkill; time: Integer = 1000): TRSSkillInfo;
 begin
   if not Self.Hover(skill) then Exit;
@@ -205,19 +98,7 @@ begin
 end;
 
 
-(*
-## Stats.GetLevel
-```pascal
-function TRSStats.GetLevel(skill: ERSSkill; useCache: Boolean = True): Integer;
-```
-Get the level of the specified **skill**. By default uses the levels cached in the Stats.Levels array.
-When using the cached methods, it can be used to retrieve the level of a skill while the gametab is open assuming the level is already cached.
 
-Example:
-```pascal
-WriteLn Stats.GetLevel(ERSSkill.HITPOINTS);
-```
-*)
 function TRSStats.GetLevel(skill: ERSSkill; useCache: Boolean = True): Integer;
 begin
   if useCache then
@@ -235,13 +116,7 @@ begin
     Self.Levels[skill] := Result;
 end;
 
-(*
-## Stats.CacheStats
-```pascal
-procedure TRSStats.CacheStats();
-```
-Method to update all cached levels.
-*)
+
 procedure TRSStats.CacheStats();
 var
   i: Integer;
@@ -250,28 +125,12 @@ begin
     Self.GetLevel(ERSSkill(i), False);
 end;
 
-(*
-## Stats.IncrementCachedLevel
-```pascal
-procedure TRSStats.IncrementCachedLevel(skill: ERSSkill);
-```
-Internal method to update cached levels. This is automatically called by Chat.LeveledUp().
 
-Example:
-```pascal
-WriteLn Stats.GetCurrentLevel(ERSSkill.PRAYER);
-Stats.IncrementLevel(ERSSkill.PRAYER);
-WriteLn Stats.GetCurrentLevel(ERSSkill.PRAYER);
-```
-*)
 procedure TRSStats.IncrementCachedLevel(skill: ERSSkill);
 begin
   if Self.Levels[skill] > 0 then Self.Levels[skill] += 1;
 end;
 
 var
-(*
-## Stats variable
-Global {ref}`TRSStats` variable.
-*)
+
   Stats: TRSStats;

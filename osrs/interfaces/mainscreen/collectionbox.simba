@@ -1,40 +1,16 @@
-(*
-# Collection Box
-Methods to interact with the collection box interface.
-```{figure} ../../images/collectionbox_interface.png
-```
-*)
+
 
 {$DEFINE WL_COLLECTIONBOX_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSCollectButton
-```pascal
-ERSCollectButton = enum(INVENTORY, BANK);
-```
-Enum representing the {ref}`Collection Box` buttons.
-*)
+
   ERSCollectButton = enum(INVENTORY, BANK);
 
-(*
-## ERSCollectSlots
-```pascal
-ERSCollectSlots = enum(STATUS, OPERATION, THUMBNAIL, ITEM, CHANGE);
-```
-Enum representing the {ref}`Collection Box` slot slots.
-The {ref}`Collection Box`, like the {ref}`Grand Exchange` has 8 slots available,
-Each of those slots, has it's own 5 small slots which is what this represents:
-```{figure} ../../images/collectionbox_subslots.png
-```
-*)
+
   ERSCollectSlots = enum(STATUS, OPERATION, THUMBNAIL, ITEM, CHANGE);
 
-(*
-## TRSCollectionBox
-Main record to interact with the {ref}`Collection Box` interface.
-*)
+
   TRSCollectionBox = record
     Title: TRSInterfaceTitle;
     Slots: TRSSlotInterface;
@@ -49,14 +25,7 @@ Main record to interact with the {ref}`Collection Box` interface.
     Depleted: Boolean;
   end;
 
-(*
-## CollectionBox.SetupInterface
-```pascal
-procedure TRSCollectionBox.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSCollectionBox` coordinates.
-This is automatically called for you on the {ref}`CollectionBox variable`.
-*)
+
 procedure TRSCollectionBox.SetupInterface();
 var
   boxes: TBoxArray;
@@ -120,18 +89,7 @@ end;
 
 
 
-(*
-## CollectionBox.IsOpen
-```pascal
-function TRSCollectionBox.IsOpen(): Boolean;
-```
-Returns true if the collection box is open.
 
-Example:
-```pascal
-WriteLn CollectionBox.IsOpen();
-```
-*)
 function TRSCollectionBox.IsOpen(): Boolean;
 begin
   if BankPin.IsOpen() then
@@ -146,18 +104,7 @@ begin
   Result := Self.Title.IsTitle('Collection Box');
 end;
 
-(*
-## CollectionBox.WaitOpen
-```pascal
-function TRSCollectionBox.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns true if the collection box opens within `time` milliseconds..
 
-Example:
-```pascal
-WriteLn CollectionBox.WaitOpen();
-```
-*)
 function TRSCollectionBox.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -165,18 +112,7 @@ begin
 end;
 
 
-(*
-## CollectionBox.HasChange
-```pascal
-function TRSCollectionBox.HasChange(slot: Integer): Boolean;
-```
-Returns true if the specified collection box `slot` has change.
 
-Example:
-```pascal
-WriteLn CollectionBox.HasChange(0);
-```
-*)
 function TRSCollectionBox.HasChange(slot: Integer): Boolean;
 begin
   if not Self.IsOpen() then Exit;
@@ -184,19 +120,7 @@ begin
 end;
 
 
-(*
-## CollectionBox.CollectSlot
-```pascal
-function TRSCollectionBox.CollectSlot(slot: Integer; button: ERSCollectButton = ERSCollectButton.INVENTORY): Boolean;
-```
-Attempts to collect the item and change of  the specified collection box `slot`.
-By default it attempts to collect things to your inventory, you can change it to the bank with the `button` parameter.
 
-Example:
-```pascal
-WriteLn CollectionBox.CollectSlot(0);
-```
-*)
 function TRSCollectionBox.CollectSlot(slot: Integer; button: ERSCollectButton = ERSCollectButton.INVENTORY): Boolean;
 begin
   if not Self.IsOpen() then Exit;
@@ -385,8 +309,5 @@ end;
 
 
 var
-(*
-## CollectionBox variable
-Global {ref}`TRSCollectionBox` variable.
-*)
+
   CollectionBox: TRSCollectionBox;

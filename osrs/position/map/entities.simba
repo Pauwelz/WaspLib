@@ -1,27 +1,10 @@
-(*
-# Entities
-This file is responsible for interacting with `RSEntities`.
 
-`RSEntities` is anything in the game that has a {ref}`ERSMinimapDot` assign to
-it on the {ref}`Minimap`.
-
-These are functionally very similar to {ref}`RSObjects` and you create and
-interact with them almost the same way.
-
-They only differ in the fact that `TRSEntity` can use a {ref}`ERSMinimapDot` to
-help find them and/or {ref}`TRSDotFilters`.
-Also, due to the unpredictability of entities that move, unlike {ref}`RSObjects`
-these do not have a rotation field.
-*)
 
 {$DEFINE WL_RSENTITIES_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSEntity
-Main type to handle {ref}`RSEntity`.
-*)
+
   TRSEntity = record
     UpText: TStringArray;
     Size: TVector3;
@@ -33,48 +16,10 @@ Main type to handle {ref}`RSEntity`.
     Walker: PRSWalker;
   end;
 
-(*
-## TRSEntityArray
-Array of {ref}`TRSEntity`.
-*)
+
   TRSEntityArray = array of TRSEntity;
 
-(*
-## RSEntity.Create
-```pascal
-function TRSEntity.Create(walker: PRSWalker; size: TVector3; coordinates: TPointArray; uptext: TStringArray = []; dots: ERSMinimapDots = []): TRSEntity; static;
-function TRSEntity.Create(json: TJSONItem): TRSEntity; static; overload;
-```
-Createors to create your {ref}`TRSEntity`.
 
-Assuming you create the `RSEntity` manually, the Createor will provide you
-with a fully built `TRSEntity` without a finder.
-
-You may optionally assign one later if you want:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  npc: TRSEntity;
-begin
-  Map.Setup([ERSChunk.VARROCK]);             //varrock west southern most banker
-  npc := TRSEntity.Create(@Map.Walker, [1,1,7], [[8652,36686]], ['Banker'], [ERSMinimapDot.NPC]);
-  //npc.Finder.Colors += [$543B3B, 10.121, EColorSpace.HSV, [0.528, 1.275, 1.199]];
-end;
-```
-
-The `json` version of the function expects a specific json structure which is
-the one that {ref}`Map JSONs` provide:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  npc: TRSEntity;
-begin
-  Map.Setup([ERSChunk.VARROCK]);
-  //Item[0] because this returns a JSON array. For more info read Map JSONs documentation.
-  npc := TRSEntity.Create(NPCsJSON.GetByName('banker', 1).Item[0]);
-end;
-```
-*)
 function TRSEntity.Create(walker: PRSWalker; size: TVector3; coordinates: TPointArray; uptext: TStringArray = []; dots: ERSMinimapDots = []): TRSEntity; static;
 begin
   Result.Coordinates := coordinates;
@@ -194,15 +139,7 @@ begin
     end;
 end;
 
-(*
-## TRSEntity.Find
-```pascal
-function TRSEntity.Find(cuboidArray: TCuboidArray): T2DPointArray;
-```
-Internal TRSEntity method responsible for filtering a TCuboidArray by what's visible in the mainscren.
-This is meant to filter TRSEntity.GetCuboidArray() so targets that are outside of the mainscreen are filtered out.
-You will probably never need to use this directly.
-*)
+
 function TRSEntity.FindOnMainScreen(cuboidArray: TCuboidArray): T2DPointArray;
 var
   i: Integer;
@@ -222,22 +159,7 @@ begin
   end;
 end;
 
-(*
-## TRSEntityV2.Find
-```pascal
-function TRSEntityV2.FindEx(out cuboids: TCuboidArray; out atpa: T2DPointArray): Boolean;
-function TRSEntityV2.Find(out atpa: T2DPointArray): Boolean;
-function TRSEntityV2.FindFromPosition(me: TPoint; out atpa: T2DPointArray): Boolean;
-```
-TRSEntityV2 method used to find a {ref}`TRSEntityV2`. If found returns true, if not returns false.
-The "extended" method in particular is mostly meant for debugging and is the one used when you call `Debug(TRSEntity)`.
 
-Example:
-```pascal
-WriteLn RSObjects.GEBank.Find(atpa); //Be in ge and with a walker setup there.
-Debug(atpa);
-```
-*)
 function TRSEntity.FindEx(me: TPoint; out cuboids: TCuboidArray; out atpa: T2DPointArray): Boolean;
 begin
   cuboids := Self.GetCuboidArray(me);
@@ -262,14 +184,7 @@ begin
   Result := Self.FindEx(position, cuboids, atpa);
 end;
 
-(*
-## TRSEntity._UpTextCheck
-```pascal
-function TRSEntity._UpTextCheck(out shouldExit: Boolean): Boolean;
-```
-Internal TRSEntity helper method that is used by all hovering methods.
-You probably don't need to use this directly.
-*)
+
 function TRSEntity._UpTextCheck(out shouldExit: Boolean): Boolean;
 var
   text: String;
@@ -296,14 +211,7 @@ begin
   shouldExit := False;
 end;
 
-(*
-## TRSEntity._HoverHelper
-```pascal
-function TRSEntity._HoverHelper(attempts: Integer; trackTarget: Boolean): Boolean;
-```
-Internal helper method used to hover a TRSEntity target.
-You should not use this directly.
-*)
+
 function TRSEntity._HoverHelper(attempts: Integer): Boolean;
 var
   shouldExit: Boolean;
@@ -340,16 +248,7 @@ begin
   end;
 end;
 
-(*
-## TRSEntity._WalkHoverHelper
-```pascal
-function TRSEntity._WalkHoverHelper(attempts: Integer; trackTarget: Boolean): Boolean;
-```
-Internal helper method used to walk and hover a TRSEntity target.
-You should not use this directly.
 
-This is responsible for deciding wether we should walk to a TRSEntity target or not before attempting to hover it.
-*)
 function TRSEntity._WalkHoverHelper(attempts: Integer): Boolean;
 var
   shouldExit: Boolean;
@@ -407,14 +306,7 @@ begin
   end;
 end;
 
-(*
-## TRSEntity._PreHoverHelper
-```pascal
-function TRSEntity.PreHoverHelper(attempts: Integer): Boolean;
-```
-Internal helper method used to pre-hover a TRSEntity target.
-You should not use this directly.
-*)
+
 function TRSEntity._PreHoverHelper(me: TPoint; attempts: Integer = 2): Boolean;
 var
   attempt: Integer;
@@ -429,16 +321,7 @@ begin
 end;
 
 
-(*
-## TRSEntity._ClickHelper
-```pascal
-function TRSEntity._ClickHelper(leftClick: Boolean): Boolean;
-```
-Internal TRSEntity helper method that is used by other clicking methods.
-You probably don't need to use this directly.
 
-This is what's responsible for deciding if we click a target we are hovering or not.
-*)
 function TRSEntity._ClickHelper(leftClick: Boolean): Boolean;
 begin
   Self.Walker^.TargetUpText := [];
@@ -464,16 +347,7 @@ begin
   Result := not leftClick and (Self.UpText <> []) and ChooseOption.Select(Self.UpText);
 end;
 
-(*
-## TRSEntity._SelectHelper
-```pascal
-function TRSEntity._SelectHelper(action: TStringArray): Boolean;
-```
-Internal TRSEntity helper method that is used by other select methods.
-You probably don't need to use this directly.
 
-This is what is responsible for deciding if we just left click a target we are hovering or right click it and choose an option.
-*)
 function TRSEntity._SelectHelper(action: TStringArray): Boolean;
 begin
   Self.Walker^.TargetUpText := [];
@@ -495,20 +369,7 @@ begin
 end;
 
 
-(*
-## TRSEntity.Hover
-```pascal
-function TRSEntity.Hover(attempts: Integer = 2; trackTarget: Boolean = TRSEntity.TrackTarget): Boolean;
-```
-Method used to hover a TRSEntity target if it's found on the mainscreen.
-It can update the target position while the mouse moves with **trackTarget**.
 
-Example:
-```pascal
-RSW.WebWalk(WaspWeb.LOCATION_VARROCK);
-RSObjects.GEBank.Hover(); //Be in GE with a walker setup there.
-```
-*)
 function TRSEntity.Hover(attempts: Integer = 2): Boolean;
 begin
   if ChooseOption.IsOpen() then
@@ -529,21 +390,7 @@ begin
   Result := Self._HoverHelper(attempts);
 end;
 
-(*
-## TRSEntity.WalkHover
-```pascal
-function TRSEntity.WalkHover(attempts: Integer = 2; trackTarget: Boolean = TRSEntity.TrackTarget): Boolean;
-```
-Method used to walk and hover a TRSEntity target if it's found on the mainscreen after walking.
-It can update the target position while the mouse moves with **trackTarget**.
 
-Example:
-```pascal
-//Be in varrock with a varrock map loaded.
-RSW.WebWalk(WaspWeb.LOCATION_VARROCK);
-RSObjects.GEBank.WalkHover();
-```
-*)
 function TRSEntity.WalkHover(attempts: Integer = 2): Boolean;
 var
   me, closest: TPoint;
@@ -586,37 +433,13 @@ begin
 end;
 
 
-(*
-## TRSEntity.Click
-```pascal
-function TRSEntity.Click(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
-```
-Method used to click a TRSEntity target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded.
-WriteLn RSObjects.GEBank.Click();
-```
-*)
 function TRSEntity.Click(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
 begin
   Result := Self.Hover(attempts) and Self._ClickHelper(leftClick);
 end;
 
-(*
-## TRSEntity.SelectOption
-```pascal
-function TRSEntity.SelectOption(action: TStringArray; attempts: Integer = 2): Boolean;
-```
-Method used to select an option on a TRSEntity target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded.
-WriteLn RSObjects.GEBank.SelectOption(['Collect']);
-```
-*)
 function TRSEntity.Select(action: TStringArray; attempts: Integer = 2): Boolean;
 begin
   Self.Walker^.ActionUpText := action;
@@ -624,19 +447,7 @@ begin
   Self.Walker^.ActionUpText := [];
 end;
 
-(*
-## TRSEntity.WalkClick
-```pascal
-function TRSEntity.WalkClick(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
-```
-Method used to walk and click a TRSEntity target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded, preferably far away so it has to walk.
-WriteLn RSObjects.GEBank.WalkClick();
-```
-*)
 function TRSEntity.WalkClick(leftClick: Boolean = True; attempts: Integer = 2): Boolean;
 begin
   if Self.Walker = nil then
@@ -648,19 +459,7 @@ begin
   Self.Walker^.TargetUpText := [];
 end;
 
-(*
-## TRSEntity.WalkSelectOption
-```pascal
-function TRSEntity.WalkSelectOption(action: TStringArray; attempts: Integer = 2): Boolean;
-```
-Method used to walk and select an option on a TRSEntity target if it's found on the mainscreen.
 
-Example:
-```pascal
-//Be in ge with a ge map loaded, preferably far away so it has to walk.
-WriteLn RSObjects.GEBank.WalkSelectOption(['Collect']);
-```
-*)
 function TRSEntity.WalkSelect(action: TStringArray; attempts: Integer = 2): Boolean;
 begin
   if Self.Walker = nil then
@@ -708,13 +507,7 @@ begin
     end;
 end;
 
-(*
-## TImage.DrawEntity
-```pascal
-procedure TImage.DrawEntity(npc: TRSEntity);
-```
-Helper method to debug TRSEntity.
-*)
+
 procedure TImage.DrawEntity(entity: TRSEntity);
 var
   atpa: T2DPointArray;

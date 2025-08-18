@@ -1,41 +1,15 @@
-(*
-# ConsumeHandler
-Manages consumable items like food and potions. It handles loading, inventory scanning, and consumption logic with cooldowns and effects.
-*)
+
 {$DEFINE WL_CONSUMABLES_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
-(*
-## type ERSConsumable
-```pascal
-type
-  ERSConsumable = (
-    FOOD, PRAYER, ENERGY, POISON, ANTI_FIRE, STRENGTH_BOOST, ATTACK_BOOST,
-    DEFENCE_BOOST, RANGING_BOOST, MAGIC_BOOST
-  );
-```
-Defines the categories of consumables available.
-*)
+
 type
   ERSConsumable = (
     FOOD, PRAYER, ENERGY, POISON, ANTI_FIRE, STRENGTH_BOOST, ATTACK_BOOST,
     DEFENCE_BOOST, RANGING_BOOST, MAGIC_BOOST
   );
 
-(*
-## type TRSConsumableItem
-```pascal
-  TRSConsumableItem = record
-    Name: String;
-    Category: ERSConsumable;
-    CooldownMs: Int64;
-    DurationMs: Int64;
-    IsComboFood: Boolean;
-    Points: Int64;
-  end;
-```
-Represents a single consumable item with its properties.
-*)
+
   TRSConsumableItem = record
     Name: String;
     Category: ERSConsumable;
@@ -46,21 +20,7 @@ Represents a single consumable item with its properties.
   end;
   TRSConsumableItemArray = array of TRSConsumableItem;
 
-(*
-## type TRSConsumables
-```pascal
-  TRSConsumables = record
-    Name: String;
-    Consumables: TRSConsumableItemArray;
-    IsSetup: Boolean;
-    MinInvPoints: Int64;
-    ActiveConsumables: TRSConsumableItemArray;
-    Timers: array of TCountDown;
-    CooldownTimers: array [ERSConsumable] of TCountDown;
-  end;
-```
-Manages all aspects of item consumption.
-*)
+
   TRSConsumables = record
     Name: String;
     Consumables: TRSConsumableItemArray;
@@ -248,14 +208,7 @@ begin
 end;
 
 {%codetools on}
-(*
-## TRSConsumables.Setup
-```pascal
-procedure TRSConsumables.Setup();
-```
-Initializes the consume handler by loading data from `consumables.json`.
-Must be called before other operations.
-*)
+
 procedure TRSConsumables.Setup();
 var
   json: TJSONParser;
@@ -279,37 +232,19 @@ begin
   Self.IsSetup := True;
 end;
 
-(*
-## TRSConsumables.Find
-```pascal
-function TRSConsumables.Find(consumableType: ERSConsumable): TRSConsumableItemArray;
-```
-Scans inventory for all consumables of a specific category.
-*)
+
 function TRSConsumables.Find(consumableType: ERSConsumable): TRSConsumableItemArray;
 begin
   Result := Self._ScanInventory(consumableType, True);
 end;
 
-(*
-## TRSConsumables.FindAll
-```pascal
-function TRSConsumables.FindAll(): TRSConsumableItemArray;
-```
-Scans inventory for all available consumables of any category.
-*)
+
 function TRSConsumables.FindAll(): TRSConsumableItemArray;
 begin
   Result := Self._ScanInventory(ERSConsumable.FOOD, False);
 end;
 
-(*
-## TRSConsumables.Count
-```pascal
-function TRSConsumables.Count(consumableType: ERSConsumable): Int32;
-```
-Counts the number of items of a specific consumable category in inventory.
-*)
+
 function TRSConsumables.Count(consumableType: ERSConsumable): Integer;
 var
   i, j: Integer;
@@ -347,25 +282,13 @@ begin
   end;
 end;
 
-(*
-## TRSConsumables.Has
-```pascal
-function TRSConsumables.Has(consumableType: ERSConsumable): Boolean;
-```
-Checks if the inventory has at least one item of a specific category.
-*)
+
 function TRSConsumables.Has(consumableType: ERSConsumable): Boolean;
 begin
   Result := Self.Count(consumableType) > 0;
 end;
 
-(*
-## TRSConsumables.GetBest
-```pascal
-function TRSConsumables.GetBest(consumableType: ERSConsumable): TRSConsumableItem;
-```
-Finds the best consumable of a category from inventory based on `Points`.
-*)
+
 function TRSConsumables.GetBest(consumableType: ERSConsumable): TRSConsumableItem;
 var
   availableConsumables: TRSConsumableItemArray;
@@ -386,13 +309,7 @@ begin
       Result := availableConsumables[i];
 end;
 
-(*
-## TRSConsumables.CanConsume
-```pascal
-function TRSConsumables.CanConsume(consumableType: ERSConsumable): Boolean;
-```
-Checks if a consumable can be used, considering active effects.
-*)
+
 function TRSConsumables.CanConsume(consumableType: ERSConsumable): Boolean;
 var
   c: TRSConsumableItem;
@@ -404,13 +321,7 @@ begin
   Result := True;
 end;
 
-(*
-## TRSConsumables.HasEnoughPoints
-```pascal
-function TRSConsumables.HasEnoughPoints(consumableType: ERSConsumable): Boolean;
-```
-Checks if total points of a consumable type meet the `MinInvPoints` threshold.
-*)
+
 function TRSConsumables.HasEnoughPoints(consumableType: ERSConsumable): Boolean;
 var
   consumables: TRSConsumableItemArray;
@@ -426,13 +337,7 @@ begin
   Result := totalPoints >= Self.MinInvPoints;
 end;
 
-(*
-## TRSConsumables.Consume
-```pascal
-function TRSConsumables.Consume(consumableType: ERSConsumable; fastMouse: TMouse = Mouse; useFast: Boolean = False): Boolean;
-```
-Consumes the best item of a specified category from inventory.
-*)
+
 function TRSConsumables.Consume(consumableType: ERSConsumable; fast: Boolean = False): Boolean;
 var
   consumable: TRSConsumableItem;

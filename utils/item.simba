@@ -1,46 +1,17 @@
-(*
-# Item
-Page dedicated to runescape items and misc functions related to them.
-*)
+
 {$DEFINE WL_ITEM_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 const
-(*
-## Quantity Constants
-```pascal
-QUANTITY_ALL = 0;
-QUANTITY_ALL_BUT_ONE = -1;
-```
-In WaspLib you have this 2 constants to use in interfaces that allows you to
-specify "all" quantities of items, e.g. the {ref}`bank` interface.
-*)
+
   QUANTITY_ALL = 0;
   QUANTITY_ALL_BUT_ONE = -1;
 
 type
-(*
-## ERSItemQuantity
-```pascal
-ERSItemQuantity = enum(ONE, FIVE, TEN, CUSTOM, ALL);
-```
-General purpose item quantity enum.
-*)
+
   ERSItemQuantity = enum(ONE, FIVE, TEN, CUSTOM, ALL);
 
-(*
-### ERSItemQuantity.Integer2Quantity
-```pascal
-function ERSItemQuantity.Integer2Quantity(quantity: Integer): ERSItemQuantity; static;
-```
-Internal helper function to convert a integer quantity into a ERSItemQuantity.
 
-Example:
-```pascal
-WriteLn ERSItemQuantity.Integer2Quantity(5);
-WriteLn ERSItemQuantity.Integer2Quantity(7);
-```
-*)
 function ERSItemQuantity.Integer2Quantity(quantity: Integer): ERSItemQuantity; static;
 begin
   case quantity of
@@ -53,50 +24,19 @@ begin
 end;
 
 type
-(*
-## TRSItem
-The main type that represents, well, a runescape item.
-`TRSItem` is a type of `String` and therefore inherits all `String` methods.
-*)
+
   TRSItem = String;
-(*
-## TRSItemArray
-Array type of `TRSItem`.
-*)
+
   TRSItemArray = array of TRSItem;
 
 
-(*
-## TRSItem.HasAmount
-```pascal
-function TRSItem.HasAmount(): Boolean;
-```
-Checks if the `TRSItem` has "doses" or "charges".
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.HasAmount(); //true
-```
-*)
 function TRSItem.HasAmount(): Boolean;
 begin
   Result := Self.EndsWith(')', True);
 end;
 
-(*
-## TRSItem.SimplifyName
-```pascal
-function TRSItem.SimplifyName(): String;
-```
-Internal helper function to get a human like short item name, usually to search.
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.SimplifyName();
-```
-*)
 function TRSItem.SimplifyName(): String;
 var
   short, long: Integer;
@@ -113,26 +53,13 @@ begin
   Result := Result.CopyRange(0, Random(short, long));
 end;
 
-(*
-## Item.GetStackBox
-```pascal
-function TRSItem.GetStackBox(slot: TBox): TBox; static;
-```
-Returns the correct text box of an item's amount text based on the item box.
-*)
+
 function TRSItem.GetStackBox(slot: TBox): TBox; static;
 begin
   Result := [slot.X1, slot.Y1-1, slot.X1 + 35, slot.Y1 + 11];
 end;
 
-(*
-## Item.ReadStack
-```pascal
-function TRSItem.ReadStack(slot: TBox): Integer; static;
-```
-For use with items in like bankscreen, inventory, shops and so on to
-get the number of stacked items there are.
-*)
+
 function TRSItem.ReadStack(slot: TBox): Integer; static;
 var
   i: Integer;
@@ -147,59 +74,23 @@ begin
 end;
 
 type
-(*
-## TRSBankItem
-Helper type to handle bank items better.
-This holds information about the item name, quantity and whether it's noted or
-not.
-*)
+
   TRSBankItem = object
     Item: TRSItem;
     Quantity: Integer;
     Noted: Boolean;
   end;
 
-(*
-## TRSBankItemArray
-Array type of `TRSBankItem`.
-*)
+
   TRSBankItemArray = array of TRSBankItem;
 
-(*
-## TRSBankItem.Construct
-```pascal
-function TRSBankItem.Construct(item: TRSItem; quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem; static;
-```
-Creates a TRSBankItem.
 
-Example:
-```pascal
-var
-  bankitem: TRSBankItem;
-begin
-  bankitem := new TRSBankItem('abyssal whip', 1);
-end.
-```
-*)
 function TRSBankItem.Construct(item: TRSItem; quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem; static;
 begin
   Result := item.ToBankItem(quantity);
 end;
 
-(*
-## TRSItem.ToBankItem
-```pascal
-function TRSItem.ToBankItem(quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem;
-```
-Returns a `TRSBankItem` based on the `TRSItem` in question with the specified
-`quantity`.
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.ToBankItem();
-```
-*)
 function TRSItem.ToBankItem(quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem;
 begin
   Result.Quantity := quantity;
@@ -208,13 +99,7 @@ begin
   else Result.Item := Self;
 end;
 
-(*
-## TRSBankItem.ToItem
-```pascal
-function TRSBankItem.ToItem(): TRSItem;
-```
-The opposite of {ref}`TRSItem.ToBankItem`
-*)
+
 function TRSBankItem.ToItem(): TRSItem;
 begin
   Result := Self.Item;

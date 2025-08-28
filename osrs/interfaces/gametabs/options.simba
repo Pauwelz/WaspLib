@@ -1,55 +1,22 @@
-(*
-# Options
-Methods to interact with the options gametab.
-```{figure} ../../images/options.png
-```
-*)
+
 
 {$DEFINE WL_OPTIONS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSOptionsTab
-```pascal
-ERSOptionsTab = enum(CONTROLS, AUDIO, DISPLAY);
-```
-Enum representing each of the options tabs.
-*)
+
   ERSOptionsTab = enum(CONTROLS, AUDIO, DISPLAY);
 
-(*
-## ERSOptionsSlider
-```pascal
-ERSOptionsSlider = enum(BRIGHTNESS, ZOOM);
-```
-Enum representing the 2 important sliders the options gametab has available.
-Could be expanded in the future to include the sound sliders but for now only has this 2.
-*)
+
   ERSOptionsSlider = enum(BRIGHTNESS, ZOOM);
 
-(*
-## ERSOptionsDropDown
-```pascal
-ERSOptionsDropDown = enum(PLAYER_ATTACK, NPC_ATTACK, CLIENT_MODE);
-```
-Enum representing each of the options gametab dropdowns.
-*)
+
   ERSOptionsDropDown = enum(PLAYER_ATTACK, NPC_ATTACK, CLIENT_MODE);
 
-(*
-## ERSOptionsButton
-```pascal
-ERSOptionsButton = enum(AID, RUN, HOUSE, BOND, ALL_SETTINGS);
-```
-Enum representing each of the options gametab buttons.
-*)
+
   ERSOptionsButton = enum(AID, RUN, HOUSE, BOND, ALL_SETTINGS);
 
-(*
-## TRSOptions
-Main record responsible with interacting with the {ref}`Options` gametab.
-*)
+
   TRSOptions = record
     Tabs: TBoxArray;
     Sliders: array [ERSOptionsSlider] of TRSSlider;
@@ -59,15 +26,7 @@ Main record responsible with interacting with the {ref}`Options` gametab.
     MaxBrightness, RoofsHidden: Boolean;
   end;
 
-(*
-## Options.SetupGameTab
-```pascal
-procedure TRSOptions.SetupGameTab();
-```
-Internal method used to setup the {ref}`TRSOptions` coordinates.
 
-This is automatically called for you on the {ref}`Options variable`.
-*)
 procedure TRSOptions.SetupGameTab();
 var
   boxes: TBoxArray;
@@ -115,78 +74,22 @@ begin
   end;
 end;
 
-(*
-## TRSOptions.Buttons
-```pascal
-Buttons: array [ERSOptionsButton] of TRSButton;
-```
-`TRSButton` for each of the {ref}`Options` buttons.
 
-Example:
-```pascal
-ShowOnTarget(Options.Buttons);
-```
-```{figure} ../../images/options_buttons.png
-```
 
-You can also access each button with an index or, more conveniently, with a
-{ref}`ERSHouseOptionsButton`.
 
-Example:
-```pascal
-ShowOnTarget(Options.Buttons[ERSOptionsButton.HOUSE]);
-```
-```{figure} ../../images/options_button.png
-```
-*)
-
-(*
-## Options.IsOpen
-```pascal
-function TRSOptions.IsOpen(): Boolean;
-```
-Returns true/false if the options gametab is open or not.
-
-Example:
-```pascal
-WriteLn Options.IsOpen();
-```
-*)
 function TRSOptions.IsOpen(): Boolean;
 begin
   Result := GameTabs.IsOpen(ERSGameTab.OPTIONS);
 end;
 
-(*
-## Options.Open
-```pascal
-function TRSOptions.Open(): Boolean;
-```
-Attempts to open the options gametab.
 
-Example:
-```pascal
-WriteLn Options.Open();
-```
-*)
 function TRSOptions.Open(): Boolean;
 begin
   Result := GameTabs.Open(ERSGameTab.OPTIONS);
 end;
 
 
-(*
-## Options.GetTab
-```pascal
-function TRSOptions.GetTab(): ERSOptionsTab;
-```
-Returns the currently active {ref}`ERSOptionsTab`.
 
-Example:
-```pascal
-WriteLn Options.GetTab();
-```
-*)
 function TRSOptions.GetTab(): ERSOptionsTab;
 var
   tab: ERSOptionsTab;
@@ -197,18 +100,7 @@ begin
       Exit(tab);
 end;
 
-(*
-## Options.OpenTab
-```pascal
-function TRSOptions.OpenTab(tab: ERSOptionsTab): Boolean;
-```
-Attempts to open the specified `tab` {ref}`ERSOptionsTab`.
 
-Example:
-```pascal
-WriteLn Options.OpenTab(ERSOptionsTab.DISPLAY);
-```
-*)
 function TRSOptions.OpenTab(tab: ERSOptionsTab): Boolean;
 begin
   if not Self.Open() then Exit;
@@ -220,21 +112,7 @@ begin
 end;
 
 
-(*
-## Options.GetZoomLevel
-```pascal
-function TRSOptions.GetZoomLevel(useCache: Boolean = True): Integer;
-```
-Retrieves the current zoom level.
-By default it uses the value cached in `TRSOptions.ZoomLevel` if it is already set.
-If it's not set or if you decide to use this with `useCache` set to `False`,
-`TRSOptions.ZoomLevel` will be updated with the value this returns.
 
-Example:
-```pascal
-WriteLn Options.GetZoomLevel();
-```
-*)
 function TRSOptions.GetZoomLevel(useCache: Boolean = True): Integer;
 begin
   if useCache and (Self.ZoomLevel > -1) then
@@ -251,20 +129,7 @@ begin
   Result := Self.ZoomLevel;
 end;
 
-(*
-## Options.SetZoomLevel
-```pascal
-function TRSOptions.SetZoomLevel(level: Integer): Boolean;
-```
-Sets a new zoom level through the options gametab.
-If we successfully update the zoom level we update the cached
-`TRSOptions.ZoomLevel`, if we don't, we reset it to `-1`.
 
-Example:
-```pascal
-Options.SetZoomLevel(30);
-```
-*)
 function TRSOptions.SetZoomLevel(level: Integer): Boolean;
 begin
   if not Self.OpenTab(ERSOptionsTab.DISPLAY) then Exit;
@@ -277,20 +142,7 @@ begin
 end;
 
 
-(*
-## Options.SetPlayerAttack
-```pascal
-function TRSOptions.SetPlayerAttack(index: Integer): Boolean;
-function TRSOptions.SetPlayerAttack(option: String): Boolean; overload;
-```
-Attempts to set the specified attack option for players.
 
-Example:
-```pascal
-WriteLn Options.SetPlayerAttack('Depends on combat levels');
-WriteLn Options.SetPlayerAttack(2);
-```
-*)
 function TRSOptions.SetPlayerAttack(index: Integer): Boolean;
 begin
   if not Self.OpenTab(ERSOptionsTab.CONTROLS) then Exit;
@@ -304,20 +156,7 @@ begin
 end;
 
 
-(*
-## Options.SetNPCAttack
-```pascal
-function TRSOptions.SetNPCAttack(index: Integer): Boolean;
-function TRSOptions.SetNPCAttack(option: String): Boolean; overload;
-```
-Attempts to set the specified attack option for NPCs.
 
-Example:
-```pascal
-WriteLn Options.SetNPCAttack('Depends on combat levels');
-WriteLn Options.SetNPCAttack(2);
-```
-*)
 function TRSOptions.SetNPCAttack(index: Integer): Boolean;
 begin
   if not Self.OpenTab(ERSOptionsTab.CONTROLS) then Exit;
@@ -331,18 +170,7 @@ begin
 end;
 
 
-(*
-## Options.SetClientMode
-```pascal
-function TRSOptions.SetClientMode(mode: ERSMode): Boolean;
-```
-Attempts to set the specified `mode` client mode.
 
-Example:
-```pascal
-WriteLn Options.SetClientMode('Fixed');
-```
-*)
 function TRSOptions.SetClientMode(mode: ERSMode): Boolean;
 begin
   if not Self.OpenTab(ERSOptionsTab.DISPLAY) then Exit;
@@ -353,20 +181,7 @@ begin
 end;
 
 
-(*
-## Options.RenderSelf
-```pascal
-TRSOptions.RenderSelf();
-```
-Writes "::renderself" on the chat and presses enter.
 
-This toggles your character being rendered.
-
-Example:
-```pascal
-Options.RenderSelf();
-```
-*)
 procedure TRSOptions.RenderSelf();
 begin
   if Chat.InputHasText() then Keyboard.KeyPress(EKeyCode.RETURN);
@@ -374,35 +189,13 @@ begin
 end;
 
 
-(*
-## Options.GetRoofsState
-```pascal
-function TRSOptions.GetRoofsState(): Boolean;
-```
-Returns the roofs state.
 
-Example:
-```pascal
-Options.GetRoofsState();
-```
-*)
 function TRSOptions.GetRoofsState(): Boolean;
 begin
   Result := RSCacheParser.RoofsHidden();
 end;
 
-(*
-## Options.HideRoofs
-```pascal
-function TRSOptions.HideRoofs(): Boolean;
-```
-Attempts to hide roofs.
 
-Example:
-```pascal
-Options.HideRoofs();
-```
-*)
 function TRSOptions.HideRoofs(): Boolean;
 begin
   if RSCacheParser.Disabled then Exit(True);
@@ -417,18 +210,7 @@ begin
   else RSCacheParser.Disabled := True;
 end;
 
-(*
-## Options.ShowRoofs
-```pascal
-function TRSOptions.ShowRoofs(): Boolean;
-```
-Attempts to show roofs.
 
-Example:
-```pascal
-Options.ShowRoofs();
-```
-*)
 function TRSOptions.ShowRoofs(): Boolean;
 begin
   if RSCacheParser.Disabled then Exit(True);
@@ -444,19 +226,7 @@ begin
 end;
 
 
-(*
-## Options.GetBrightness
-```pascal
-function TRSOptions.GetBrightness(): Integer;
-```
-Returns the current brightness level. By default it uses {ref}`RSCacheParser` for
-this so it doesn't need to open the options tab.
 
-Example:
-```pascal
-WriteLn Options.GetBrightness();
-```
-*)
 function TRSOptions.GetBrightness(): Integer;
 var
   tmp: Integer;
@@ -483,18 +253,7 @@ begin
   Self.MaxBrightness := Result = 100;
 end;
 
-(*
-## Options.SetMaxBrightness
-```pascal
-function TRSOptions.SetMaxBrightness(): Boolean;
-```
-Attempts to set your brightness to 100, which is the only value supported by WaspLib.
 
-Example:
-```pascal
-WriteLn Options.SetMaxBrightness();
-```
-*)
 function TRSOptions.SetMaxBrightness(): Boolean;
 begin
   if Self.GetBrightness() = 100 then Exit(True);
@@ -507,8 +266,5 @@ begin
 end;
 
 var
-(*
-## Options variable
-Global {ref}`TRSOptions` variable.
-*)
+
   Options: TRSOptions;

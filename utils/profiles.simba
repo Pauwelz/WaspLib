@@ -1,16 +1,9 @@
-(*
-# Profiles
-Page dedicated to handling profile accounts.
-*)
+
 {$DEFINE WL_PROFILES_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 var
-(*
-## ProfileIndex variable
-This variable is what tells WaspLib which account you will be using of the ones you have in a {ref}`TProfileArray` you want to
-use for this botting session.
-*)
+
   ProfileIndex: Integer;
 
 type
@@ -20,24 +13,10 @@ type
     Active: Boolean;
   end;
 
-(*
-## TProfileArray
-Type that holds player account information for {ref}`login`, world hopping and {ref}`bankpin` handling.
-*)
+
   TProfileArray = array of TProfile;
 
-(*
-## TProfileArray.Add
-```pascal
-procedure TProfileArray.Add(user, pass: String; pin: String = ''; worlds: TIntegerArray = []);
-```
-Adds a TRSAccountProfile to the TProfileArray.
 
-Example:
-```pascal
-Profiles.Add('username', 'password', '0000');
-```
-*)
 procedure TProfileArray.Add(name, user, pass: String; pin: String = ''; worlds: TIntegerArray = []);
 begin
   Self += [name, user, pass, pin, worlds, true];
@@ -68,20 +47,7 @@ begin
     raise GetDebugLn('Profiles', 'No active Profiles to switch to.');
 end;
 
-(*
-## Profiles.GetPlayer
-```pascal
-function TProfileArray.GetPlayer(): TRSAccountProfile;
-```
-Returns the currently selected TRSAccountProfile.
-The currently selected TRSAccountProfile is decided by `ProfileIndex` which
-is an index of the TRSAccountProfileArra.
 
-Example:
-```pascal
-WriteLn Profiles.GetPlayer().Username;
-```
-*)
 function TProfileArray.GetPlayer(): TProfile;
 begin
   if Self = [] then
@@ -92,19 +58,7 @@ begin
   Result := Self[ProfileIndex];
 end;
 
-(*
-## Profiles.GetPin
-```pascal
-function TProfileArray.GetPin(): String;
-```
-Get the current Player bank pin.
 
-Example:
-```pascal
-if BankPin.IsOpen() then
-  BankPin.Enter(Profiles.GetPin());
-```
-*)
 function TProfileArray.GetPin(): String;
 begin
   Result := Self.GetPlayer().Pin;
@@ -112,13 +66,7 @@ begin
     raise GetDebugLn('Profiles', 'Invalid bank pin.');
 end;
 
-(*
-## Profiles.Load
-```pascal
-procedure TProfileArray.Load();
-```
-Loads all account profiles from the accounts JSON files (0.json, 1.json, etc).
-*)
+
 procedure TProfileArray.Load();
 var
   i: Integer;
@@ -156,13 +104,7 @@ begin
   end;
 end;
 
-(*
-## TProfileArray.Contains
-```pascal
-function TProfileArray.Contains(name: String): Boolean;
-```
-Checks if a profile with the given name already exists.
-*)
+
 function TProfileArray.Contains(name: String): Boolean;
 var
   i: Integer;
@@ -174,8 +116,5 @@ begin
 end;
 
 var
-(*
-## Profiles variable
-Global {ref}`TProfileArray` variable.
-*)
+
   Profiles: TProfileArray;

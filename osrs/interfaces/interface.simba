@@ -1,16 +1,10 @@
-(*
-# Interface
-The core of interface handling.
-*)
+
 
 {$DEFINE WL_INTERFACE_CORE_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSInterface
-Core record for `Interfaces` with a lot of interface coordinate data.
-*)
+
   TRSInterface = record
     Bounds: TBox;
     Width, Height: Integer;

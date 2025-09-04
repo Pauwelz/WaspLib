@@ -1,16 +1,10 @@
-(*
-# WebGraph Generator
-File responsible for webgraph generation out of collision map images.
-*)
+
 
 {$DEFINE WL_WEBGRAPHGEN_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 type
-(*
-## TWebGraphGenerator
-Record responsible for generating webgraphs from collision map images.
-*)
+
   TWebGraphGenerator = record
     Spacing, MinimumTiles, NodeRadius, MaxConnections: Integer;
     WallCrossings, Disabled: Boolean;
@@ -24,26 +18,7 @@ begin
   Result := HashData(EHashAlgo.CRC32, @data[0], Length(data));
 end;
 
-(*
-## WebGraphGenerator.Setup
-```pascal
-procedure TWebGraphGenerator.Setup();
-```
-Sets up the `TWebGraphGenerator` with the following settings which are the
-defaults:
-```pascal
-WebGraphGenerator.Spacing := 18;         //low = better/slower, high = worse/faster
-WebGraphGenerator.MinimumTiles := 4;     //spaces with less tiles than this will be ignored.
-WebGraphGenerator.NodeRadius := 50;      //closed space less than NodeRadius pixels will have a single node.
-WebGraphGenerator.MaxConnections := 6;   //Max connections per node.
-WebGraphGenerator.WallCrossings := True; //Whether to allow wall crossings when there's a close path around it.
-```
 
-Feel free to change the settings to suit your need and use the
-{ref}`Map Debugger` to see what the results look like.
-
-To do so you **MUST DO IT BEFORE** setting up your {ref}`Map`.
-*)
 procedure TWebGraphGenerator.Setup();
 begin
   Self.Spacing := 18;
@@ -220,46 +195,7 @@ begin
 end;
 
 
-(*
-## WebGraphGenerator.BuildGraph
-```pascal
-function TWebGraphGenerator._BuildGraph(map: TImage; white, red: TPointArray): TWebGraph;
-function TWebGraphGenerator.BuildGraph(name: String; map: TImage): TWebGraph;
-```
-Magically builds a webgraph for you for a given collision map passed into `map`.
 
-The collision map can only have 4 colors:
-- white ($FFFFFF) for walkable space
-- black ($000000) for non walkable space
-- red ($0000FF) for doors (optional)
-- gray ($333333) for objects (optional)
-
-```{note}
-This is an internal method. Don't use it if you don't know what you are doing.
-```
-
-It's hard to go into detail on how this works but if you want to see the result
-run this example code:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Map.Setup([Chunk(Box(49,54,50,53), 0)]);
-  Map.Debug();
-end.
-```
-
-This will setup a map with a small piece of varrock and then open the
-{ref}`Map Debugger`.
-
-On the {ref}`Map Debugger` change the dropdown to the collision map if you want
-to see what it looks like, that is what will go through this as the `map`
-parameter and it should look something like this:
-
-```{figure} ../../images/map_collision.png
-```
-
-As a bonus you can also see the resulting webgraph!
-*)
 function TWebGraphGenerator._BuildGraph(map: TImage; white, red: TPointArray): TWebGraph;
 var
   i, j, d, len, hi, minLen: Integer;
@@ -436,8 +372,5 @@ begin
 end;
 
 var
-(*
-## WebGraphGenerator variable
-Global {ref}`TWebGraphGenerator` variable.
-*)
+
   WebGraphGenerator: TWebGraphGenerator;

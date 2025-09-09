@@ -1,26 +1,10 @@
-(*
-# GrandExchangeChat
-Methods to interact with the GrandExchangeChat interface:
-```{figure} ../../images/gec_interface.png
-```
 
-The {ref}`GrandExchange` is a very complex interface, probably the most complex
-available in OldSchool RuneScape and for that reason, the functionality to
-fully interact with it is split into multiple files and records:
-- {ref}`GrandExchange`, the main grand exchange screen.
-- {ref}`GrandExchangeHistory`, the history screen of the grand exchange.
-- {ref}`GrandExchangeChat`, the chat interface of the grand exchange when you are setting up a buy offer and what this page is about.
-- {ref}`GrandExchangeOffer`, the screen of the grand exchange where you view or setup a new offer.
-*)
 
 {$DEFINE WL_GRANDEXCHANGE_CHAT_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSGrandExchangeChat
-Record responsible to handle the {ref}`GrandExchangeChat` interface.
-*)
+
   TRSGrandExchangeChat = record
     Bounds, Header: TBox;
     Scroll: TRSScrollBar;
@@ -30,24 +14,7 @@ Record responsible to handle the {ref}`GrandExchangeChat` interface.
 
 function TRSGrandExchangeChat.IsOpen(): Boolean; forward;
 
-(*
-## GrandExchangeChat.Grid
-```pascal
-property TRSGrandExchangeChat.Grid: TBoxArray;
-```
-Returns the {ref}`GrandExchangeChat` search grid.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  while True do
-    ShowOnTarget(GrandExchangeChat.Grid);
-end.
-```
-```{figure} ../../images/gec_grid.gif
-```
-*)
 property TRSGrandExchangeChat.Grid: TBoxArray;
 var
   b, tmp: TBox;
@@ -88,14 +55,7 @@ begin
   Result := Result.Sort(weights, False);
 end;
 
-(*
-## GrandExchangeChat.SetupInterface
-```pascal
-procedure TRSGrandExchangeChat.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSGrandExchangeChat` coordinates.
-This is automatically called for you on the {ref}`GrandExchangeChat variable`.
-*)
+
 procedure TRSGrandExchangeChat.SetupInterface();
 begin
   Self.Bounds := Chat.Bounds;
@@ -116,18 +76,7 @@ begin
   Self.Items.Setup('GrandExchangeChat.Items', @Self.Slots, [0, 1], @Self.IsOpen);
 end;
 
-(*
-## GrandExchangeChat.IsOpen
-```pascal
-function TRSGrandExchangeChat.IsOpen(): Boolean;
-```
-Returns true if the Grand Exchange is open.
 
-Example:
-```pascal
-WriteLn GrandExchangeChat.IsOpen();
-```
-*)
 function TRSGrandExchangeChat.IsOpen(): Boolean;
 var
   match: Single;
@@ -145,46 +94,14 @@ begin
   Result := match >= 0.8;
 end;
 
-(*
-## GrandExchangeChat.WaitOpen
-```pascal
-function TRSGrandExchangeChat.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
-```
-Returns true if the Grand Exchange is open within `time` milliseconds.
 
-## Example:
-```pascal
-WriteLn GrandExchangeChat.WaitOpen();
-```
-*)
 function TRSGrandExchangeChat.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
   Result := SleepUntil(Self.IsOpen(), interval, time);
 end;
 
-(*
-## GrandExchangeChat.SearchText
-```pascal
-property TRSGrandExchangeChat.SearchText: String;
-property TRSGrandExchangeChat.SearchText(search: String): Boolean;
-```
-Returns the current {ref}`GrandExchangeChat` search or updates it.
 
-```{figure} ../../images/gec_search.png
-```
-
-Example:
-```pascal
-WriteLn GrandExchangeChat.SearchText;
-WriteLn GrandExchangeChat.SearchText['Bandos tassets'];
-WriteLn GrandExchangeChat.SearchText;
-WriteLn GrandExchangeChat.SearchText['Bandos chestplate'];
-WriteLn GrandExchangeChat.SearchText;
-WriteLn GrandExchangeChat.SearchText['Banana'];
-WriteLn GrandExchangeChat.SearchText;
-```
-*)
 property TRSGrandExchangeChat.SearchText: String;
 begin
   Result := OCR.Recognize(Self.Header, RSFonts.BOLD, [RSColors.TEXT_DARK_BLUE], 0).Before('*');
@@ -228,29 +145,7 @@ begin
   Result := search = Self.SearchText;
 end;
 
-(*
-## GrandExchangeChat.Find
-```pascal
-function TRSGrandExchangeChat.Find(item: TRSItem; out bounds: TBox): Boolean;
-```
-Returns true if the specified `item` text is found on the
-{ref}`GrandExchangeChat.Grid`.
 
-`bounds` will return the grid box where the item text was found.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  b: TBox;
-begin
-  if GrandExchangeChat.Find('Abyssal whip', b) then
-    ShowOnTarget(b);
-end.
-```
-```{figure} ../../images/gec_Find.png
-```
-*)
 function TRSGrandExchangeChat.Find(item: TRSItem; out bounds: TBox): Boolean;
 var
   str: String;
@@ -264,19 +159,7 @@ begin
   end;
 end;
 
-(*
-## GrandExchangeChat.Contains
-```pascal
-function TRSGrandExchangeChat.Contains(item: TRSItem): Boolean;
-```
-Returns true if the specified `item` text is found on the
-{ref}`GrandExchangeChat.Grid`.
 
-Example:
-```pascal
-WriteLn GrandExchangeChat.Contains('Abyssal whip');
-```
-*)
 function TRSGrandExchangeChat.Contains(item: TRSItem): Boolean;
 var
   bounds: TBox;
@@ -284,18 +167,7 @@ begin
   Result := Self.Find(item, bounds);
 end;
 
-(*
-## GrandExchangeChat.Click
-```pascal
-function TRSGrandExchangeChat.Click(item: TRSItem): Boolean;
-```
-Attempts to click the specified `item` on the {ref}`GrandExchangeChat.Grid`.
 
-Example:
-```pascal
-WriteLn GrandExchangeChat.Click('Abyssal whip');
-```
-*)
 function TRSGrandExchangeChat.Click(item: TRSItem): Boolean;
 var
   bounds: TBox;
@@ -308,19 +180,7 @@ begin
 end;
 
 
-(*
-## GrandExchangeChat.FindScroll
-```pascal
-function TRSGrandExchangeChat.FindScroll(item: TRSItem): Integer;
-```
-Attempts to find the scroll level the specified `item` is found on the
-{ref}`GrandExchangeChat.Grid`.
 
-Example:
-```pascal
-WriteLn GrandExchangeChat.FindScroll('Bandos tassets');
-```
-*)
 function TRSGrandExchangeChat.FindScroll(item: TRSItem): Integer;
 var
   next: Integer;
@@ -357,19 +217,7 @@ begin
   Result := -1;
 end;
 
-(*
-## GrandExchangeChat.ScrollTo
-```pascal
-function TRSGrandExchangeChat.ScrollTo(item: TRSItem): Boolean;
-```
-Attempts to scroll until the specified `item` is found on the
-{ref}`GrandExchangeChat.Grid`.
 
-Example:
-```pascal
-WriteLn GrandExchangeChat.ScrollTo('Bandos tassets');
-```
-*)
 function TRSGrandExchangeChat.ScrollTo(item: TRSItem): Boolean;
 begin
   Result := Self.FindScroll(item) > -1;
@@ -377,8 +225,5 @@ end;
 
 
 var
-(*
-## GrandExchangeChat variable
-Global {ref}`TRSGrandExchangeChat` variable.
-*)
+
   GrandExchangeChat: TRSGrandExchangeChat;

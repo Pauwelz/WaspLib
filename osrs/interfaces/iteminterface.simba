@@ -1,50 +1,11 @@
-(*
-# ItemInterface
-Methods to interact item interfaces.
 
-"Item interfaces" in WaspLib refers to any interface that is an item
-container.
-
-In other words, if an interface has holds items, it's both a
-{ref}`SlotInterface` and {ref}`ItemInterface`.
-
-Examples of "item containers" are:
-- {ref}`Inventory`
-- {ref}`Equipment`
-- {ref}`Bank`
-- {ref}`DepositBox`
-- {ref}`CollectBox`
-
-Just because an interface is an "item container", does not mean it uses
-{ref}`ItemInterface`, but all the examples above do and you can access it
-through their `Items` variable, for example:
-```pascal
-Inventory.Items;
-Equipment.Items;
-Bank.Items;
-```
-
-```{note}
-Throughout this page examples, {ref}`Inventory` will be used in most of them
-but any interface that has a {ref}`TRSItemInterface` variable can used
-instead.
-```
-*)
 
 
 {$DEFINE WL_ITEM_INTERFACE_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSItemInterface
-Main record to handle a {ref}`ItemInterface`.
 
-```{note}
-Throughout this page `Items` will always refer to a `TRSItemInterface` variable
-unless specified otherwise.
-```
-*)
   TRSItemInterface = record
     Name: String;
     Slots: ^TRSSlotInterface;
@@ -52,36 +13,7 @@ unless specified otherwise.
     CheckFunction: function (): Boolean of object;
   end;
 
-(*
-## Items.Setup
-```pascal
-procedure TRSItemInterface.Setup(name: String; slots: ^TRSSlotInterface; discoverOffset: TPoint; checkFunc: function (): Boolean of object = nil);
-```
-Setup method of the {ref}`ItemInterface`.
 
-All interfaces included in WaspLib that use a {ref}`ItemInterface` already call
-this automatically for you.
-
-Unless you create your own, you don't need to use it.
-
-To setup a `TRSItemInterface`, your interface also needs a
-{ref}`TRSSlotInterface` and you need to pass a pointer to it through this.
-
-`checkFunc` should a function to check if the interface is open.
-This is optional but recommended as it will avoid your scripts do actions by
-accident if the interface is not open in the first place for some reason.
-
-For example, this is how {ref}`Inventory` and {ref}`Bank` setup their
-`TRSItemInterface`:
-```pascal
-//Inventory:
-Inventory.Slots.Setup('Inventory.Slots', TBoxArray.Create(GameTab.TopLeft.Offset(13,9), 4, 7, 31, 31, [11, 5]));
-Inventory.Items.Setup('Inventory.Items', @Inventory.Slots, [0, 0], @Inventory.Open);
-//Bank:
-Bank.Slots.Setup('Bank.Slots', Bank.SlotBoxes, @Bank.FindItemBoundaries);
-Bank.Items.Setup('Bank.Items', @Bank.Slots, [0, 1], @Bank.IsOpen);
-```
-*)
 procedure TRSItemInterface.Setup(name: String; slots: ^TRSSlotInterface; discoverOffset: TPoint; checkFunc: function (): Boolean of object = nil);
 begin
   Self.Name := name;
@@ -91,21 +23,7 @@ begin
 end;
 
 
-(*
-## Items.IndexOf
-```pascal
-function TRSItemInterface.IndexOf(items: TRSItemArray): Integer;
-```
-Returns the index of the first item found in `items`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.IndexOf(['abyssal whip', 'dragon scimitar']);
-end.
-```
-*)
 function TRSItemInterface.IndexOf(items: TRSItemArray): Integer;
 var
   match: TImageMatch;
@@ -118,21 +36,7 @@ begin
 end;
 
 
-(*
-## Items.IndicesOf
-```pascal
-function TRSItemInterface.IndicesOf(items: TRSItemArray): TIntegerArray;
-```
-Returns all the indices of the `items` found in the `TRSItemInterface`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.IndicesOf(['abyssal whip', 'dragon scimitar']);
-end.
-```
-*)
 function TRSItemInterface.IndicesOf(items: TRSItemArray): TIntegerArray;
 var
   match: TImageMatch;
@@ -145,27 +49,7 @@ begin
 end;
 
 
-(*
-## Items.FindAny
-```pascal
-function TRSItemInterface.FindAny(items: TRSItemArray; out slot: TBox): Boolean;
-```
-Returns a True/False if any item in `items` was found and returns it's `TBox`
-through `slot`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  bounds: TBox;
-begin
-  if Inventory.Items.FindAny(['abyssal whip', 'cake'], bounds) then
-    ShowOnTarget(bounds);
-end.
-```
-```{figure} ../../images/itemfind.png
-```
-*)
 function TRSItemInterface.FindAny(items: TRSItemArray; out slot: TBox): Boolean;
 var
   match: TImageMatch;
@@ -178,29 +62,7 @@ begin
     slot := match.Box;
 end;
 
-(*
-## Items.Find
-```pascal
-function TRSItemInterface.Find(item: TRSItem; out slot: TBox): Boolean;
-function TRSItemInterface.Find(items: TRSItemArray; out slot: Integer): Boolean; overload;
-function TRSItemInterface.Find(item: TRSItem; out slot: Integer): Boolean; overload;
-```
-Returns a True/False if the specified `item` or `items` were found and returns
-their `TBox` or slot index through `slot`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  bounds: TBox;
-begin
-  if Inventory.Items.Find('cake', bounds) then
-    ShowOnTarget(bounds);
-end.
-```
-```{figure} ../../images/itemfind.png
-```
-*)
 function TRSItemInterface.Find(item: TRSItem; out slot: TBox): Boolean;
 begin
   Result := Self.FindAny([item], slot);
@@ -224,32 +86,7 @@ begin
 end;
 
 
-(*
-## Items.FindAll
-```pascal
-function TRSItemInterface.FindAll(items: TRSItemArray): TBoxArray;
-function TRSItemInterface.FindAll(items: TRSItemArray; out slots: TIntegerArray): Boolean; overload;
-function TRSItemInterface.FindAll(items: TRSItemArray; out boxes: TBoxArray): Boolean; overload;
-```
-This function has several signatures, so depending on which one you use the
-parameters and/or results will vary but it all should be self explanatory.
 
-You can use this to know if all the specified `items` are visible in the
-`ItemInterface` and/or return their bounds as a `TBoxArray`.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  boxes: TBoxArray;
-begin
-  boxes := Inventory.Items.FindAll(['abyssal whip', 'cake']);
-  ShowOnTarget(boxes);
-end.
-```
-```{figure} ../../images/itemfindall.png
-```
-*)
 function TRSItemInterface.FindAll(items: TRSItemArray): TBoxArray;
 var
   match: TImageMatch;
@@ -293,70 +130,19 @@ end;
 
 
 
-(*
-## Items.Contains
-```pascal
-function TRSItemInterface.Contains(item: TRSItem): Boolean;
-```
-Returns True/False if the specified `item` is visible in the interface.
 
-Keep in mind for interfaces that can "contain" the item but it's currently not
-visible like the {ref}`Bank` for example, this will return false.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.Contains('abyssal whip');
-end.
-```
-*)
 function TRSItemInterface.Contains(item: TRSItem): Boolean;
 begin
   Result := Self.IndexOf([Item]) > -1;
 end;
 
-(*
-## Items.ContainsAny
-```pascal
-function TRSItemInterface.ContainsAny(items: TRSItemArray): Boolean;
-```
-Returns True/False if any of the specified `items` is visible in the interface.
 
-Keep in mind for interfaces that can "contain" an item but it's currently not
-visible like the {ref}`Bank` for example, this will not make this return true.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.ContainsAny(['abyssal whip', 'cake']);
-end.
-```
-*)
 function TRSItemInterface.ContainsAny(items: TRSItemArray): Boolean;
 begin
   Result := Self.IndexOf(items) > -1;
 end;
 
-(*
-## Items.ContainsAll
-```pascal
-function TRSItemInterface.ContainsAll(items: TRSItemArray): Boolean;
-```
-Returns True/False if all of the specified `items` are visible in the interface.
 
-Keep in mind for interfaces that can "contain" an item but it's currently not
-visible like the {ref}`Bank` for example, this will return false.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.ContainsAny(['abyssal whip', 'cake']);
-end.
-```
-*)
 function TRSItemInterface.ContainsAll(items: TRSItemArray): Boolean;
 var
   matches: TImageMatchArray;
@@ -444,68 +230,20 @@ begin
 end;
 
 
-(*
-## Items.FindDifferent
-```pascal
-function TRSItemInterface.FindDifferent(items: TRSItemArray): TIntegerArray;
-```
-This one may be a little bit confusing but it returns the indices of all slots
-that have items that are not any of the specified `items`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.FindDifferent(['abyssal whip', 'cake']);
-end.
-```
-*)
 function TRSItemInterface.FindDifferent(items: TRSItemArray): TIntegerArray;
 begin
   Result := Self.Slots^.GetUsed().Difference(Self.IndicesOf(items));
 end;
 
-(*
-## Items.ContainsDifferent
-```pascal
-function TRSItemInterface.ContainsDifferent(items: TRSItemArray): Boolean;
-```
-Similar to {ref}`Items.FindDifferent` but returns a boolean if any slots have
-items that are not any of the specified `items`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.ContainsDifferent(['abyssal whip', 'cake']);
-end.
-```
-*)
 function TRSItemInterface.ContainsDifferent(items: TRSItemArray): Boolean;
 begin
   Result := Self.FindDifferent(items) <> [];
 end;
 
 
-(*
-## Items.Count
-```pascal
-function TRSItemInterface.Count(items: TRSItemArray): Integer;
-function TRSItemInterface.Count(item: TRSItem): Integer; overload;
-```
-Returns the amount of `items` or `item` that are/is visible in the interface.
 
-Keep in mind for interfaces that can "contain" the item but it's currently not
-visible like the {ref}`Bank` for example, this will not count those.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.Count(['abyssal whip', 'cake']);
-end.
-```
-*)
 function TRSItemInterface.Count(items: TRSItemArray): Integer;
 begin
   Result := Length(Self.IndicesOf(items));
@@ -517,27 +255,7 @@ begin
 end;
 
 
-(*
-## Items.WaitCount
-```pascal
-function TRSItemInterface.WaitCount(items: TRSItemArray; count: Integer; time: Integer = 600; interval: Integer = -1): Boolean;
-function TRSItemInterface.WaitCount(item: TRSItem; count: Integer; time: Integer = 600; interval: Integer = -1): Boolean; overload;
-```
-Waits `time` milliseconds for {ref}`Items.Count` to return the specified `count`
-for the specified `items` or `item`.
 
-Keep in mind, like similar functions mentioned in this page, for interfaces that
-can "contain" the item but it's currently not visible like the {ref}`Bank`
-for example, this will not count those.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.WaitCount(['abyssal whip', 'cake'], 10, 600);
-end.
-```
-*)
 function TRSItemInterface.WaitCount(items: TRSItemArray; count: Integer; time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -551,32 +269,7 @@ begin
 end;
 
 
-(*
-## Items.ReadStack
-```pascal
-function TRSItemInterface.ReadStack(item: TRSItem): Integer;
-```
-Reads the stack of the specified `item` if it's visible on the interface.
 
-Keep in mind, like similar functions mentioned in this page, for interfaces that
-can "contain" the item but it's currently not visible like the {ref}`Bank`
-for example, this will not read those.
-
-If the item if not found `-1` is returned.
-If `0` is returned it means that the item was found but has no stack number.
-
-This is important to keep in mind because in most interfaces, even if an item
-is stackable, if there's only a quantity of 1 available, it won't have a stack
-number.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.ReadStack('coins');
-end.
-```
-*)
 function TRSItemInterface.ReadStack(item: TRSItem): Integer;
 var
   b: TBox;
@@ -587,25 +280,7 @@ end;
 
 
 
-(*
-## Items.CountEx
-```pascal
-function TRSItemInterface.CountEx(item: TRSItem): Integer;
-```
-Special counting method that will an item regardless of it being stackable or
-not.
 
-To put it simply, if the item is stackable it will read it's stack count,
-otherwise, it will return how many you have in the interface, currently visible.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.CountEx('coins');
-end.
-```
-*)
 function TRSItemInterface.CountEx(item: TRSItem): Integer;
 var
   slots: TIntegerArray;
@@ -620,23 +295,7 @@ end;
 
 
 
-(*
-## Items.Hover
-```pascal
-function TRSItemInterface.Hover(item: TRSItem): Boolean;
-```
-Hover the specified `item` with the mouse.
 
-If the item is not visible, nothing happens and this returns False.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.Hover('cake');
-end.
-```
-*)
 function TRSItemInterface.Hover(item: TRSItem): Boolean;
 var
   box: TBox;
@@ -645,47 +304,14 @@ begin
   if Result then Mouse.Move(box);
 end;
 
-(*
-## Items.Click
-```pascal
-function TRSItemInterface.Click(item: TRSItem; button: EMouseButton = EMouseButton.LEFT): Boolean;
-```
-Clicks the specified `item` with the specified `button`.
 
-If the item is not visible, nothing happens and this returns False.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Inventory.Items.Click('cake');
-end.
-```
-*)
 function TRSItemInterface.Click(item: TRSItem; button: EMouseButton = EMouseButton.LEFT): Boolean;
 begin
   Result := Self.Hover(item);
   if Result then Target.MouseClick(button);
 end;
 
-(*
-## Items.Move
-```pascal
-function TRSItemInterface.Move(item: TRSItem; destination: Integer): Boolean; overload;
-function TRSItemInterface.Interact(slot: Integer; option: String = ''): Boolean; overload;
-```
-If the specified `item` is visible, move it to slot `destination`.
 
-If it's not visible this returns False and nothing happens.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Inventory.Items.Move('cake', 6);
-end.
-```
-*)
 function TRSItemInterface.Move(item: TRSItem; destination: Integer): Boolean; overload;
 var
   slots: TBoxArray;
@@ -719,26 +345,7 @@ begin
 end;
 
 
-(*
-## Items.Interact
-```pascal
-function TRSItemInterface.Interact(item: TRSItem; option: String = ''): Boolean;
-```
-Interacts with `item` if it is visible with the specified `option`.
 
-If `item` is not visible this returns False and nothing happens.
-
-If `option` is empty or if `option` is the default {ref}`UpText` for the item
-this will simply left click it.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Inventory.Items.Interact('Prayer potion(3)', 'Drop');
-end.
-```
-*)
 function TRSItemInterface.Interact(item: TRSItem; option: String = ''): Boolean;
 begin
   if not Self.Hover(item) then Exit;

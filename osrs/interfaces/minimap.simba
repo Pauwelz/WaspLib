@@ -1,34 +1,15 @@
-(*
-# Minimap
-Methods to interact with the minimap interface:
-```{figure} ../../images/minimap.png
-```
-*)
+
 
 {$DEFINE WL_MINIMAP_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSMinimapDots
-```pascal
-ERSMinimapDot  = enum(PLAYER, NPC, ITEM);
-```
-Enum representing the available minimap dots.
-*)
+
   ERSMinimapDot  = enum(PLAYER, NPC, ITEM);
   ERSMinimapDots = set of ERSMinimapDot;
   TRSMinimapDotArray = array [ERSMinimapDot] of TPointArray;
 
-(*
-## ERSMinimapOrb
-```pascal
-ERSMinimapOrb  = enum(HITPOINTS, PRAYER, ENERGY, SPECIAL);
-```
-Enum representing the 4 available minimap orbs.
-```{figure} ../../images/mmorbs.png
-```
-*)
+
   ERSMinimapOrb = enum(HITPOINTS, PRAYER, ENERGY, SPECIAL);
 
   TRSMinimapOrb = record
@@ -36,10 +17,7 @@ Enum representing the 4 available minimap orbs.
     Circle : TCircle;
   end;
 
-(*
-## TRSMinimap
-Main record used to interact with the {ref}`Minimap`.
-*)
+
   TRSMinimap = record
     Orbs: array of TRSMinimapOrb;
     Bounds: TBox;
@@ -62,15 +40,7 @@ Main record used to interact with the {ref}`Minimap`.
     const FLAG: TImage = ImageFromString('IMG:AQAAAAIAAAACAAAAAAAAAIDjPwEAAAAA7joBAAEAAACQ4z8BAAAAALEMAQABAAAAgH8GCQAAAAAAiAYJAAAAAAgAAAAIAAAAgH8GCQAAAAABAAAAAgAAAAIAAAAYAAAAAAAAAAAAAAAAAAAAAwAAABgIEAgICAAAAAEAAAIAAAAAAAAAAAAAAAAAAAAAiVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFUlEQVR4nGP4z8AQayzIcCyMBUgBABrmA2K2r4OdAAAAAElFTkSuQmCC');
   end;
 
-(*
-## Minimap.SetupInterface
-```pascal
-procedure TRSMinimap.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSMinimap` coordinates.
 
-This is automatically called for you on the {ref}`Minimap variable`.
-*)
 procedure TRSMinimap.SetupInterface();
 var
   img: TImage;
@@ -162,57 +132,20 @@ begin
   Self.Polygon := tpa.Offset(Self.Center);
 end;
 
-(*
-## Minimap.Contains
-```pascal
-function TRSMinimap.Contains(pt: TPoint): Boolean;
-```
-Returns True/False if a point `pt` is on the minimap.
 
-Example:
-```pascal
-WriteLn Minimap.Contains([100,100]);
-```
-*)
 function TRSMinimap.Contains(pt: TPoint): Boolean;
 begin
   Result := Self.Polygon.Contains(pt);
 end;
 
-(*
-## Minimap.Filter
-```pascal
-function TRSMinimap.Filter(tpa: TPointArray): TPointArray;
-```
-Returns a TPA of the points from `tpa` that are within the minimap.
 
-Example:
-```pascal
-tpa := TPointArray.CreateFromBox(Minimap.Bounds);
-ShowOnTarget(Minimap.Filter(tpa));
-```
-*)
 function TRSMinimap.Filter(tpa: TPointArray): TPointArray;
 begin
   Result := tpa.ExtractPolygon(Self.Polygon);
 end;
 
 
-(*
-## Minimap.RandomPoint
-```pascal
-function TRSMinimap.RandomPoint(pt: TPoint; randomness: Integer): TPoint;
-```
-Generates a random point on the minimap based on the point `pt` passed.
-The distance of this random point will be within `randomness` amount of distance
-from `pt`.
 
-Example:
-```pascal
-while True do
-  ShowOnTarget(Minimap.RandomPoint(Minimap.Center, 30));
-```
-*)
 function TRSMinimap.RandomPoint(pt: TPoint; randomness: Integer): TPoint;
 begin
   if not Self.Polygon.Contains(pt) then
@@ -224,38 +157,9 @@ begin
 end;
 
 
-(*
-## Minimap.Compass
-The minimap compass refers to the small compass on the top left corner of the
-minimap:
-```{figure} ../../images/compass.png
-```
-The following properties are used to read and set the compass angle as both
-radians and degrees as needed.
-*)
 
-(*
-### Minimap.CompassRadians
-```pascal
-property TRSMinimap.CompassRadians: Single;
-property TRSMinimap.CompassRadians(radians: Single): Boolean;
-property TRSMinimap.CompassRadians(minRadians, maxRadians: Single): Boolean;
-```
-Returns or sets the minimap compass angle as radians.
 
-The accuracy can be controlled through the `Minimap.Compass.Accuracy` variable
-and it's value should be in radians. It's default is aproximately
-5º (`0.03*PI`).
 
-Credits: [slacky](https://slacky.one/)
-
-Example:
-```pascal
-WriteLn Minimap.CompassRadians;
-WriteLn Minimap.CompassRadians := PI;
-WriteLn Minimap.CompassRadians;
-```
-*)
 property TRSMinimap.CompassRadians: Single;
 var
   center: TPoint;
@@ -364,28 +268,7 @@ begin
 end;
 
 
-(*
-### Minimap.CompassDegrees
-```pascal
-property TRSMinimap.CompassDegrees: Single;
-property TRSMinimap.CompassDegrees(degrees: Single): Boolean;
-property TRSMinimap.CompassDegrees(minDegrees, maxDegrees: Single): Boolean;
-```
-Returns or sets the minimap compass angle as degrees.
 
-The accuracy can be controlled through the `Minimap.Compass.Accuracy` variable
-and it's value should be in radians. It's default is aproximately
-5º (`0.03*PI`).
-
-Example:
-```pascal
-WriteLn Minimap.CompassDegrees;
-WriteLn Minimap.CompassDegrees := 180;
-WriteLn Minimap.CompassDegrees;
-```
-If you are not sure what the compass refers to, check the image at the end of
-{ref}`Minimap.CompassRadians`.
-*)
 property TRSMinimap.CompassDegrees: Single;
 begin
   Result := RadToDeg(Self.CompassRadians);
@@ -402,76 +285,26 @@ begin
 end;
 
 
-(*
-## Minimap.GetLevel
-```pascal
-function TRSMinimap.GetLevel(orb: ERSMinimapOrb): Integer;
-```
-Returns the level of the specified `orb`.
 
-Example:
-```pascal
-WriteLn Minimap.GetLevel(ERSMinimapOrb.PRAYER);
-```
-*)
 function TRSMinimap.GetLevel(orb: ERSMinimapOrb): Integer;
 begin
   Result := OCR.RecognizeShadow(Self.Orbs[orb].Bounds, RSFonts.PLAIN_11, 0).ExtractInteger();
 end;
 
-(*
-## Minimap.UnderLevel
-```pascal
-function TRSMinimap.UnderLevel(orb: ERSMinimapOrb; level: Integer): Boolean;
-```
-Returns true if the level of the specified `orb` is below the specified `level` threshold.
 
-Example:
-```pascal
-WriteLn Minimap.UnderLevel(ERSMinimapOrb.PRAYER, 50);
-```
-*)
 function TRSMinimap.UnderLevel(orb: ERSMinimapOrb; level: Integer): Boolean;
 begin
   Result := Self.GetLevel(orb) < level;
 end;
 
-(*
-## Minimap.OverLevel
-```pascal
-function TRSMinimap.OverLevel(orb: ERSMinimapOrb; level: Integer): Boolean;
-```
-Returns true if the level of the specified `orb` is over the specified `level` threshold.
 
-Example:
-```pascal
-WriteLn Minimap.OverLevel(ERSMinimapOrb.PRAYER, 50);
-```
-*)
 function TRSMinimap.OverLevel(orb: ERSMinimapOrb; level: Integer): Boolean;
 begin
   Result := Self.GetLevel(orb) > level;
 end;
 
 
-(*
-## Minimap Orb Status
-```pascal
-function TRSMinimap.Poisoned(): Boolean;
-function TRSMinimap.Envenomed(): Boolean;
-function TRSMinimap.RunEnabled(): Boolean;
-function TRSMinimap.HasStamina(): Boolean;
-function TRSMinimap.PrayerEnabled(): Boolean;
-function TRSMinimap.SpecialEnabled(): Boolean;
-function TRSMinimap.HasSpecialWeapon(): Boolean;
-```
-Returns a status from a minimap orb.
 
-Example:
-```pascal
-WriteLn Minimap.Poisoned();
-```
-*)
 function TRSMinimap.Poisoned(): Boolean;
 begin
   Result := Target.HasColor(16391, 3, 1, Self.Orbs[ERSMinimapOrb.HITPOINTS].Circle.Bounds);
@@ -507,18 +340,7 @@ begin
   Result := Target.HasColor(ColorTolerance($A68F56, 5.999, EColorSpace.RGB, [0.270, 1.494, 1.237]), 1, Self.Orbs[ERSMinimapOrb.SPECIAL].Bounds);
 end;
 
-(*
-## Minimap.GetPercent
-```pascal
-function TRSMinimap.GetPercent(orb: ERSMinimapOrb): Integer;
-```
-Returns the percent remaining of the specified `orb`.
 
-Example:
-```pascal
-WriteLn Minimap.GetPercent(ERSMinimapOrb.HITPOINTS);
-```
-*)
 function TRSMinimap.GetPercent(orb: ERSMinimapOrb): Integer;
 var
   tpa: TPointArray;
@@ -547,19 +369,7 @@ begin
 end;
 
 
-(*
-## Minimap.Toggle
-```pascal
-function TRSMinimap.Toggle(orb: ERSMinimapOrb): Boolean;
-```
-Toggles a minimap orb. All orbs can be toggled except `ERSMinimapOrb.HITPOINTS`.
 
-Example:
-```pascal
-if not Minimap.PrayerEnabled() then
-  Minimap.Toggle(ERSMinimapOrb.PRAYER);
-```
-*)
 function TRSMinimap.Toggle(orb: ERSMinimapOrb): Boolean;
 var
   state: Boolean;
@@ -586,39 +396,14 @@ begin
 end;
 
 
-(*
-## Minimap.FindFlag
-```pascal
-function TRSMinimap.FindFlag(out pt: TPoint): Boolean;
-```
-Returns True/False if the minimap walking flag is visible on the minimap.
-`pt` will return the coordinate where the flag was found.
 
-Example:
-```pascal
-if Minimap.FindFlag(flagPt) then
-  ShowOnTarget(TCircle.Create(flagPt.X, flagPt.Y, 6));
-```
-*)
 function TRSMinimap.FindFlag(out pt: TPoint): Boolean;
 begin
   pt := Target.FindImage(Self.FLAG, 0, Self.Bounds);
   Result := Self.Polygon.Contains(pt);
 end;
 
-(*
-## Minimap.HasFlag
-```pascal
-function TRSMinimap.HasFlag(): Boolean;
-```
-Returns True/False if the minimap walking flag is visible on the minimap.
-Same as `Minimap.FindFlag()` but without the need for parameters.
 
-Example:
-```pascal
-WriteLn Minimap.HasFlag();
-```
-*)
 function TRSMinimap.HasFlag(): Boolean;
 var
   p: TPoint;
@@ -626,21 +411,7 @@ begin
   Result := Self.FindFlag(p);
 end;
 
-(*
-## Minimap.WaitFlag
-```pascal
-function TRSMinimap.WaitFlag(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns True/False if the minimap walking flag becomes (or already is) visible
-within `time` milliseconds.
 
-Example:
-```pascal
-pt := Minimap.RandomPoint(Minimap.Center, 30);
-Mouse.Click(pt, EMouseButton.LEFT);
-WriteLn Minimap.WaitFlag(2000);
-```
-*)
 function TRSMinimap.WaitFlag(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -648,19 +419,7 @@ begin
 end;
 
 
-(*
-## Minimap.CountColor
-```pascal
-function TRSMinimap.CountColor(color: TColor; tolerance: Single = 0): Integer;
-function TRSMinimap.CountColor(color: TColorTolerance): Integer; overload;
-```
-Counts the specified `color` on the {ref}`Minimap`.
 
-Example:
-```pascal
-WriteLn Minimap.CountColor($FFFFFF);
-```
-*)
 function TRSMinimap.CountColor(color: TColor; tolerance: Single = 0): Integer;
 var
   tpa: TPointArray;
@@ -678,19 +437,7 @@ begin
 end;
 
 
-(*
-## Minimap.ColorPercent
-```pascal
-function TRSMinimap.ColorPercent(color: TColor; tolerance: Single = 0): Single;
-function TRSMinimap.ColorPercent(color: TColorTolerance): Single; overload;
-```
-Counts the percentage of the specified `color` on the {ref}`Minimap`.
 
-Example:
-```pascal
-WriteLn Minimap.ColorPercent($FFFFFF);
-```
-*)
 function TRSMinimap.ColorPercent(color: TColor; tolerance: Single = 0): Single;
 var
   count: Integer;
@@ -708,25 +455,7 @@ begin
 end;
 
 
-(*
-## Minimap.Normalize
-```pascal
-function TRSMinimap.Normalize(pt: TPoint; angle: Single): TPoint;
-function TRSMinimap.NormalizeEx(vector: Vector2; angle: Single): Vector2;
-```
-Normalizes minimap coordinates to 0º.
-Basically, whatever `pt` or `vector` you pass into this, will be rotated to it's
-position on the minimap at 0º.
-`angle` should be in radians.
 
-Example:
-```pascal
-pt := Minimap.RandomPoint(Minimap.Center, 30);
-angle := Minimap.CompassRadians;
-pt := Minimap.Normalize(pt, angle);
-ShowOnTarget(TCircle.Create(pt.X, pt.Y, 6));
-```
-*)
 function TRSMinimap.Normalize(pt: TPoint; angle: Single): TPoint;
 begin
   with pt.Rotate(-angle, Self.Center) do
@@ -746,37 +475,7 @@ begin
 end;
 
 
-(*
-## Minimap.GetDots
-```pascal
-function TRSMinimap._GetDots(img: TImage): TPointArray;
-function TRSMinimap.GetDots(dot: ERSMinimapDot; bounds: TBox): TPointArray;
-function TRSMinimap.GetDots(dot: ERSMinimapDot): TPointArray; overload;
-function TRSMinimap.GetDots(dots: ERSMinimapDots; bounds: TBox): TRSMinimapDotArray; overload;
-function TRSMinimap.GetDots(dots: ERSMinimapDots = [ERSMinimapDot.PLAYER, ERSMinimapDot.NPC, ERSMinimapDot.ITEM]): TRSMinimapDotArray; overload;
-```
-Returns minimap dots found.
-You can specify which dots you want to look for in `dot` or `dots`.
-You can also optionalyl specify `bounds` to returns minimap dots from just a region of the minimap.
 
-For example, this is how you can find NPC dots and debug them:
-```pascal
-{$I WaspLib/osrs.simba}
-
-var
-  pt: TPoint;
-  boxes: TBoxArray;
-begin
-  for pt in Minimap.GetDots(ERSMinimapDot.NPC) do
-    boxes += TBox.Create(pt, 3, 3);
-  ShowOnTarget(boxes);
-end.
-```
-
-Your result should look something like this on the minimap:
-```{figure} ../../images/npcdots.png
-```
-*)
 function TRSMinimap._GetDots(img: TImage): TPointArray;
 var
   dot: ERSMinimapDot;
@@ -827,38 +526,7 @@ begin
 end;
 
 
-(*
-## Minimap.CleanImage
-```pascal
-function TRSMinimap.CleanImage(img: TImage; radius: Integer): TImage;
-```
-Cleans a TImage of the {ref}`Minimap` you pass into it.
-"Clean" means that minimap dots, the running flag and a few other things are
-removed and the colors around it will be blended in.
 
-The image i
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-
-var
-  before, after, combined: TImage;
-begin
-  before := Target.GetImage(Minimap.Bounds);
-  after := Minimap.CleanImage(before.Copy(), 65);
-
-  combined := new TImage(before.Width*2, before.Height);
-
-  combined.DrawImage(before, [0,0]);
-  combined.DrawImage(after, [before.Width+1, 0]);
-  combined.Show();
-end.
-```
-
-```{figure} ../../images/mmclean.png
-```
-*)
 function TRSMinimap.CleanImage(img: TImage; radius: Integer): TImage;
 
   function _DotTPA(pt: TPoint; bounds: TBox): TPointArray;
@@ -932,34 +600,7 @@ begin
   Result := img.Blend(tpa, 6);
 end;
 
-(*
-## Minimap.GetCleanImage
-```pascal
-function TRSMinimap.GetCleanImage(angle: Single = $FFFF; radius: Integer = -1): TImage;
-```
-Returns a clean `TImage` of the {ref}`Minimap`.
 
-Read {ref}`Minimap.CleanImage` for more information.
-
-Unlike {ref}`Minimap.CleanImage`, the `TImage` returned is rotated to 0º as you
-can see in the following example:
-```pascal
-{$I WaspLib/osrs.simba}
-
-var
-  img: TImage;
-begin
-  while True do
-  begin
-    img := Minimap.GetCleanImage();
-    img.Show();
-  end;
-end.
-```
-
-```{figure} ../../images/mmcleaned.gif
-```
-*)
 function TRSMinimap.GetCleanImage(angle: Single = $FFFF; radius: Integer = -1): TImage;
 var
   img, clean: TImage;
@@ -986,35 +627,7 @@ begin
 end;
 
 
-(*
-## Minimap.ScaleMinimap
-```pascal
-function TRSMinimap.ScaleMinimap(img: TImage; scaling: Integer; radius: Integer = -1): TImage;
-```
-Scales down a minimap TImage passed in the `img` parameter.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-
-var
-  img, downscaled: TImage;
-begin
-  img := Minimap.GetCleanImage();
-  downscaled := Minimap.ScaleMinimap(img, 4);
-  downscaled.Show();
-end.
-```
-
-And this should be the result you see:
-```{figure} ../../images/mmdownscale.png
-```
-
-As you can see, it's pretty small, if we zoom it in 800% it should look
-something like this:
-```{figure} ../../images/mmdownscale2.png
-```
-*)
 function TRSMinimap.ScaleMinimap(img: TImage; scaling: Integer; radius: Integer = -1): TImage;
 var
   tpa: TPointArray;
@@ -1035,37 +648,13 @@ begin
 end;
 
 
-(*
-## Minimap.IsPlayerMoving
-```pascal
-function TRSMinimap.IsPlayerMoving(minShift: Integer = 500): Boolean;
-```
-Returns whether the player is moving or not according to the specified minimum
-pixel shift.
 
-Example:
-```pascal
-WriteLn Minimap.IsPlayerMoving();
-```
-*)
 function TRSMinimap.IsPlayerMoving(minShift: Integer = 500): Boolean;
 begin
   Result := Target.GetPixelDifference(300, TBox.Create(Self.Center, 40, 40)).Length >= minShift;
 end;
 
-(*
-## Minimap.WaitMoving
-```pascal
-procedure TRSMinimap.WaitMoving(time: Integer = 20000; minShift: Integer = 500);
-```
-To put it simply, waits `time` milliseconds for {ref}`Minimap.IsPlayerMoving` to
-return false with the specified `minShift`.
 
-Example:
-```pascal
-WriteLn Minimap.WaitMoving();
-```
-*)
 procedure TRSMinimap.WaitMoving(time: Integer = 20000; minShift: Integer = 500);
 var
   timeout, countdown: TCountDown;
@@ -1081,8 +670,5 @@ begin
 end;
 
 var
-(*
-## Minimap variable
-Global {ref}`TRSMinimap` variable.
-*)
+
   Minimap: TRSMinimap;

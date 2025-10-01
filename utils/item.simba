@@ -1,46 +1,17 @@
-(*
-# Item
-Page dedicated to runescape items and misc functions related to them.
-*)
+
 {$DEFINE WL_ITEM_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 const
-(*
-## Quantity Constants
-```pascal
-QUANTITY_ALL = 0;
-QUANTITY_ALL_BUT_ONE = -1;
-```
-In WaspLib you have this 2 constants to use in interfaces that allows you to
-specify "all" quantities of items, e.g. the {ref}`bank` interface.
-*)
+
   QUANTITY_ALL = 0;
   QUANTITY_ALL_BUT_ONE = -1;
 
 type
-(*
-## ERSItemQuantity
-```pascal
-ERSItemQuantity = enum(ONE, FIVE, TEN, CUSTOM, ALL);
-```
-General purpose item quantity enum.
-*)
+
   ERSItemQuantity = enum(ONE, FIVE, TEN, CUSTOM, ALL);
 
-(*
-### ERSItemQuantity.Integer2Quantity
-```pascal
-function ERSItemQuantity.Integer2Quantity(quantity: Integer): ERSItemQuantity; static;
-```
-Internal helper function to convert a integer quantity into a ERSItemQuantity.
 
-Example:
-```pascal
-WriteLn ERSItemQuantity.Integer2Quantity(5);
-WriteLn ERSItemQuantity.Integer2Quantity(7);
-```
-*)
 function ERSItemQuantity.Integer2Quantity(quantity: Integer): ERSItemQuantity; static;
 begin
   case quantity of
@@ -53,36 +24,10 @@ begin
 end;
 
 type
-(*
-## ERSStack
-```pascal
-ERSStack = enum(YELLOW, WHITE, GREEN);
-```
-Enum representing the types of item stacks available.
-*)
+
   ERSStack = enum(YELLOW, WHITE, GREEN);
 
-(*
-## ERSStack.Color
-```pascal
-property ERSStack.Color: TColor;
-```
-Returns a `TColor` of a {ref}`ERSStack`.
-- `ERSStack.YELLOW` should be stacks between `0` and `99.999`.
-- `ERSStack.WHITE` should be stacks between `100.000` and `9.999.999` and are
-shown with a `K` representing the 3 least significant digits, e.g. `9.999.999`
-would be seen as `9999K`.
-- `ERSStack.GREEN` should be stacks between `100.000` and `9.999.999` and are
-shown with an `M` representing the 6 least significant digits, e.g.
-`999.999.999` would be seen as `999M`.
 
-Example:
-```pascal
-WriteLn ERSStack.YELLOW.Color; //$00FFFF
-WriteLn ERSStack.WHITE.Color;  //$FFFFFF
-WriteLn ERSStack.GREEN.Color;  //$80FF00
-```
-*)
 property ERSStack.Color: TColor;
 begin
   case Self of
@@ -92,21 +37,7 @@ begin
   end;
 end;
 
-(*
-## ERSStack.Multiplier
-```pascal
-property ERSStack.Multiplier: Integer;
-```
-Returns the "multiplier" of a `ERSStack` which are:
-- `ERSStack.YELLOW`: 0
-- `ERSStack.WHITE`: 1000
-- `ERSStack.GREEN`: 1000000
 
-Example:
-```pascal
-WriteLn ERSStack.YELLOW.Multiplier;
-```
-*)
 property ERSStack.Multiplier: Integer;
 begin
   Result := Round(10 ** (3 * Ord(Self)));
@@ -114,102 +45,38 @@ end;
 
 
 type
-(*
-## TRSItem
-The main type that represents, well, a runescape item.
-`TRSItem` is a type of `String` and therefore inherits all `String` methods.
-*)
+
   TRSItem = String;
-(*
-## TRSItemArray
-Array type of `TRSItem`.
-*)
+
   TRSItemArray = array of TRSItem;
 
-(*
-## TRSItem.Shadow
-```pascal
-property TRSItem.Shadow: TColor; static;
-```
-Returns a `TColor` of an item shadow.
 
-Example:
-```pascal
-WriteLn TRSItem.Shadow; //$202030
-```
-*)
 property TRSItem.Shadow: TColor; static;
 begin
   Result := $202030;
 end;
 
-(*
-## TRSItem.ShadowGray
-```pascal
-property TRSItem.ShadowGray: TColor; static;
-```
-Returns a `TColor` of an item gray shadow. This is a shadow you will see with
-certain interfaces open, e.g. the {ref}`Bank`.
 
-Example:
-```pascal
-WriteLn TRSItem.ShadowGray; //$333333
-```
-*)
 property TRSItem.ShadowGray: TColor; static;
 begin
   Result := $333333;
 end;
 
 
-(*
-## TRSItem.BorderWhite
-```pascal
-property TRSItem.BorderWhite: TColor; static;
-```
-Returns a `TColor` of an item border when the item is selected. This pretty
-much only happens in the {ref}`Inventory` {ref}`GameTab`.
 
-Example:
-```pascal
-WriteLn TRSItem.BorderWhite; //$FFFFFF
-```
-*)
 property TRSItem.BorderWhite: TColor; static;
 begin
   Result := $FFFFFF;
 end;
 
-(*
-## TRSItem.Border
-```pascal
-property TRSItem.Border: TColor; static;
-```
-Returns a `TColor` of an item border.
 
-Example:
-```pascal
-WriteLn TRSItem.Border; //$010000
-```
-*)
 property TRSItem.Border: TColor; static;
 begin
   Result := $010000;
 end;
 
 
-(*
-## TRSItem.InBounds
-```pascal
-function TRSItem.InBounds(bounds: TBox; fadeTolerance: Single = 8.5): Boolean; static;
-```
-Checks if the specified `bounds` has an item in it.
 
-Example:
-```pascal
-WriteLn TRSItem.InBounds(Inventory.Slots.Box(0));
-```
-*)
 function TRSItem.InBounds(bounds: TBox; fadeTolerance: Single = 8.5): Boolean; static;
 begin
   Result := Target.HasColor(TRSItem.Border, fadeTolerance, 1, bounds) or
@@ -217,40 +84,13 @@ begin
 end;
 
 
-(*
-## TRSItem.HasAmount
-```pascal
-function TRSItem.HasAmount(): Boolean;
-```
-Checks if the `TRSItem` has "doses" or "charges".
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.HasAmount(); //true
-```
-*)
 function TRSItem.HasAmount(): Boolean;
 begin
   Result := Self.EndsWith(')', True);
 end;
 
-(*
-## TRSItem.Spread
-```pascal
-function TRSItem.Spread(): TRSItemArray;
-```
-Checks if the `TRSItem` has `(a..b)` in it's name and will spread it into a
-`TRSItemArray`.
 
-Example:
-```pascal
-item := 'prayer potion(1..4)';
-WriteLn item.Spread(); ['prayer potion(1)', 'prayer potion(2)', 'prayer potion(3)'. 'prayer potion(4)']
-item := 'prayer potion(2..1)';
-WriteLn item.Spread(); ['prayer potion(2)', 'prayer potion(1)']
-```
-*)
 function TRSItem.Spread(): TRSItemArray;
 var
   parts: TStringArray;
@@ -276,19 +116,7 @@ begin
     Result += name + ToStr(i) + ')';
 end;
 
-(*
-## TRSItem.SimplifyName
-```pascal
-function TRSItem.SimplifyName(): String;
-```
-Internal helper function to get a human like short item name, usually to search.
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.SimplifyName();
-```
-*)
 function TRSItem.SimplifyName(): String;
 var
   short, long: Integer;
@@ -305,27 +133,14 @@ begin
   Result := Result.CopyRange(0, Random(short, long));
 end;
 
-(*
-## Item.StackBox
-```pascal
-property TRSItem.StackBox(slot: TBox): TBox; static;
-```
-Returns the correct text box of an item's amount text based on the item box.
-*)
+
 property TRSItem.StackBox(slot: TBox): TBox; static;
 begin
   Result := [slot.X1, slot.Y1-1, slot.X1 + 35, slot.Y1 + 11];
 end;
 
 
-(*
-## TRSItem.ReadStack
-```pascal
-function TRSItem.ReadStack(slot: TBox): Integer; static;
-```
-For use with items in interfaces like bankscreen, inventory, shops and so on to
-get the number of stacked items.
-*)
+
 function TRSItem.ReadStack(slot: TBox): Integer; static;
 var
   stack: ERSStack;
@@ -347,59 +162,23 @@ begin
 end;
 
 type
-(*
-## TRSBankItem
-Helper type to handle bank items better.
-This holds information about the item name, quantity and whether it's noted or
-not.
-*)
+
   TRSBankItem = object
     Item: TRSItem;
     Quantity: Integer;
     Noted: Boolean;
   end;
 
-(*
-## TRSBankItemArray
-Array type of `TRSBankItem`.
-*)
+
   TRSBankItemArray = array of TRSBankItem;
 
-(*
-## TRSBankItem.Construct
-```pascal
-function TRSBankItem.Construct(item: TRSItem; quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem; static;
-```
-Creates a TRSBankItem.
 
-Example:
-```pascal
-var
-  bankitem: TRSBankItem;
-begin
-  bankitem := new TRSBankItem('abyssal whip', 1);
-end.
-```
-*)
 function TRSBankItem.Construct(item: TRSItem; quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem; static;
 begin
   Result := item.ToBankItem(quantity);
 end;
 
-(*
-## TRSItem.ToBankItem
-```pascal
-function TRSItem.ToBankItem(quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem;
-```
-Returns a `TRSBankItem` based on the `TRSItem` in question with the specified
-`quantity`.
 
-Example:
-```pascal
-item := 'Amulet of glory(6)';
-WriteLn item.ToBankItem();
-```
-*)
 function TRSItem.ToBankItem(quantity: Integer = QUANTITY_ALL_BUT_ONE): TRSBankItem;
 begin
   Result.Quantity := quantity;
@@ -408,13 +187,7 @@ begin
   else Result.Item := Self;
 end;
 
-(*
-## TRSBankItem.ToItem
-```pascal
-function TRSBankItem.ToItem(): TRSItem;
-```
-The opposite of {ref}`TRSItem.ToBankItem`
-*)
+
 function TRSBankItem.ToItem(): TRSItem;
 begin
   Result := Self.Item;

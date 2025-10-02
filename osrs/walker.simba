@@ -1,52 +1,19 @@
-(*
-# Walker
-This file is responsible for our walking system.
-It is heavily inspired in the original TRSWalker by [slacky](https://slacky.one/) and it's future
-iterations made by Olly.
-*)
+
 
 {$DEFINE WL_WALKER_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## type PRSWalker
-TRSWalker pointer.
-*)
+
   PRSWalker = ^TRSWalker;
 
-(*
-## type TRSWalkerEvent
-Callback object method to use while walking. This can be used to perform custom tasks while walking.
 
-Example:
-```pascal
-procedure TRSWalker.WalkerTasks(walker: PRSWalker; position, destination: TPoint);
-begin
-  Antiban.RandomTab();
-end;
-
-begin
-  //this assumes walker is already setup.
-  walker.OnWaitMoving := @walker.WalkerTasks;
-end;
-```
-*)
   TRSWalkerEvent            = procedure(walker: PRSWalker; position, destination: TPoint) of object;
   TWalkerPositionFunction = function (): TPoint of object;
   TWalkerHeightFunction   = function (pt: TPoint = [0,0]; global: Boolean = True): Single of object;
   TWalkerGetLocalFunction  = function (pt: TPoint; offset: TPoint = [0,0]): TPoint of object;
 
-(*
-## TRSWalker
-TRSWalker is the record responsible for walking.
-To work you need to set it up with something that gives it a position function
-as by itself it doesn't really do anything.
 
-Once you have a function that gives you an accurate position, you can pass it to
-into a `TRSWalker` variable or into the {ref}`Walker` one, either directly or
-via the {ref}`Walker.Setup` method.
-*)
   TRSWalker = record
     Name: String;
 
@@ -83,22 +50,7 @@ function TRSWalker.DummyGetLocal(pt: TPoint; offset: TPoint = [0,0]): TPoint; be
 {$H+}
 
 
-(*
-## Walker.Setup
-```pascal
-procedure TRSWalker.Setup(position: TWalkerPositionFunction; height: TWalkerHeightFunction; getLocal: TWalkerGetLocalFunction; graph: PWebGraph; mapImage: TImage);
-```
-Method responsible for setting up the {ref}`TRSWalker` variable.
-All parameters of this function can be `nil` except for `position`.
-Without a `position` callback you cannot use `TRSWalker`.
 
-The following is purely an example, you never have to do this since `Map.Setup`
-already does this for you anyway:
-```pascal
-Map.Setup(ERSChunk.CATACOMBS_OF_KOUREND);
-Walker.Setup(@Map.Position, @Map.Height, @Map.Loader.GetLocal, @Map.Loader.Graph, @Map.Loader.Map);
-```
-*)
 procedure TRSWalker.Setup(position: TWalkerPositionFunction; height: TWalkerHeightFunction; getLocal: TWalkerGetLocalFunction; graph: PWebGraph; mapImage: TImage);
 begin
   Self.Name := 'Walker';
@@ -118,25 +70,7 @@ begin
 end;
 
 
-(*
-## Walker Conversions
-```pascal
-function TRSWalker.Point2MM(me, pt: TPoint; radians: Double): TPoint;
-function TRSWalker.Point2MMVec(me, pt: TPoint; radians: Double): Vector2;
-function TRSWalker.Points2MM(me: TPoint; tpa: TPointArray; radians: Double): TPointArray;
-function TRSWalker.GetLocalEx(tpa: TPointArray; offset: TPoint = [0,0]): TPointArray;
-function TRSWalker.GetQuadMS(me, mapPoint: TPoint; height: Double = 0; offset: Vector3 = [0,0,0]; radians: Single = $FFFF): TQuad;
-function TRSWalker.MM2Map(me, minimapPoint: TPoint; radians: Single = $FFFF): TPoint;
-```
-Used to convert coordinates from `TRSWalker` to the minimap or the mainscreen.
 
-Example:
-```pascal
-//assuming walker is already setup...
-me := Walker.Position();
-ShowOnTarget(Walker.GetQuadMS(me, me + [4,0])); //should show you the tile to your right.
-```
-*)
 function TRSWalker.Point2MM(me, pt: TPoint; radians: Double): TPoint;
 begin
   Result := pt - me + Minimap.Center;
@@ -308,15 +242,7 @@ end;
 
 
 
-(*
-## TRSWalker.InRange
-```pascal
-function TRSWalker.InRangeEx(me, coordinate: TPoint; distance: Integer = 4): Boolean;
-function TRSWalker.InRange(coordinate: TPoint; distance: Integer = 4): Boolean;
-```
-Returns True/False if we are within `distance` of a certain `coordinate`.
-`distance` is measured in pixels and in a radial way.
-*)
+
 function TRSWalker.InRangeEx(me, coordinate: TPoint; distance: Integer = 4): Boolean;
 begin
   Result := me.DistanceTo(coordinate) <= distance;
@@ -328,26 +254,7 @@ begin
 end;
 
 
-(*
-## Walker.CheckEnergy
-```pascal
-procedure TRSWalker.CheckEnergy();
-```
-Internal method used to check and enable the player run.
-You will probably never need to call this directly.
 
-The values used are hardcoded and if you don't like them,
-it's recommended you override the method.
-The following example shows how one could override the function to enable
-run at 50% energy everytime, keep in mind though,
-you shouldn't do this, you should add randomness to it!
-
-Example:
-```pascal
-Map.Walker.MinEnergy := 10;
-Map.Walker.CheckEnergy();
-```
-*)
 procedure TRSWalker.CheckEnergy();
 begin
   if Minimap.EnergyEnabled() then Exit;
@@ -357,14 +264,7 @@ begin
   Minimap.EnableEnergy();
 end;
 
-(*
-## Walker.AdaptiveWalkCheck
-```pascal
-procedure TRSWalker.AdaptiveWalkCheck(position: TPoint);
-```
-Internal method used to check if adaptive walk should toggle and toggle TRSWalker.ScreenWalk.
-You will probably never need to call this directly.
-*)
+
 procedure TRSWalker.AdaptiveWalkCheck(position: TPoint);
 var
   wasEnabled: Boolean;
@@ -383,14 +283,7 @@ begin
     Self.DoMouseAhead(position, True);
 end;
 
-(*
-## Walker.DoMouseAhead
-```pascal
-procedure TRSWalker.DoMouseAhead(position: TPoint; forced: Boolean = False);
-```
-Internal method used to pre-hover the next walking step.
-You will probably never need to call this directly.
-*)
+
 procedure TRSWalker.DoMouseAhead(position: TPoint; forced: Boolean = False);
 var
   flag: TPoint;
@@ -443,17 +336,7 @@ begin
     Self.MouseAheadTimer += RandomMode(0,50,500);
 end;
 
-(*
-## Walker.WaitMoving
-```pascal
-procedure TRSWalker.WaitMoving(destination: TPoint; minDist: Integer);
-procedure TRSWalker.WaitMoving(time: Integer = 20000; doAntiban: Boolean = True); overload;
-```
-Internal method used to wait while we are moving using walker.
-You will probably never need to call this directly.
 
-This is where TRSWalker.OnWaitMoving are called.
-*)
 procedure TRSWalker.WaitMoving(destination: TPoint; minDist: Integer);
 var
   timeout, countdown: TCountDown;
@@ -518,16 +401,7 @@ begin
 end;
 
 
-(*
-## Walker.Click
-```pascal
-function TRSWalker.Click(minimapPoint: TPoint; Randomness: Integer): Boolean;
-```
-Internal method used by walker to handle clicking while walking.
-You will probably never need to call this directly.
 
-If you wish to modify certain walker behaviors, it can be a good approach to override this function.
-*)
 function TRSWalker.Click(me, mapPoint, minimapPoint: TPoint; randomness: Integer): Boolean;
 var
   pt: TPoint;
@@ -609,14 +483,7 @@ begin
     Self.Walking := False;
 end;
 
-(*
-## Walker.IsWalkable
-```pascal
-function TRSWalker.IsWalkable(mapPoint: TPoint; me: TPoint; out mmPoint: TPoint; radians: Double): Boolean;
-```
-Internal method used by walker to decide if the destination point is within 1 click reach.
-You will probably never need to call this directly.
-*)
+
 function TRSWalker.IsWalkable(mapPoint, me: TPoint; out mmPoint: TPoint; radians: Double): Boolean;
 var
   tile: TPointArray;
@@ -655,14 +522,7 @@ begin
 end;
 
 
-(*
-## Walker.WalkStep
-```pascal
-function TRSWalker.WalkStep(me: TPoint; index, minDist: Integer): Boolean;
-```
-Internal method used by walker while walking a path.
-You will probably never need to call this directly.
-*)
+
 function TRSWalker.WalkStep(me: TPoint; index, minDist: Integer): Boolean;
 var
   mapPt, minimapPt: TPoint;
@@ -956,26 +816,7 @@ begin
 end;
 
 
-(*
-## TRSWalker.WalkPath
-```pascal
-function TRSWalker.WalkPath(Path: TPointArray; minDist: Integer = 0): Boolean;
-```
-Walks a path of points taken from the loaded map. We advice that minDist is not 0.
 
-Parameters:
-- Path
-	Array of points taken from the loaded map to walk. Must be ordered from start to finish.
-- minDist
-	Determines when the method returns once the final point has been clicked. Default value: 0.
-	| *minDist=0* waits until the player has reached the final point.
-	| *minDist=20* waits until the player is within 20 pixels of the final point.
-
-Example:
-```pascal
-Walker.WalkPath([[100,100],[120,120],[140,140],[160,160],[180,180]]);
-```
-*)
 function TRSWalker.WalkPath(path: TGraphNodeArray; minDist: Integer = 0; debug: Boolean = False): Boolean;
 var
   me: TPoint;
@@ -1009,40 +850,14 @@ begin
     WriteLn GetDebugLn(Self.Name, 'Failed to advance path', ELogLevel.WARN);
 end;
 
-(*
-## TRSWalker.WalkBlind
-```pascal
-function TRSWalker.WalkBlind(Destination: TPoint; minDist: Integer = 0): Boolean;
-```
-"Blindly" walks to a point taken from the loaded map.
-A straight line is generated between the player's position and destination which is then walked.
 
-Parameters:
-- Destination
-  Destination point taken from the loaded map.
-- minDist
-	Determines when the method returns once the final point has been clicked. Default value: 0.
-	| *minDist=0* waits until the player has reached the final point.
-	| *minDist=20* waits until the player is within 20 pixels of the final point.
-
-Example:
-```pascal
-Walker.WalkBlind([300, 300]);
-```
-*)
 function TRSWalker.WalkBlind(destination: TPoint; minDist: Integer = 0): Boolean;
 begin
   Result := Self.WalkPath([TGraphNode.Create(destination)], minDist);
 end;
 
 
-(*
-## TRSWalker.GetClosestPoint
-```pascal
-function TRSWalker.GetClosestPoint(me: TPoint; destinations: TPointArray; out path: TGraphNodeArray): TPoint;
-```
-Method used to get the closest `destination` point to `me`.
-*)
+
 function TRSWalker.GetClosestPoint(me: TPoint; destinations: TPointArray; out path: TGraphNodeArray): TPoint;
 var
   shortPaths: array of TGraphNodeArray;
@@ -1101,15 +916,7 @@ begin
   Result := Self.WebGraph^.PathBetween(me, destination, randomness, 4);
 end;
 
-(*
-## TRSWalker.WebWalk
-```pascal
-function TRSWalker.WebWalkEx(me, destination: TPoint; minDist: Integer = 0; randomness: Double = 0): Boolean;
-function TRSWalker.WebWalk(destination: TPoint; minDist: Integer = 0; randomness: Double = 0): Boolean;
-function TRSWalker.WebWalk(destinations: TPointArray; minDist: Integer = 0; randomness: Double = 0): Boolean; overload;
-```
-Web walks to the destination point on the loaded map. Does **not** handle any obstacles.
-*)
+
 function TRSWalker.WebWalkEx(me, destination: TPoint; minDist: Integer = 0; randomness: Double = 0; debug: Boolean = False): Boolean;
 var
   path: TGraphNodeArray;
@@ -1145,14 +952,7 @@ begin
   Result := Self.WalkPath(path, minDist, debug);
 end;
 
-(*
-## TRSWalker.MakePointVisible
-```pascal
-function TRSWalker.MakePointVisible(p: TPoint): Boolean;
-function TRSWalker.MakePointVisible(tpa: TPointArray): Boolean; overload;
-```
-Wrapper function used to attempt to make a Point visible on the MainScreen.
-*)
+
 function TRSWalker.MakePointVisible(me: TPoint; pt: TPoint): Boolean;
 begin
   Result := Minimap.MakePointVisible(Self.Point2MM(me, pt, Minimap.CompassRadians));

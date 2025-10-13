@@ -1,7 +1,4 @@
-(*
-# Assets
-Responsible for managing assets that WaspLib requires to run.
-*)
+
 {$DEFINE WL_ASSETS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 

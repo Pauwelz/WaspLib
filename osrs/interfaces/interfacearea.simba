@@ -1,7 +1,4 @@
-(*
-# InterfaceArea
-Interface area is the area where mainscreen interfaces can occupy.
-*)
+
 {$DEFINE WL_INTERFACE_AREA_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
@@ -47,13 +44,7 @@ begin
   Self.Quad := TQuad.CreateFromBox(Self.Bounds);
 end;
 
-(*
-## TRSInterfaceArea.IsOpen
-```pascal
-function TRSInterfaceArea.IsOpen(interfaceType: ERSInterfaceType = ERSInterfaceType.ANY): Boolean;
-```
-Returns True/False if any interface is found open.
-*)
+
 function TRSInterfaceArea.IsOpen(interfaceType: ERSInterfaceType = ERSInterfaceType.ANY): Boolean;
 begin
   case interfaceType of
@@ -63,13 +54,7 @@ begin
   end;
 end;
 
-(*
-## TRSInterfaceArea.WaitOpen
-```pascal
-function TRSInterfaceArea.WaitOpen(interfaceType: ERSInterfaceType = ERSInterfaceType.ANY; time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns True/False if any interface is found open within `time` milliseconds.
-*)
+
 function TRSInterfaceArea.WaitOpen(interfaceType: ERSInterfaceType = ERSInterfaceType.ANY; time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);

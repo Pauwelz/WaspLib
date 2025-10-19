@@ -1,14 +1,4 @@
-(*
-# WebGraph Generator
-This page is about webgraph generation out of collision map images.
 
-You can force WaspLib's graph generator to always run even if there's already
-cached graphs by adding the following compiler directive at the top of your
-script **BEFORE INCLUDING WASPLIB**:
-```pascal
-{$DEFINE WL_GENERATE_GRAPH_ALWAYS}
-```
-*)
 
 {$DEFINE WL_WEBGRAPHGEN_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
@@ -16,10 +6,7 @@ script **BEFORE INCLUDING WASPLIB**:
 {.$DEFINE WL_GENERATE_GRAPH_ALWAYS}
 
 type
-(*
-## TWebGraphGenerator
-Record responsible for generating webgraphs from collision map images.
-*)
+
   TWebGraphGenerator = record
     Spacing, MinimumTiles, NodeRadius, MaxConnections,
     MaxDoorConnections: Integer;
@@ -42,30 +29,7 @@ begin
   Result := HashData(EHashAlgo.CRC32, @data[0], Length(data));
 end;
 
-(*
-## WebGraphGenerator.Setup
-```pascal
-procedure TWebGraphGenerator.Setup(spacing, minimumTiles, nodeRadius, maxConnections, maxDoorConnections: Integer);
-```
-Sets up the `TWebGraphGenerator` with the following settings which are the
-defaults:
-```pascal
-WebGraphGenerator.Setup(18, 4, 50, 6, 3);
-```
 
-Parameters explanation
-- `spacing`: Lower values have better results but the generation is slower, high
-values have worse results but geneartion is faster.
-- `minimumTiles`: spaces with less tiles than this will be ignored.
-- `nodeRadius`: closed spaces that are less than this values in pixels will have a single node in the middle.
-- `maxConnections`: max connections per node.
-- `maxDoorConnections`: max connections per door node.
-
-Feel free to change the settings to suit your need and use the
-{ref}`Map Debugger` to see what the results look like.
-
-To do so you **MUST DO IT BEFORE** setting up your {ref}`Map`.
-*)
 procedure TWebGraphGenerator.Setup(spacing, minimumTiles, nodeRadius, maxConnections, maxDoorConnections: Integer; skeletonize: Boolean);
 begin
   Self.Spacing := spacing;
@@ -390,46 +354,7 @@ begin
 end;
 
 
-(*
-## WebGraphGenerator.BuildGraph
-```pascal
-function TWebGraphGenerator._BuildGraph(map: TImage; white, red: TPointArray): TWebGraph;
-function TWebGraphGenerator.BuildGraph(name: String; map: TImage): TWebGraph;
-```
-Magically builds a webgraph for you for a given collision map passed into `map`.
 
-The collision map can only have 4 colors:
-- white ($FFFFFF) for walkable space
-- black ($000000) for non walkable space
-- red ($0000FF) for doors (optional)
-- gray ($333333) for objects (optional)
-
-```{note}
-This is an internal method. Don't use it if you don't know what you are doing.
-```
-
-How it works in detail is quite technical but if you want to see the result
-run this example code:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Map.Setup([Chunk(Box(49,54,50,53), 0)]);
-  Map.Debug();
-end.
-```
-
-This will setup a map with a small piece of varrock and then open the
-{ref}`Map Debugger`.
-
-On the {ref}`Map Debugger` change the dropdown to the collision map if you want
-to see what it looks like, that is what will go through this as the `map`
-parameter and it should look something like this:
-
-```{figure} ../../images/map_collision.png
-```
-
-As a bonus you can also see the resulting webgraph!
-*)
 function TWebGraphGenerator._BuildGraph(map: TImage; white, red: TPointArray): TWebGraph;
 var
   i, j, n, len, minLen: Integer;
@@ -552,117 +477,9 @@ begin
   WriteLn GetDebugLn('WebGraphGenerator', 'Generating webgraph took ' + ToStr(Round(((GetTimeRunning()-t)/1000), 2)) + ' seconds.', ELogLevel.SUCCESS);
 end;
 
-(*
-## Webgraph Generation
-If you do wish to understand the technical details a little bit more, the
-following is a simplified explanation with images of more or less how it works.
 
-First of all, you need to have a collision map. WaspLib's webgraph generator
-assumes the walking space is white and that the doors are red, other than that,
-it doesn't really matter what colors your collision map, for this explanation
-I'm going to use a small piece of varrock with a bit of the wilderness:
-```{figure} ../../images/graphgen0.png
-```
-
-We start off by extracting all the white:
-```{figure} ../../images/graphgen1.png
-```
-
-Then, we cluster the white, grouping each white pixel that is within any other
-white pixel horizontal or vertically in the same cluster. It's important to not
-include diagonal pixels or your clusters will cross certain walls, at least in
-WaspLib's collision maps. We also sort our clusters by size as we can have some
-performance improvements by having the clusters sorted.
-
-Doing this will look something like this:
-```{figure} ../../images/graphgen2.png
-```
-
-We also need to find all the red to know where the doors are, in this image I've
-expanded the color a little so it's visble but you should only get the door:
-```{figure} ../../images/graphgen3.png
-```
-
-While doing this, you also want to get and store for later the point in front
-and behind the door and map those points to each of your clusters.
-
-The next step is to start processing our clusters. Because we sorted them by size
-we start by skipping very small ones, usually clusters that are less than the
-size of a tile.
-
-Clusters that are less than `WebGraphGenerator.MinimumTiles` we add a single node
-in the middle, it's a cluster too small to be worth extra processing.
-Which would be the red nodes on the image below:
-```{figure} ../../images/graphgen4.png
-```
-
-We also check our mapped doors to see if any of the points in front or behind
-each door belongs to our cluster, if it does, we connect it to our node.
-
-Then we start processing bigger clusters if you have
-`WebGraphGenerator.Skeletonize` set to `True` which is the default, we will
-sekeletonize the cluster which should look something like this:
-```{figure} ../../images/graphgen5.png
-```
-
-And then we partition it with `WebGraphGenerator.Spacing`:
-```{figure} ../../images/graphgen6.png
-```
-
-If you have `WebGraphGenerator.Skeletonize` set to `False`, we simply parition
-the cluster as it is, again with `WebGraphGenerator.Spacing`.
-
-It's hard to see much difference here but it's much denser than the above and
-later on you will see the actual difference when paths are added:
-```{figure} ../../images/graphgen7.png
-```
-
-Whichever case your settings followed, those will be your nodes for that cluster.
-
-Then next step is to try and connect the nodes we just created by proximity.
-We check `WebGraphGenerator.MaxConnections*2` closest nodes to each node and
-connect up to `WebGraphGenerator.MaxConnections` if:
-- We have a straight path between the 2 nodes
-- If we can have a path using AStar
-
-It should look something like this:
-```{figure} ../../images/graphgen8.png
-```
-
-For AStar path finding we use the original skeleton/cluster and this is an
-example of a connection where AStar was used:
-```{figure} ../../images/graphgen9.png
-```
-As you can see that crossing over the wilderness river crossing black, it's
-connected because AStar has found a path around it. That's also what's happening
-on those nodes around trees with lines crossing the trees, there's a valid path
-because AStar found a way around.
-
-If you were to have `WebGraphGenerator.Skeletonize` set to `False`, this is what
-the same thing would look like:
-```{figure} ../../images/graphgen10.png
-```
-
-Lastly, we our mapped doors that has their front or behind point within our
-cluster and connect that door to the closest
-`WebGraphGenerator.MaxDoorConnections` amount of nodes:
-```{figure} ../../images/graphgen11.png
-```
-
-And that's about it. The final graph should look like this if you
-`WebGraphGenerator.Skeletonize` set to `True`, which again, is the default:
-```{figure} ../../images/graphgen12.png
-```
-
-And this would be `WebGraphGenerator.Skeletonize` set to `False`:
-```{figure} ../../images/graphgen13.png
-```
-*)
 
 var
-(*
-## WebGraphGenerator variable
-Global {ref}`TWebGraphGenerator` variable.
-*)
+
   WebGraphGenerator: TWebGraphGenerator;
 {$R+}

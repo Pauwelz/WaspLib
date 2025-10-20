@@ -1,14 +1,9 @@
-(*
-# RSCamera
-*)
+
 {$DEFINE WL_CAMERA_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSCamera
-Record responsible of handling projection, similar to {ref}`MM2MS`.
-*)
+
   TRSCamera = record
     X, Y, Z, Pitch, Yaw, Scale, MinScale, MaxScale,
     ZOffset, MinZ, MaxZ, ReverseZ: Integer;
@@ -161,8 +156,5 @@ begin
 end;
 
 var
-(*
-## RSCamera variable
-Global {ref}`TRSCamera` variable.
-*)
+
   RSCamera: TRSCamera;

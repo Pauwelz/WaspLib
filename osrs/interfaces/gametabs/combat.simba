@@ -1,9 +1,4 @@
-(*
-# Combat
-Methods to interact with the combat gametab:
-```{figure} ../../images/combattab.png
-```
-*)
+
 {$DEFINE WL_COMBAT_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
@@ -101,10 +96,7 @@ begin
 end;
 
 type
-(*
-## TRSCombat
-Main record responsible with handling the combat gametab.
-*)
+
   TRSCombat = record
     AutoRetaliateBox, SpecialAttackBox,
     CategoryBox, _StylesBox: TBox;
@@ -143,56 +135,20 @@ begin
 end;
 
 
-(*
-## Combat.IsOpen
-```pascal
-function TRSCombat.IsOpen(): Boolean;
-```
-Returns true/false if the combat tab is open.
 
-Example:
-```pascal
-WriteLn Combat.IsOpen();
-```
-*)
 function TRSCombat.IsOpen(): Boolean;
 begin
   Result := GameTabs.IsOpen(ERSGameTab.COMBAT);
 end;
 
-(*
-## Combat.Open
-```pascal
-function TRSCombat.Open(): Boolean;
-```
-Attempts to open the combat gametab.
 
-Example:
-```pascal
-WriteLn Combat.Open();
-```
-*)
 function TRSCombat.Open(): Boolean;
 begin
   Result := GameTabs.Open(ERSGameTab.COMBAT);
 end;
 
 
-(*
-## Combat.GetCategory
-```pascal
-function TRSCombat.GetCategory(): EWeaponCategory;
-```
-Returns the `EWeaponCategory` of the current weapon.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Combat.GetCategory();
-end.
-```
-*)
 function TRSCombat.GetCategory(): EWeaponCategory;
 var
   str: String;
@@ -203,24 +159,7 @@ begin
   Result := EWeaponCategory(WEAPON_CATEGORIES.IndexOf(str));
 end;
 
-(*
-## Combat.StyleBoxes
-```pascal
-property TRSCombat.StyleBoxes: TBoxArray;
-```
-Returns the the attack style boxes available.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  while True do
-    ShowOnTarget(Combat.StyleBoxes);
-end.
-```
-```{figure} ../../images/attackstyles.gif
-```
-*)
 property TRSCombat.StyleBoxes: TBoxArray;
 var
   tpa: TPointArray;
@@ -244,24 +183,7 @@ begin
 end;
 
 
-(*
-## Combat.StyleBoxes
-```pascal
-property TRSCombat.WeaponStyle: EWeaponStyle;
-property TRSCombat.WeaponStyle(value: EWeaponStyle): Boolean;
-```
-Gets/Sets the weapon `EWeaponStyle`.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Combat.WeaponStyle;
-  WriteLn Combat.WeaponStyle := EWeaponStyle.BLOCK;
-  WriteLn Combat.WeaponStyle;
-end.
-```
-*)
 property TRSCombat.WeaponStyle: EWeaponStyle;
 var
   b: TBox;
@@ -307,25 +229,7 @@ begin
 end;
 
 
-(*
-## Combat.StyleBoxes
-```pascal
-property TRSCombat.MeleeStyle: EMeleeStyle;
-property TRSCombat.MeleeStyle(value: EMeleeStyle): Boolean;
-```
-Gets/Sets the combat `EMeleeStyle`. Doesn't do anything if we don't have a
-melee weapon.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Combat.MeleeStyle;
-  WriteLn Combat.MeleeStyle := EMeleeStyle.SLASH;
-  WriteLn Combat.MeleeStyle;
-end.
-```
-*)
 property TRSCombat.MeleeStyle: EMeleeStyle;
 begin
   Result := Self._GetMeleeStyle(Self.GetCategory());
@@ -361,26 +265,7 @@ begin
 end;
 
 
-(*
-## Combat.AutoRetaliate
-```pascal
-property TRSCombat.AutoRetaliate: Boolean;
-property TRSCombat.AutoRetaliate(value: Boolean): Boolean;
-```
-Gets/Sets the auto retaliate state.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Combat.AutoRetaliate;
-  Combat.AutoRetaliate := True;
-  WriteLn Combat.AutoRetaliate;
-  Combat.AutoRetaliate := False;
-  WriteLn Combat.AutoRetaliate;
-end.
-```
-*)
 property TRSCombat.AutoRetaliate: Boolean;
 begin
   Result := Target.HasColor([$1D1F82, 0.560, EColorSpace.HSL, [1.403, 1.403, 0.196]], 1, Self.AutoRetaliateBox);
@@ -398,26 +283,7 @@ begin
 end;
 
 
-(*
-## Combat.SpecialAttack
-```pascal
-property TRSCombat.SpecialAttack: Boolean;
-property TRSCombat.SpecialAttack(value: Boolean): Boolean;
-```
-Gets/Sets the special attack state.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  WriteLn Combat.SpecialAttack;
-  Combat.SpecialAttack := True;
-  WriteLn Combat.SpecialAttack;
-  Combat.SpecialAttack := False;
-  WriteLn Combat.SpecialAttack;
-end.
-```
-*)
 property TRSCombat.SpecialAttack: Boolean;
 begin
   Result := Minimap.SpecialEnabled();
@@ -443,8 +309,5 @@ begin
 end;
 
 var
-(*
-## Combat variable
-Global {ref}`TRSCombat` variable.
-*)
+
   Combat: TRSCombat;

@@ -1,19 +1,10 @@
-(*
-# PrayerFinder
-Methods to find and compare spell images
-*)
+
 
 {$DEFINE WL_PRAYERFINDER_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSPrayer
-```pascal
-ERSPrayer = enum(UNKNOWN, THICK_SKIN..PIETY, RIGOUR, AUGURY);
-```
-An enumeration representing different prayers in RuneScape.
-*)
+
   ERSPrayer = enum(
     THICK_SKIN,           BURST_OF_STRENGTH,  CLARITY_OF_THOUGHT,
     SHARP_EYE,            MYSTIC_WILL,        ROCK_SKIN,
@@ -27,18 +18,7 @@ An enumeration representing different prayers in RuneScape.
     RIGOUR,               AUGURY
   );
 
-(*
-## TRSPrayerFinder
-A record for finding and managing prayer images.
 
-## Fields:
-- `PrayerImages`: Stores images for each prayer type
-- `Version`: Stores the version hash of the image set
-- `Similarity`: Threshold for image comparison
-- `ImageCompare`: Utility for comparing images
-- `CacheDir`: Directory for storing cached prayer images
-- `ZIP`: Path to the zip file containing prayer images
-*)
   TRSPrayerFinder = record
     PrayerImages: array [ERSPrayer] of TImage;
     Version: String;
@@ -47,36 +27,14 @@ A record for finding and managing prayer images.
     CacheDir: String;
   end;
 
-(*
-## PrayerFinder.Clean
-```pascal
-procedure TRSPrayerFinder.Clean(image, template: TImage);
-```
-Cleans the template image by drawing its black-colored points.
 
- Example:
-```pascal
-PrayerFinder.Clean(sourceImage, templateImage);
-```
-*)
 procedure TRSPrayerFinder.Clean(image, template: TImage);
 begin
   template.DrawColor := $0;
   template.DrawTPA(image.FindColor($0, 0));
 end;
 
-(*
-## PrayerFinder.Setup
-```pascal
-procedure TRSPrayerFinder.Setup();
-```
-Sets up the PrayerFinder, including cache management and similarity settings.
 
-Example:
-```pascal
-PrayerFinder.Setup();
-```
-*)
 procedure TRSPrayerFinder.Setup();
 var
   path, tmp: String;
@@ -104,19 +62,7 @@ begin
   Self.ImageCompare.Clean := @Self.Clean;
 end;
 
-(*
-## PrayerFinder.GetImage
-```pascal
-function TRSPrayerFinder.GetImage(prayer: ERSPrayer): TImage;
-```
-Retrieves the image for a specific `prayer`, loading it from cache or extracting from ZIP if needed.
 
-Example:
-```pascal
-img := PrayerFinder.GetImage(ERSPrayer.PIETY);
-img.Show();
-```
-*)
 function TRSPrayerFinder.GetImage(prayer: ERSPrayer): TImage;
 var
   name, path: String;
@@ -135,21 +81,7 @@ begin
   Result := Self.PrayerImages[prayer];
 end;
 
-(*
-## PrayerFinder.FindAll
-```pascal
-function TRSPrayerFinder.FindAll(prayers: array of ERSPrayer; boxes: TBoxArray; maxToFind: Integer = 0): TImageMatchArray;
-function TRSPrayerFinder.FindAll(prayers: array of ERSPrayer; boxes: TBoxArray; out matches: TImageMatchArray): Boolean; overload;
-```
-Finds matches for specified prayers within given boxes.
 
-Example:
-```pascal
-if PrayerFinder.FindAll(prayers, boxes, matches) then
-  for match in matches do
-    ShowOnTarget(matches.Box);
-```
-*)
 function TRSPrayerFinder.FindAll(prayers: array of ERSPrayer; boxes: TBoxArray; maxToFind: Integer = 0): TImageMatchArray;
 var
   prayer: ERSPrayer;
@@ -216,20 +148,7 @@ begin
   Result := True;
 end;
 
-(*
-## PrayerFinder.Find
-```pascal
-function TRSPrayerFinder.Find(prayers: array of ERSPrayer; boxes: TBoxArray; out match: TImageMatch): Boolean;
-```
-Finds the first match for specified `prayers` within given `boxes`.
 
-
-Example:
-```pascal
-if PrayerFinder.Find([ERSPrayer.PIETY], boxes, match) then
-  ShowOnTarget(match.Box);
-```
-*)
 function TRSPrayerFinder.Find(prayers: array of ERSPrayer; boxes: TBoxArray; out match: TImageMatch): Boolean;
 var
   prayer: ERSPrayer;
@@ -259,8 +178,5 @@ begin
 end;
 
 var
-(*
-## PrayerFinder variable
-Global {ref}`TRSPrayerFinder` variable.
-*)
+
   PrayerFinder: TRSPrayerFinder;

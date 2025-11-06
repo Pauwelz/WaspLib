@@ -1,19 +1,10 @@
-(*
-# Lamp
-The `Lamp` interface is the interface that opens when you click an XP Lamp:
-```{figure} ../../images/lamp.png
-```
-In these you can select a skill to gain a small amount of experience.
-*)
+
 
 {$DEFINE WL_LAMP_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSLamp
-Main record to interact with the {ref}`Lamp` interface.
-*)
+
   TRSLamp = record
     Title: TRSInterfaceTitle;
     Bounds, ConfirmBounds: TBox;
@@ -22,17 +13,7 @@ Main record to interact with the {ref}`Lamp` interface.
 
 function TRSLamp.IsOpen(): Boolean; forward;
 
-(*
-## Lamp.SetupInterface
-```pascal
-procedure TRSLamp.SetupInterface();
-```
-Initializes Lamp variables.
 
-```{note}
-This is automatically called on the **Lamp** variable.
-```
-*)
 procedure TRSLamp.SetupInterface();
 const
   SKILL_ORDER: array [0..22] of ERSSkill = [
@@ -80,56 +61,20 @@ begin
   Self.ConfirmBounds.Y2 := Self.Bounds.Y2 - 13;
 end;
 
-(*
-## Lamp.IsOpen
-```pascal
-function TRSLamp.IsOpen(): Boolean;
-```
-Returns true if the {ref}`Lamp` interface is open.
 
-Example:
-```pascal
-WriteLn Lamp.IsOpen();
-```
-*)
 function TRSLamp.IsOpen(): Boolean;
 begin
   Result := Self.Title._IsOpen() and Target.HasColor($999999, 0, 819, Self.Title.Bounds);
 end;
 
-(*
-## Lamp.WaitOpen
-```pascal
-function TRSLamp.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
-```
-Returns true if the {ref}`Lamp` is open within `time` milliseconds.
 
-## Example:
-```pascal
-WriteLn Lamp.WaitOpen();
-```
-*)
 function TRSLamp.WaitOpen(time: Integer; interval: Integer = -1): Boolean;
 begin
   Result := Self.Title.WaitOpen(time, interval);
 end;
 
 
-(*
-## Lamp.Open
-```pascal
-function TRSLamp.Open(item: TRSItem = 'Lamp'): Boolean;
-```
-Attempts to open the {ref}`Lamp` interface.
 
-By default it attempts to open the interface on the "Lamp" item, if you want a
-different one, e.g. "Antique lamp", you need to specify that.
-
-## Example:
-```pascal
-WriteLn Lamp.Open();
-```
-*)
 function TRSLamp.Open(item: TRSItem = 'Lamp'): Boolean;
 begin
   if Self.IsOpen() then
@@ -140,20 +85,7 @@ begin
 end;
 
 
-(*
-## Lamp.Close
-```pascal
-function TRSLamp.Close(escape: Boolean): Boolean;
-function TRSLamp.Close(escapeProbability: Single = 0): Boolean; overload;
-```
-Closes the Lamp interface.  Depending on `escape` or `escapeProbability the function will
-either click the button or press escape key.
 
-Example:
-```pascal
-WriteLn Lamp.Close();
-```
-*)
 function TRSLamp.Close(escape: Boolean): Boolean;
 begin
   Result := Self.Title.Close(escape);
@@ -165,29 +97,7 @@ begin
 end;
 
 
-(*
-## Lamp.GetSelected
-```pascal
-function TRSLamp.GetSelected(): ERSSkill;
-```
-Returns the selected skill if there's any.
 
-`ERSSkill.TOTAL` is returned if no skill is selected.
-
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-var
-  selected: ERSSkill;
-begin
-  selected := Lamp.GetSelected();
-  WriteLn selected;
-  ShowOnTarget(Lamp.Slots[selected]);
-end.
-```
-```{figure} ../../images/lamp_selected.png
-```
-*)
 function TRSLamp.GetSelected(): ERSSkill;
 begin
   for Result := Low(ERSSkill) to High(ERSSkill)-1 do
@@ -196,45 +106,13 @@ begin
   Result := ERSSkill.TOTAL;
 end;
 
-(*
-## Lamp.Enable
-```pascal
-function TRSLamp.Enable(skill: ERSSkill): Boolean;
-```
-Enabled a skill in the lamp interface.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Lamp.Enable(ERSSkill.HERBLORE);
-end.
-```
-```{figure} ../../images/lamp_enable.gif
-```
-*)
 function TRSLamp.Enable(skill: ERSSkill): Boolean;
 begin
   Result := Self.Slots[skill].Enable();
 end;
 
-(*
-## Lamp.Confirm
-```pascal
-function TRSLamp.Confirm(): Boolean;
-```
-Clicks the confirm button in the lamp interface.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Lamp.Select(ERSSkill.HERBLORE);
-end.
-```
-```{figure} ../../images/lamp_select.gif
-```
-*)
 function TRSLamp.Confirm(): Boolean;
 begin
   if not Self.IsOpen() then
@@ -243,23 +121,7 @@ begin
   Result := SleepUntil(not Self.IsOpen(), 50, 600);
 end;
 
-(*
-## Lamp.Select
-```pascal
-function TRSLamp.Select(skill: ERSSkill): Boolean;
-```
-Selects a skill in the lamp interface and clicks confirm.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Lamp.Select(ERSSkill.HERBLORE);
-end.
-```
-```{figure} ../../images/lamp_select.gif
-```
-*)
 function TRSLamp.Select(skill: ERSSkill): Boolean;
 begin
   if not Self.Open() then
@@ -268,8 +130,5 @@ begin
 end;
 
 var
-(*
-## Lamp variable
-Global {ref}`TRSLamp` variable.
-*)
+
   Lamp: TRSLamp;

@@ -1,21 +1,9 @@
-(*
-# HPBars
-Find, sort and read HP bars on the mainscreen.
-*)
+
 
 {$DEFINE WL_HPBARS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
-(*
-(TRSHPBar)=
-## type TRSHPBar
-```pascal
-TRSHPBar = record
-  Bounds: TBox;    // Bounds of the bar
-  Percent: Int32;  // Green percent of the bar.
-end;
-```
-*)
+
 type
   TRSHPBar = record
     Bounds: TBox;

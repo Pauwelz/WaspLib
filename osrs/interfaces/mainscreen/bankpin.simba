@@ -1,31 +1,16 @@
-(*
-# BankPin
-Methods to interact with the bank pin interface.
-```{figure} ../../images/bankpin_interface.png
-```
-*)
+
 
 {$DEFINE WL_BANKPIN_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSBankPin
-Main record to interact with the {ref}`BankPin` interface.
-*)
+
   TRSBankPin = record
     Bounds: TBox;
     Buttons: TBoxArray;
   end;
 
-(*
-## BankPin.SetupInterface
-```pascal
-procedure TRSBankPin.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSBankPin` coordinates.
-This is automatically called for you on the {ref}`BankPin variable`.
-*)
+
 procedure TRSBankPin.SetupInterface();
 begin
   case RSClient.Mode of
@@ -38,35 +23,13 @@ begin
   Self.Buttons.Insert(Self.Buttons[2].Offset([84, 0]), 3);
 end;
 
-(*
-## BankPin.IsOpen
-```pascal
-function TRSBankPin.IsOpen(): Boolean;
-```
-Returns true if the bank pin is open.
 
-Example:
-```pascal
-WriteLn BankPin.IsOpen();
-```
-*)
 function TRSBankPin.IsOpen(): Boolean;
 begin
   Result := Target.HasColor($060D56, 10, 3400, Self.Buttons[0]);
 end;
 
-(*
-## BankPin.WaitOpen
-```pascal
-function TRSBankPin.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns true if the bank pin opens within `time` milliseconds..
 
-Example:
-```pascal
-WriteLn BankPin.WaitOpen();
-```
-*)
 function TRSBankPin.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -74,38 +37,13 @@ begin
 end;
 
 
-(*
-## BankPin.IsLoading
-```pascal
-function TRSBankPin.IsLoading(): Boolean;
-```
-Returns true if the bank pin is loading.
-The bank pin is loading when the interface is open but the pin numbers are not
-available yet.
 
-Example:
-```pascal
-WriteLn BankPin.IsLoading();
-```
-*)
 function TRSBankPin.IsLoading(): Boolean;
 begin
   Result := not Target.HasColor($007FFF, 0, 1, Self.Buttons[0]);
 end;
 
-(*
-## BankPin.WaitLoading
-```pascal
-function TRSBankPin.WaitLoading(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns true if the bank pin finishes loading within `time` milliseconds..
-For more information on bank pin loading read {ref}`BankPin.IsLoading`.
 
-Example:
-```pascal
-WriteLn BankPin.WaitLoading();
-```
-*)
 function TRSBankPin.WaitLoading(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
@@ -113,18 +51,7 @@ begin
 end;
 
 
-(*
-## BankPin.FindDigit
-```pascal
-function TRSBankPin.FindDigit(digit: Char): Integer;
-```
-Finds a bank pin digit.
 
-Example:
-```pascal
-WriteLn BankPin.FindDigit('5');
-```
-*)
 function TRSBankPin.FindDigit(digit: Char): Integer;
 var
   i: Integer;
@@ -146,18 +73,7 @@ begin
   Result := -1;
 end;
 
-(*
-## BankPin.ClickDigit
-```pascal
-function TRSBankPin.ClickDigit(digit: Char): Boolean;
-```
-Finds a digit with {ref}`BankPin.FindDigit` and clicks it if it was found.
 
-Example:
-```pascal
-WriteLn BankPin.ClickDigit('5');
-```
-*)
 function TRSBankPin.ClickDigit(digit: Char): Boolean;
 var
   i: Integer;
@@ -169,18 +85,7 @@ begin
 end;
 
 
-(*
-## BankPin.GetDigitIndex
-```pascal
-function TRSBankPin.GetDigitIndex(): Integer;
-```
-Returns the index of the next digit to enter.
 
-Example:
-```pascal
-WriteLn BankPin.GetDigitIndex();
-```
-*)
 function TRSBankPin.GetDigitIndex(): Integer;
 const
   DIGITS: TStringArray = ['FIRST', 'SECOND', 'THIRD', 'FOURTH'];
@@ -192,18 +97,7 @@ begin
       Exit(i+1);
 end;
 
-(*
-## BankPin.Enter
-```pascal
-function TRSBankPin.Enter(pin: String): Boolean;
-```
-Handles entering the bank pin. Will do 4 attempts before terminating with a fatal error.
 
-Example:
-```pascal
-BankPin.Enter('0000');
-```
-*)
 function TRSBankPin.Enter(pin: String; attempts: Integer = 3): Boolean;
 
   function _IsUnlocked(): Boolean;
@@ -272,8 +166,5 @@ begin
 end;
 
 var
-(*
-## BankPin variable
-Global {ref}`TRSBankPin` variable.
-*)
+
   BankPin: TRSBankPin;

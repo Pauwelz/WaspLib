@@ -1,23 +1,10 @@
-(*
-# SilverScreen
-Methods to interact with the silver‑smelting **Silver Screen** interface.
 
-```{note}
-Credits to Flight and Skunkworks
-```
-*)
 
 {$DEFINE WL_SILVERSCREEN_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSSilverItem
-```pascal
-ERSSilverItem = enum(OPAL_RING..TOPAZ_BRACELET);
-```
-Enum representing the silver jewelry that can be crafted.
-*)
+
   ERSSilverItem = enum(
     OPAL_RING, JADE_RING, TOPAZ_RING,
     OPAL_NECKLACE, JADE_NECKLACE, TOPAZ_NECKLACE,
@@ -25,10 +12,7 @@ Enum representing the silver jewelry that can be crafted.
     OPAL_BRACELET, JADE_BRACELET, TOPAZ_BRACELET
   );
 
-(*
-## TRSSilverScreen
-Main record to interact with the {ref}`SilverScreen` interface.
-*)
+
   TRSSilverScreen = record
     {── static GUI description ──}
     Title     : TRSInterfaceTitle;

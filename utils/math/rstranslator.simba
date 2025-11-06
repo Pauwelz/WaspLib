@@ -1,17 +1,9 @@
-(*
-# RSTranslator
-This file is responsible for conversions or internal RuneScape values to values
-that can be used by Simba and back.
-*)
+
 
 {$DEFINE WL_RSTRANSLATOR_INCLUDED}
 
 type
-(*
-## TRSTranslator
-Record responsible for conversions or internal RuneScape values to values
-that can be used by Simba and back.
-*)
+
   TRSTranslator = record
     const TileSize: Integer = 4;
     const TileArea: Integer = 16;
@@ -31,54 +23,20 @@ that can be used by Simba and back.
     end;
   end;
 
-(*
-## RSTranslator.MapWidth
-```pascal
-property TRSTranslator.MapWidth: UInteger;
-```
-Returns the full width in pixels of the OldSchool RuneScape map.
 
-Example:
-```pascal
-WriteLn RSTranslator.MapWidth;
-```
-*)
 property TRSTranslator.MapWidth: Integer;
 begin
   Result := Self.RSMap.Scope.Width * Self.Map.ChunkSide;
 end;
 
-(*
-## RSTranslator.MapHeight
-```pascal
-property TRSTranslator.MapHeight: Integer;
-```
-Returns the full height in pixels of the OldSchool RuneScape map.
 
-Example:
-```pascal
-WriteLn RSTranslator.MapHeight;
-```
-*)
 property TRSTranslator.MapHeight: Integer;
 begin
   Result := Self.RSMap.Scope.Height * Self.Map.ChunkSide;
 end;
 
 
-(*
-## RSTranslator.Global2Chunk
-```pascal
-function TRSTranslator.Global2Chunk(p: TPoint): TPoint;
-function TRSTranslator.Global2Chunk(b: TBox): TBox; overload;
-```
-Converts a "Global" coordinate to a chunk number.
 
-Example:
-```pascal
-WriteLn RSTranslator.Global2Chunk(Point(2000, 2000));
-```
-*)
 function TRSTranslator.Global2Chunk(p: TPoint): TPoint;
 begin
   while p.X > Self.MapWidth do p.X -= Self.MapWidth;
@@ -96,19 +54,7 @@ begin
 end;
 
 
-(*
-## RSTranslator.Chunk2Coordinate
-```pascal
-function TRSTranslator.Chunk2Coordinate(p: TPoint): TPoint;
-function TRSTranslator.Chunk2Coordinate(b: TBox): TBox; overload;
-```
-Converts a "Chunk" number to the top left "Global" coordinate of that chunk.
 
-Example:
-```pascal
-WriteLn RSTranslator.Chunk2Coordinate(Point(53, 50));
-```
-*)
 function TRSTranslator.Chunk2Coordinate(p: TPoint): TPoint;
 begin
   Result.X := p.X * Self.Map.ChunkSide - Self.Map.Scope.X1;
@@ -163,21 +109,7 @@ begin
 end;
 
 
-(*
-## TRSTranslator.GetChunks
-```pascal
-function TRSTranslator.GetChunks(start, finish: TPoint): TPointArray; static;
-```
-Simple methods that will return all chunks in between a `start` and `finish` chunks.
-This will also fix their order if required, as osrs chunks are oddly numbered from bottom to top on the Y axis.
 
-Example:
-```pascal
-WriteLn RSTranslator.GetChunks([20,20], [22,22]);
-//This will return:
-//[[20, 20], [20, 21], [20, 22], [21, 20], [21, 21], [21, 22], [22, 20], [22, 21], [22, 22]];
-```
-*)
 function TRSTranslator.GetChunks(start, finish: TPoint): TPointArray; static;
 var
   x, y: Integer;
@@ -188,8 +120,5 @@ begin
 end;
 
 var
-(*
-## RSTranslator variable
-Global {ref}`TRSTranslator` variable.
-*)
+
   RSTranslator: TRSTranslator;

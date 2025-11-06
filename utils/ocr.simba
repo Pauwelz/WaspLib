@@ -1,7 +1,4 @@
-(*
-# OCR
-This page is about WaspLib's OCR.
-*)
+
 
 {$DEFINE WL_OCR_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}

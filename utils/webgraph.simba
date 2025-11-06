@@ -1,26 +1,11 @@
-(*
-# WebGraph
-Responsible for handling webwalking or any other graph logic you may need.
 
-It's partially based on the original webgraph logic by [slacky](https://slacky.one/)
-but it was written from scratch by Torwent.
-*)
 
 {$DEFINE WL_WEBGRAPH_INCLUDED}
 {$INCLUDE_ONCE WaspLib/utils.simba}
 
 {$R+}
 type
-(*
-## EGraphNode
-```pascal
-EGraphNode = enum(
-  NORMAL, DOOR, STAIRS, SHORTCUT, OBSTACLE, TRANSPORT, TELEPORT, FAIRYRING,
-  BLOCKED
-);
-```
-Enum representing the type of nodes in a `TWebGraph`.
-*)
+
   EGraphNode = enum(
     NORMAL, DOOR, STAIRS, SHORTCUT, OBSTACLE, TRANSPORT, TELEPORT, FAIRYRING,
     BLOCKED

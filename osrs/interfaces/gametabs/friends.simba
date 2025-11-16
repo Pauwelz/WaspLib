@@ -1,26 +1,12 @@
-(*
-# Friends
-Methods to interact with the friends gametab.
-```{figure} ../../images/friends.png
-```
-*)
+
 {$DEFINE WL_FRIENDS_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSFriendsButton
-```pascal
-ERSFriendsButton = enum(ADD, DEL, FRIENDS, IGNORE);
-```
-Represents the buttons in the friends tab.
-*)
+
   ERSFriendsButton = enum(ADD, DEL, FRIENDS, IGNORE);
 
-(*
-## TRSFriend Record
-Represents a friend/ignore in the friends tab.
-*)
+
   TRSFriend = record
     Name: String;
     World: Integer;
@@ -29,10 +15,7 @@ Represents a friend/ignore in the friends tab.
 
   TRSFriendArray = array of TRSFriend;
 
-(*
-## TRSFriends Record
-Main record responsible with handling the friends gametab.
-*)
+
   TRSFriends = record
     Scroll: TRSScrollBar;
     Buttons: array [ERSFriendsButton] of TRSButton;
@@ -73,59 +56,19 @@ begin
   Self.Scroll.Setup();
 end;
 
-(*
-## Friends.IsOpen
-```pascal
-function TRSFriends.IsOpen(): Boolean;
-```
-Returns true if the friends tab is open.
 
-Example:
-```pascal
-WriteLn Friends.IsOpen();
-```
-*)
 function TRSFriends.IsOpen(): Boolean;
 begin
   Result := GameTabs.IsOpen(ERSGameTab.FRIENDS);
 end;
 
-(*
-## Friends.Open
-```pascal
-function TRSFriends.Open(): Boolean;
-```
 
-Attempts to open the friends gametab.
-
-Example:
-```pascal
-WriteLn Friends.Open();
-```
-*)
 function TRSFriends.Open(): Boolean;
 begin
   Result := GameTabs.Open(ERSGameTab.FRIENDS);
 end;
 
-(*
-## Friends.GetFriends
-```pascal
-function TRSFriends.GetFriends(): TRSFriendArray;
-```
-Returns an array of all friends/ignores currently visible in the friends tab.
 
-Example:
-```pascal
-var
-  friend: TRSFriend;
-  friends: TRSFriendArray;
-begin
-  friends := Friends.GetFriends();
-  for friend in friends do
-    WriteLn('Friend: ' + friend.Name + ' World: ' + IntToStr(friend.World));
-end;
-*)
 function TRSFriends.GetFriends(): TRSFriendArray;
 var
   tpa : TPointArray;
@@ -148,26 +91,7 @@ begin
     end;
 end;
 
-(*
-## Friends.Find
-```pascal
-function TRSFriends.Find(name: String): TRSFriend;
-```
 
-Searches for a friend/ignore by name in the friends tab.
-
-Example:
-```pascal
-var
-  friend: TRSFriend;
-begin
-  friend := Friends.Find('SomePlayer');
-  if friend <> Default(TRSFriend) then
-    WriteLn('Found friend: ' + friend.Name + ' World: ' + IntToStr(friend.World))
-  else
-    WriteLn('Friend not found.');
-end;
-*)
 function TRSFriends.Find(name: String): TRSFriend;
 var
   timeout: TCountDown;
@@ -196,19 +120,7 @@ begin
   until timeout.IsFinished;
 end;
 
-(*
-## Friends.AddFriend
-```pascal
-function TRSFriends.AddFriend(name: String): Boolean;
-```
 
-Attempts to add a friend to the friends list.
-
-Example:
-```pascal
-WriteLn Friends.AddFriend('SomePlayer');
-```
-*)
 function TRSFriends.AddFriend(name: String): Boolean;
 begin
   if not Self.Open() then Exit;
@@ -218,19 +130,7 @@ begin
   Result := Chat.AnswerQuery('Enter name of friend to add to list', name, 2000, 250);
 end;
 
-(*
-## Friends.DeleteFriend
-```pascal
-function TRSFriends.DeleteFriend(name: String): Boolean;
-```
 
-Attempts to delete a friend from the friends list.
-
-Example:
-```pascal
-WriteLn Friends.DeleteFriend('SomePlayer');
-```
-*)
 function TRSFriends.DeleteFriend(name: String): Boolean;
 var
   friend: TRSFriend;
@@ -255,19 +155,7 @@ begin
   end;
 end;
 
-(*
-## Friends.SendMessage
-```pascal
-function TRSFriends.SendMessage(name, message: String): Boolean;
-```
 
-Attempts to send a message to a friend.
-
-Example:
-```pascal
-WriteLn Friends.SendMessage('SomePlayer', 'Hello there!');
-```
-*)
 function TRSFriends.SendMessage(name, message: String): Boolean;
 var
   friend: TRSFriend;
@@ -282,19 +170,7 @@ begin
   Result := Chat.AnswerQuery('Enter message to send to ' + name, message, 2000, 250);
 end;
 
-(*
-## Friends.AddIgnore
-```pascal
-function TRSFriends.AddIgnore(name: String): Boolean;
-```
 
-Attempts to add a player to the ignore list.
-
-Example:
-```pascal
-WriteLn Friends.AddIgnore('SomePlayer');
-```
-*)
 function TRSFriends.AddIgnore(name: String): Boolean;
 begin
   if not Self.Open() then Exit;
@@ -304,19 +180,7 @@ begin
   Result := Chat.AnswerQuery('Enter name of player to add to list', name, 2000, 250);
 end;
 
-(*
-## Friends.DeleteIgnore
-```pascal
-function TRSFriends.DeleteIgnore(name: String): Boolean;
-```
 
-Attempts to delete a player from the ignore list.
-
-Example:
-```pascal
-WriteLn Friends.DeleteIgnore('SomePlayer');
-```
-*)
 function TRSFriends.DeleteIgnore(name: String): Boolean;
 var
   friend: TRSFriend;
@@ -342,8 +206,5 @@ begin
 end;
 
 var
-(*
-## Friends variable
-Global {ref}`TRSFriends` variable.
-*)
+
   Friends: TRSFriends;

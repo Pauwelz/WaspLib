@@ -1,26 +1,12 @@
-(*
-# Shop
-Methods to interact with the shop interface.
-```{figure} ../../images/shop_interface.png
-```
-*)
+
 
 {$DEFINE WL_SHOP_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## ERSShopQuantity
-```pascal
-ERSShopQuantity = enum(ONE, FIVE, TEN, FIFTY);
-```
-Enum representing the shop quantity buttons.
-*)
+
   ERSShopQuantity = enum(ONE, FIVE, TEN, FIFTY);
-(*
-## TRSShop
-Main record to interact with the {ref}`Shop` interface.
-*)
+
   TRSShop = record
     Title: TRSInterfaceTitle;
     Slots: TRSSlotInterface;
@@ -36,27 +22,7 @@ Main record to interact with the {ref}`Shop` interface.
     Merchants: TRSEntityArray;
   end;
 
-(*
-## Shop.FindItemBoundaries
-```pascal
-function TRSShop.FindItemBoundaries(): TBoxArray;
-```
-Finds item boundaries and returns them as a TBoxArray.
 
-You have 2 ways of getting the shop item slots, a static one:
-```pascal
-ShowOnTarget(Shop.SlotBoxes);
-```
-
-
-And a dynamic one:
-```pascal
-ShowOnTarget(Shop.FindItemBoundaries());
-```
-
-There are use cases for both, internally, `Shop.FindItemBoundaries` is usually used.
-
-*)
 function TRSShop.FindItemBoundaries(): TBoxArray;
 var
   tpa, final: TPointArray;
@@ -87,14 +53,7 @@ end;
 
 function TRSShop.IsOpen(): Boolean; forward;
 
-(*
-## Shop.SetupInterface
-```pascal
-procedure TRSShop.SetupInterface();
-```
-Internal method used to setup the {ref}`TRSShop` coordinates.
-This is automatically called for you on the {ref}`Shop variable`.
-*)
+
 procedure TRSShop.SetupInterface();
 var
   i: Integer;
@@ -137,55 +96,20 @@ begin
     end;
 end;
 
-(*
-## Shop.IsOpen
-```pascal
-function TRSShop.IsOpen(): Boolean;
-```
-Returns true if the shop interface is open.
 
-Example:
-```pascal
-WriteLn Shop.IsOpen();
-```
-*)
 function TRSShop.IsOpen(): Boolean;
 begin
   Result := OCR.Recognize(Self._IsOpenHelper, RSFonts.PLAIN_12, [RSFonts.ORANGE], 0).ContainsAny(['Value','check'], True);
 end;
 
-(*
-## Shop.WaitOpen
-```pascal
-function TRSShop.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
-```
-Returns true if the shop opens within `time` milliseconds.
 
-Example:
-```pascal
-WriteLn Shop.WaitOpen();
-```
-*)
 function TRSShop.WaitOpen(time: Integer = 600; interval: Integer = -1): Boolean;
 begin
   if interval < 0 then interval := RandomMode(100, 50, 1500);
   Result := SleepUntil(Self.IsOpen(), interval, time);
 end;
 
-(*
-## Shop.Close
-```pascal
-function TRSShop.Close(escape: Boolean): Boolean;
-function TRSShop.Close(escapeProbability: Double = BioHash): Boolean; overload;
-```
-Closes the {ref}`Shop` interface, depending on `escape` the function will either
-press escape or click the close button.
 
-Example:
-```pascal
-WriteLn Shop.Close();
-```
-*)
 function TRSShop.Close(escape: Boolean): Boolean;
 begin
   Result := Self.Title.Close(escape);
@@ -196,19 +120,7 @@ begin
   Result := Self.Title.Close(escapeProbability);
 end;
 
-(*
-## Shop.Buy
-```pascal
-function TRSShop.Buy(item: TRSItem; quantity: ERSShopQuantity = ERSShopQuantity.ONE): Boolean;
-```
-Attempts to buy the specified item from the shop.
-With the proper quantity button enabled.
 
-Example:
-```pascal
-WriteLn Shop.Buy('Gold ore', ERSShopQuantity.FIFTY);
-```
-*)
 function TRSShop.Buy(item: TRSItem; quantity: ERSShopQuantity = ERSShopQuantity.ONE): Boolean;
 begin
   Result := False;
@@ -232,19 +144,7 @@ begin
   Result := True;
 end;
 
-(*
-## Shop.Sell
-```pascal
-function TRSShop.Sell(item: TRSItem; quantity: ERSShopQuantity = ERSShopQuantity.ONE): Boolean;
-```
-Attempts to sell the specified item to the shop from your inventory.
-With the proper quantity button enabled.
 
-Example:
-```pascal
-WriteLn Shop.Sell('Bones', ERSShopQuantity.FIVE);
-```
-*)
 function TRSShop.Sell(item: TRSItem; quantity: ERSShopQuantity = ERSShopQuantity.ONE): Boolean;
 begin
   Result := False;
@@ -266,18 +166,7 @@ begin
   Result := True;
 end;
 
-(*
-## Shop.GetPrice
-```pascal
-function TRSShop.GetPrice(item: TRSItem): Integer;
-```
-Returns the price of an item in the shop by examining it.
 
-Example:
-```pascal
-WriteLn Shop.GetPrice('Gold ore');
-```
-*)
 function TRSShop.GetPrice(item: TRSItem): Integer;
 begin
   if not Self.IsOpen() then Exit;
@@ -296,18 +185,7 @@ begin
   end;
 end;
 
-(*
-## Shop.SetQuantity
-```pascal
-function TRSShop.SetQuantity(quantity: ERSShopQuantity): Boolean;
-```
-Sets the shop quantity button (1, 5, 10, or 50).
 
-Example:
-```pascal
-WriteLn Shop.SetQuantity(ERSShopQuantity.TEN);
-```
-*)
 function TRSShop.SetQuantity(quantity: ERSShopQuantity): Boolean;
 begin
   if Self.QuantityButtons[quantity].Enabled() then Exit(True);
@@ -321,18 +199,7 @@ begin
   Self.Merchants := TRSEntityArray.Create(NPCsJSON.GetByAction('Trade'));
 end;
 
-(*
-## Shop.Hover
-```pascal
-function TRSShop.Hover(obj: TRSObject; walk: Boolean = True): Boolean;
-function TRSShop.Hover(npc: TRSEntity; walk: Boolean = True): Boolean; overload;
-```
-This assumes that {ref}`Map` is being used and setup.
-It's possible to use this with other systems but you need to configure it all
-manually.
 
-If you are too far, it will attempt to walk closer to it.
-*)
 
 function TRSShop.Hover(obj: TRSObject; walk: Boolean = True): Boolean;
 begin
@@ -348,24 +215,7 @@ begin
   Result := npc.Hover();
 end;
 
-(*
-## Shop.Open
-```pascal
-function TRSShop.Open(obj: TRSObject; walk: Boolean = True): Boolean;
-function TRSShop.Open(npc: TRSEntity; walk: Boolean = True): Boolean; overload;
-```
-Opens the shop for you.
-This assumes that {ref}`Map` is being used and setup.
 
-Example:
-```pascal
-{$I WaspLib/osrs.simba}
-begin
-  Map.Setup([Map.Setup([ERSChunk.BLAST_FURNACE]));
-  Shop.Open(TRSEntity.Create(NPCsJSON.GetByName('Ordan', 1).Item[0]));
-end.
-```
-*)
 function TRSShop.Open(obj: TRSObject; walk: Boolean = True): Boolean;
 begin
   if walk then
@@ -431,8 +281,5 @@ begin
 end;
 
 var
-(*
-## Shop variable
-Global {ref}`TRSShop` variable.
-*)
+
   Shop: TRSShop;

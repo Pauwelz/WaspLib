@@ -1,29 +1,15 @@
-(*
-# Emotes
-Methods to interact with the emotes gametab.
-```{figure} ../../images/emotes.png
-```
-*)
+
 {$DEFINE WL_EMOTES_INCLUDED}
 {$INCLUDE_ONCE WaspLib/osrs.simba}
 
 type
-(*
-## TRSEmotes
-Main record responsible with handling the emotes gametab.
-*)
+
   TRSEmotes = record
     Scroll: TRSScrollBar;
     Slots: TBoxArray;
   end;
 
-(*
-## ERSEmote
-```pascal
-ERSEmote = enum(YES, NO, BOW, ANGRY, ..., FORTIS_SALUTE, SIT_DOWN, CRAB_DANCE);
-```
-Enum representing all the available emotes in the game.
-*)
+
   ERSEmote = enum(
     YES, NO, BOW, ANGRY,
     THINK, WAVE, SHRUG, CHEER,
@@ -60,52 +46,19 @@ begin
   Self.Scroll.Setup();
 end;
 
-(*
-## Emotes.IsOpen
-```pascal
-function TRSEmotes.IsOpen(): Boolean;
-```
-Returns true if the Emotes tab is open.
 
-Example:
-```pascal
-WriteLn Emotes.IsOpen();
-```
-*)
 function TRSEmotes.IsOpen(): Boolean;
 begin
   Result := GameTabs.IsOpen(ERSGameTab.EMOTES);
 end;
 
-(*
-## Emotes.Open
-```pascal
-function TRSEmotes.Open(): Boolean;
-```
-Attempts to open the emotes tab.
 
-Example:
-```pascal
-Emotes.Open();
-```
-*)
 function TRSEmotes.Open(): Boolean;
 begin
   Result := GameTabs.Open(ERSGameTab.EMOTES);
 end;
 
-(*
-## Emotes.UseEmote
-```pascal
-function TRSEmotes.UseEmote(emote: ERSEmote): Boolean;
-```
-Attempts to use the specified emote. Returns true if we succeed.
 
-Example:
-```pascal
-WriteLn Emotes.UseEmote(ERSEmote.DANCE);
-```
-*)
 function TRSEmotes.UseEmote(emote: ERSEmote): Boolean;
 const
   EMOTE_NAMES: TStringArray =[
@@ -169,8 +122,5 @@ begin
 end;
 
 var
-(*
-## Emotes variable
-Global {ref}`TRSEmotes` variable.
-*)
+
   Emotes: TRSEmotes;
